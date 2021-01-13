@@ -8,10 +8,8 @@ using Header = System.Collections.Generic.Dictionary<string, string>;
 using Data = System.Collections.Generic.Dictionary<string, string>;
 using Query = System.Collections.Generic.Dictionary<string, string>;
 
-public static class NetworkManager
+public static class WebNetworkManager
 {
-    private const string kHttpVerbPatch = "PATCH";
-
     private static readonly string API_BASE_URL = "localhost:3000";  // host
 
     public static string AccessToken { get; private set; }
