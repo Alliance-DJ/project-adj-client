@@ -122,4 +122,75 @@ public static class CollectionsExtensions
         input.Values.CopyTo(output, 0);
         return output;
     }
+
+    public static void AddDicList<K, V>(this Dictionary<K, List<V>> dic, K key, V value)
+    {
+        if (!dic.TryGetValue(key, out List<V> r))
+        {
+            r = new List<V>();
+            dic[key] = r;
+        }
+        r.Add(value);
+    }
+
+    public static void AddDicHashSet<K, V>(this Dictionary<K, HashSet<V>> dic, K key, V value)
+    {
+        if (!dic.TryGetValue(key, out HashSet<V> r))
+        {
+            r = new HashSet<V>();
+            dic[key] = r;
+        }
+        r.Add(value);
+    }
+
+    public static void AddDicDic<K1, K2, V>(this Dictionary<K1, Dictionary<K2, V>> dic, K1 key1, K2 key2, V value)
+    {
+        if (!dic.TryGetValue(key1, out Dictionary<K2, V> dic2))
+        {
+            dic2 = new Dictionary<K2, V>();
+            dic[key1] = dic2;
+        }
+        dic2[key2] = value;
+    }
+
+    public static void AddDicDicList<K1, K2, V>(this Dictionary<K1, Dictionary<K2, List<V>>> dic, K1 key1, K2 key2, V value)
+    {
+        if (!dic.TryGetValue(key1, out Dictionary<K2, List<V>> dic2))
+        {
+            dic2 = new Dictionary<K2, List<V>>();
+            dic[key1] = dic2;
+        }
+        dic2.AddDicList(key2, value);
+    }
+
+    public static bool TryGetValueDicDic<K1, K2, V>(this Dictionary<K1, Dictionary<K2, V>> dic, K1 key1, K2 key2, out V value)
+    {
+        if (!dic.TryGetValue(key1, out Dictionary<K2, V> dic2))
+        {
+            value = default;
+            return false;
+        }
+        return dic2.TryGetValue(key2, out value);
+    }
+
+    public static void AddDic3<K1, K2, K3, V>(this Dictionary<K1, Dictionary<K2, Dictionary<K3, V>>> dic, K1 key1, K2 key2, K3 key3, V value)
+    {
+        if (!dic.TryGetValue(key1, out Dictionary<K2, Dictionary<K3, V>> dic2))
+        {
+            dic2 = new Dictionary<K2, Dictionary<K3, V>>();
+            dic[key1] = dic2;
+        }
+        dic2.AddDicDic(key2, key3, value);
+    }
+
+    public static bool TryGetValueDic3<K1, K2, K3, V>(this Dictionary<K1, Dictionary<K2, Dictionary<K3, V>>> dic, K1 key1, K2 key2, K3 key3, out V value)
+    {
+        if (!dic.TryGetValue(key1, out Dictionary<K2, Dictionary<K3, V>> dic2))
+        {
+            value = default;
+            return false;
+        }
+
+        return dic2.TryGetValueDicDic(key2, key3, out value);
+    }
 }
