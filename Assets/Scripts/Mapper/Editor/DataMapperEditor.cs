@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEditor;
 
-
 [CustomEditor(typeof(DataMapper))]
 public class DataMapperEditor : Editor
 {
@@ -31,14 +30,15 @@ public class DataMapperEditor : Editor
         var mapper = target as DataMapper;
         var types = new List<string>(dataTypeNames);
         types.Sort();
-        types.Insert(0, NONE);
 
         searchKey = EditorGUILayout.TextField("Search Model : ", searchKey);
         var searching = !string.IsNullOrEmpty(searchKey);
         if (searching)
             types.RemoveAll(name => !name.ToLower().Contains(searchKey.ToLower()));
 
-        var currentTypeName = mapper.InspectorDataType ?? NONE;
+        types.Insert(0, NONE);
+
+        var currentTypeName = !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE;
         var index = types.FindIndex(type => type == currentTypeName);
         index = EditorGUILayout.Popup(index, types.ToArray());
 
@@ -46,7 +46,7 @@ public class DataMapperEditor : Editor
             mapper.InspectorDataType = types[index] != NONE ? types[index] : null;
 
 
-        EditorGUILayout.LabelField("Selected Data Class : ", mapper.InspectorDataType ?? "None");
+        EditorGUILayout.LabelField("Selected Data Class : ", !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE);
     }
 }
 #endif
