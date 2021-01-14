@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DataMapper : MonoBehaviour
@@ -5,6 +6,42 @@ public class DataMapper : MonoBehaviour
     public string InspectorDataType;
 
     private BaseData data;
+
+    private HashSet<PropertyMapper> propertyMappers;
+
+    private void InitPropertyMappers()
+    {
+        if (propertyMappers == null)
+            propertyMappers = new HashSet<PropertyMapper>();
+
+        var pMappers = GetComponentsInChildren<PropertyMapper>(true);
+        for (int i = 0; i < pMappers.Length; i++)
+        {
+            var mapper = pMappers[i];
+            if (mapper == null) continue;
+
+            propertyMappers.Add(mapper);
+        }
+
+        var dMappers = GetComponentsInChildren<DataMapper>(true);
+        for (int i = 0; i < dMappers.Length; i++)
+        {
+            var mapper = dMappers[i];
+            if (mapper == null) continue;
+
+            var dgo = mapper.gameObject;
+            if (dgo == gameObject) continue;
+
+            var subPropertyMappers = mapper.GetComponentsInChildren<PropertyMapper>(true);
+            for (int j = 0; j < subPropertyMappers.Length; j++)
+            {
+                var subMapper = subPropertyMappers[j];
+                if (subMapper == null || dgo == subMapper.gameObject) continue;
+
+                propertyMappers.Remove(subMapper);
+            }
+        }
+    }
 
     public void Reload()
     {
@@ -24,6 +61,15 @@ public class DataMapper : MonoBehaviour
         }
 
         data = any;
+
+        if (propertyMappers == null) InitPropertyMappers();
+
+        foreach (var mapper in propertyMappers)
+        {
+            if (mapper == null) continue;
+
+            mapper.ExtractValue(data);
+        }
     }
 
     public T GetData<T>() where T : BaseData
