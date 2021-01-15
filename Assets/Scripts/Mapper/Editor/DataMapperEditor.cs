@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+
 using System.Collections.Generic;
 using UnityEditor;
 
@@ -45,8 +46,8 @@ public class DataMapperEditor : Editor
         if (!searching || index >= 0)
             mapper.InspectorDataType = types[index] != NONE ? types[index] : null;
 
-
         EditorGUILayout.LabelField("Selected Data Class : ", !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE);
     }
 }
+
 #endif

@@ -248,5 +248,4 @@ public static class VectorExtensions
         source.y = Random.Range(-radius, radius);
         return source;
     }
-
 }

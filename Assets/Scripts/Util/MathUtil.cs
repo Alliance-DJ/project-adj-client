@@ -489,7 +489,7 @@ public static class MathUtil
     /// Returns if a point lies within a frame of reference view as defined by arguments
     /// </summary>
     /// <remarks>
-    /// Field of view parameters are in degrees and plane distances are in meters 
+    /// Field of view parameters are in degrees and plane distances are in meters
     /// </remarks>
     public static bool IsInFOV(Vector3 testPosition, Transform frameOfReference,
         float verticalFOV, float horizontalFOV,
@@ -543,5 +543,4 @@ public static class MathUtil
         var degrees = Mathf.Acos(pointDist / dirToPoint.magnitude) * Mathf.Rad2Deg;
         return degrees < fieldOfView * 0.5f;
     }
-
 }

@@ -135,7 +135,6 @@ public class PropertyMapper : MonoBehaviour
         return DataTypes.maps[dm.InspectorDataType];
     }
 
-
     public T GetDataType<T>() where T : BaseData
     {
         DataMapper dm = null;
@@ -179,7 +178,7 @@ public class PropertyMapper : MonoBehaviour
         }
     }
 
-    void SetText(Text label, object o)
+    private void SetText(Text label, object o)
     {
         if (label == null) return;
 

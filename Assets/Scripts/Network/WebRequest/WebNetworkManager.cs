@@ -1,11 +1,11 @@
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
-using Newtonsoft.Json;
 
-using Header = System.Collections.Generic.Dictionary<string, string>;
 using Data = System.Collections.Generic.Dictionary<string, string>;
+using Header = System.Collections.Generic.Dictionary<string, string>;
 using Query = System.Collections.Generic.Dictionary<string, string>;
 
 public static class WebNetworkManager
@@ -68,7 +68,7 @@ public static class WebNetworkManager
         Header headers = null;
         if (useAccessToken)
         {
-            headers = new Header() 
+            headers = new Header()
             {
                 {"Authorization", AccessToken }
             };

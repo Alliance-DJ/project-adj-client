@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 public static class TypeExtensions
 {
 #if !NETFX_CORE
+
     /// <summary>
     /// Returns a list of types for all classes that extend from the current type and are not abstract
     /// </summary>
@@ -36,5 +37,6 @@ public static class TypeExtensions
 
         return results;
     }
+
 #endif
 }

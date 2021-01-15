@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -96,65 +96,65 @@ public class BuildScript
         BuildReport(report);
     }
 
-	private static void OpenInMac(string path)
-	{
-		bool openInsidesOfFolder = false;
+    private static void OpenInMac(string path)
+    {
+        bool openInsidesOfFolder = false;
 
-		string macPath = path.Replace("\\", "/");
+        string macPath = path.Replace("\\", "/");
 
-		if (Directory.Exists(macPath)) 
+        if (Directory.Exists(macPath))
             openInsidesOfFolder = true;
 
-		if (!macPath.StartsWith("\""))
-			macPath = "\"" + macPath;
+        if (!macPath.StartsWith("\""))
+            macPath = "\"" + macPath;
 
-		if (!macPath.EndsWith("\""))
-			macPath += "\"";
+        if (!macPath.EndsWith("\""))
+            macPath += "\"";
 
-		string arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
+        string arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
 
-		try
-		{
+        try
+        {
             Process.Start("open", arguments);
-		}
-		catch (System.ComponentModel.Win32Exception e)
-		{
-			e.HelpLink = "";
-		}
-	}
+        }
+        catch (System.ComponentModel.Win32Exception e)
+        {
+            e.HelpLink = "";
+        }
+    }
 
-	private static void OpenInWin(string path)
-	{
-		bool openInsidesOfFolder = false;
+    private static void OpenInWin(string path)
+    {
+        bool openInsidesOfFolder = false;
 
-		string winPath = path.Replace("/", "\\");
+        string winPath = path.Replace("/", "\\");
 
-		if (Directory.Exists(winPath))
-			openInsidesOfFolder = true;
+        if (Directory.Exists(winPath))
+            openInsidesOfFolder = true;
 
-		try
-		{
+        try
+        {
             Process.Start("explorer.exe", (openInsidesOfFolder ? "/root," : "/select,") + winPath);
-		}
-		catch (System.ComponentModel.Win32Exception e)
-		{
-			e.HelpLink = "";
-		}
-	}
+        }
+        catch (System.ComponentModel.Win32Exception e)
+        {
+            e.HelpLink = "";
+        }
+    }
 
-	public static void Open(string path)
-	{
-		if (SystemInfo.operatingSystem.IndexOf("Windows") != -1)
-		{
-			OpenInWin(path);
-		}
-		else if (SystemInfo.operatingSystem.IndexOf("Mac OS") != -1)
-		{
-			OpenInMac(path);
-		}
-	}
+    public static void Open(string path)
+    {
+        if (SystemInfo.operatingSystem.IndexOf("Windows") != -1)
+        {
+            OpenInWin(path);
+        }
+        else if (SystemInfo.operatingSystem.IndexOf("Mac OS") != -1)
+        {
+            OpenInMac(path);
+        }
+    }
 
-	private static void BuildReport(BuildReport report)
+    private static void BuildReport(BuildReport report)
     {
         var result = report.summary.result;
         switch (result)
@@ -162,6 +162,7 @@ public class BuildScript
             case BuildResult.Failed:
                 Debug.LogError("Build Result : Failed");
                 break;
+
             case BuildResult.Succeeded:
                 Debug.Log($"Build Result : {result}");
 
@@ -169,6 +170,7 @@ public class BuildScript
                 if (!string.IsNullOrEmpty(path))
                     Open(path);
                 break;
+
             default:
                 Debug.Log($"Build Result : {result}");
                 break;

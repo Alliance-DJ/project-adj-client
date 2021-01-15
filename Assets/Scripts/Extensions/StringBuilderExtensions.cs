@@ -5,7 +5,7 @@ using System;
 using System.Text;
 
 /// <summary>
-/// <see cref="System.Text.StringBuilder"/> Extensions.
+/// <see cref="StringBuilder"/> Extensions.
 /// </summary>
 public static class StringBuilderExtensions
 {

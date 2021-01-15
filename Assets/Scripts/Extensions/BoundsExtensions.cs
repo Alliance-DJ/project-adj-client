@@ -86,11 +86,12 @@ public static class BoundsExtensions
 
     private static Vector3[] corners = null;
 
-    private static Vector3[] rectTransformCorners = new Vector3[4];
+    private static readonly Vector3[] rectTransformCorners = new Vector3[4];
 
     #region Public Static Functions
+
     /// <summary>
-    /// Returns an instance of the 'Bounds' class which is invalid. An invalid 'Bounds' instance 
+    /// Returns an instance of the 'Bounds' class which is invalid. An invalid 'Bounds' instance
     /// is one which has its size vector set to 'float.MaxValue' for all 3 components. The center
     /// of an invalid bounds instance is the zero vector.
     /// </summary>
@@ -149,7 +150,7 @@ public static class BoundsExtensions
     }
 
     /// <summary>
-    /// Gets all the corner points of the bounds 
+    /// Gets all the corner points of the bounds
     /// </summary>
     /// <remarks>
     /// Use BoxColliderExtensions.{Left|Right}{Bottom|Top}{Front|Back} consts to index into the output
@@ -298,7 +299,6 @@ public static class BoundsExtensions
             positions = new Vector3[numPoints];
         }
 
-
         float leftEdge;
         float rightEdge;
         float bottomEdge;
@@ -442,7 +442,6 @@ public static class BoundsExtensions
         }
     }
 
-
     /// <summary>
     /// Method to get bounds from a single Collider
     /// </summary>
@@ -468,7 +467,6 @@ public static class BoundsExtensions
             boxBounds.GetCornerPositions(bc.transform, ref corners);
             InverseTransformPoints(ref corners, relativeTo);
             boundsPoints.AddRange(corners);
-
         }
         else if (collider is MeshCollider)
         {
@@ -587,7 +585,7 @@ public static class BoundsExtensions
     /// Transforms 'bounds' using the specified transform matrix.
     /// </summary>
     /// <remarks>
-    /// Transforming a 'Bounds' instance means that the function will construct a new 'Bounds' 
+    /// Transforming a 'Bounds' instance means that the function will construct a new 'Bounds'
     /// instance which has its center translated using the translation information stored in
     /// the specified matrix and its size adjusted to account for rotation and scale. The size
     /// of the new 'Bounds' instance will be calculated in such a way that it will contain the
@@ -617,7 +615,7 @@ public static class BoundsExtensions
         Vector3 rotatedExtentsUp = upAxis * bounds.extents.y;
         Vector3 rotatedExtentsLook = lookAxis * bounds.extents.z;
 
-        // Calculate the new bounds size along each axis. The size on each axis is calculated by summing up the 
+        // Calculate the new bounds size along each axis. The size on each axis is calculated by summing up the
         // corresponding vector component values of the rotated extents vectors. We multiply by 2 because we want
         // to get a size and currently we are working with extents which represent half the size.
         float newSizeX = (Mathf.Abs(rotatedExtentsRight.x) + Mathf.Abs(rotatedExtentsUp.x) + Mathf.Abs(rotatedExtentsLook.x)) * 2.0f;
@@ -723,7 +721,6 @@ public static class BoundsExtensions
             Vector3 toCenter1 = point - bounds.center;
             Vector3 toCenter2 = point - otherBounds.center;
             return (toCenter1.magnitude <= toCenter2.magnitude);
-
         }
 
         return (distToClosestPoint1.magnitude <= distToClosestPoint2.magnitude);
@@ -758,9 +755,10 @@ public static class BoundsExtensions
         }
     }
 
-    #endregion
+    #endregion Public Static Functions
 
     #region Private Static Functions
+
     /// <summary>
     /// Returns the vector which is used to represent and invalid bounds size.
     /// </summary>
@@ -768,5 +766,6 @@ public static class BoundsExtensions
     {
         return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
     }
-    #endregion
+
+    #endregion Private Static Functions
 }

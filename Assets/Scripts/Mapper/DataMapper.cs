@@ -90,11 +90,12 @@ public class DataMapper : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+
     [ContextMenu("Data Refresh")]
     public void DataRefresh()
     {
         Reload();
     }
-#endif
 
+#endif
 }

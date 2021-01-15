@@ -1,26 +1,25 @@
 using System;
 using UnityEngine;
-
-using Object = UnityEngine.Object;
 using ConditionalAttribute = System.Diagnostics.ConditionalAttribute;
+using Object = UnityEngine.Object;
 
-/// 
+///
 /// It overrides UnityEngine.Debug to mute debug messages completely on a platform-specific basis.
-/// 
+///
 /// Putting this inside of 'Plugins' foloder is ok.
-/// 
+///
 /// Important:
 ///     Other preprocessor directives than 'UNITY_EDITOR' does not correctly work.
-/// 
+///
 /// Note:
-///     [Conditional] attribute indicates to compilers that a method call or attribute should be 
+///     [Conditional] attribute indicates to compilers that a method call or attribute should be
 ///     ignored unless a specified conditional compilation symbol is defined.
-/// 
-/// See Also: 
+///
+/// See Also:
 ///     http://msdn.microsoft.com/en-us/library/system.diagnostics.conditionalattribute.aspx
-/// 
+///
 /// 2012.11. @kimsama
-/// 
+///
 public static class Debug
 {
     public static bool developerConsoleVisible
@@ -40,7 +39,7 @@ public static class Debug
     { get { return UnityEngine.Debug.logger; } }
 
     #region Assert
-    
+
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Assert(bool condition, string message, Object context)
         => UnityEngine.Debug.Assert(condition, message, context);
@@ -78,7 +77,7 @@ public static class Debug
     public static void AssertFormat(bool condition, Object context, string format, params object[] args)
         => UnityEngine.Debug.AssertFormat(condition, context, format, args);
 
-    #endregion
+    #endregion Assert
 
     public static void Break()
         => UnityEngine.Debug.Break();
@@ -107,7 +106,7 @@ public static class Debug
     public static void DrawLine(Vector3 start, Vector3 end)
         => UnityEngine.Debug.DrawLine(start, end);
 
-    #endregion
+    #endregion DrawLine
 
     #region DrawRay
 
@@ -127,7 +126,7 @@ public static class Debug
     public static void DrawRay(Vector3 start, Vector3 dir, Color color)
         => UnityEngine.Debug.DrawRay(start, dir, color);
 
-    #endregion
+    #endregion DrawRay
 
     #region Log
 
@@ -147,7 +146,7 @@ public static class Debug
     public static void LogFormat(string format, params object[] args)
         => UnityEngine.Debug.LogFormat(format, args);
 
-    #endregion
+    #endregion Log
 
     #region LogAssertion
 
@@ -167,7 +166,7 @@ public static class Debug
     public static void LogAssertionFormat(string format, params object[] args)
         => UnityEngine.Debug.LogAssertionFormat(format, args);
 
-    #endregion
+    #endregion LogAssertion
 
     #region LogError
 
@@ -187,7 +186,7 @@ public static class Debug
     public static void LogErrorFormat(Object context, string format, params object[] args)
         => UnityEngine.Debug.LogErrorFormat(context, format, args);
 
-    #endregion
+    #endregion LogError
 
     #region LogException
 
@@ -199,7 +198,7 @@ public static class Debug
     public static void LogException(Exception exception)
         => UnityEngine.Debug.LogException(exception);
 
-    #endregion
+    #endregion LogException
 
     #region LogWarning
 
@@ -219,5 +218,5 @@ public static class Debug
     public static void LogWarningFormat(Object context, string format, params object[] args)
         => UnityEngine.Debug.LogWarningFormat(context, format, args);
 
-    #endregion
+    #endregion LogWarning
 }

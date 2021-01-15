@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using UnityEngine;
 
 /// <summary>
 /// Extension methods for .Net Comparer's

@@ -4,7 +4,7 @@
 using System;
 
 /// <summary>
-/// <see cref="System.Array"/> type method extensions.
+/// <see cref="Array"/> type method extensions.
 /// </summary>
 public static class ArrayExtensions
 {

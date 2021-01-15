@@ -25,5 +25,4 @@ public static class QuaternionExtensions
     {
         return Mathf.Abs(Quaternion.Angle(q1, q2)) < angleTolerance;
     }
-
 }

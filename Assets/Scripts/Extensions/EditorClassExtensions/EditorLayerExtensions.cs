@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #if UNITY_EDITOR
+
 using UnityEditor;
 using UnityEngine;
 
@@ -84,4 +85,5 @@ public static class EditorLayerExtensions
         }
     }
 }
+
 #endif

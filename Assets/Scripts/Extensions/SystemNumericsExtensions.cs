@@ -43,5 +43,4 @@ public static class SystemNumericsExtensions
         target.z = source.Z;
         target.w = source.W;
     }
-
 }

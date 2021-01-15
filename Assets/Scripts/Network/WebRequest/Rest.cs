@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-
 
 /// <summary>
 /// REST Class for CRUD Transactions.
@@ -209,6 +207,7 @@ public static class Rest
     #endregion DELETE
 
     #region PATCH
+
     public static async Task<Response> PatchAsync(string query, string jsonData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         var data = new UTF8Encoding().GetBytes(jsonData);
@@ -223,7 +222,8 @@ public static class Rest
         webRequest.SetRequestHeader("Content-Type", "application/json");
         return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
     }
-    #endregion
+
+    #endregion PATCH
 
     private static async Task<Response> ProcessRequestAsync(UnityWebRequest webRequest, int timeout, Dictionary<string, string> headers = null, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #if UNITY_EDITOR
+
 using System;
 using System.IO;
 using UnityEditor;
@@ -87,4 +88,5 @@ public static class ScriptableObjectExtensions
         return instances;
     }
 }
+
 #endif
