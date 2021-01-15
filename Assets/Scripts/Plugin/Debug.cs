@@ -40,41 +40,41 @@ public static class Debug
     { get { return UnityEngine.Debug.logger; } }
 
     #region Assert
-
-    [Conditional("UNITY_EDITOR")]
+    
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Assert(bool condition, string message, Object context)
         => UnityEngine.Debug.Assert(condition, message, context);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Assert(bool condition, object message, Object context)
         => UnityEngine.Debug.Assert(condition, message, context);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Assert(bool condition, string message)
         => UnityEngine.Debug.Assert(condition, message);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Assert(bool condition, object message)
         => UnityEngine.Debug.Assert(condition, message);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Assert(bool condition, Object context)
         => UnityEngine.Debug.Assert(condition, context);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Assert(bool condition)
         => UnityEngine.Debug.Assert(condition);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     [Obsolete("Assert(bool, string, params object[]) is obsolete. Use AssertFormat(bool, string, params object[]) (UnityUpgradable) -> AssertFormat(*)", true)]
     public static void Assert(bool condition, string format, params object[] args)
         => UnityEngine.Debug.AssertFormat(condition, format, args);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void AssertFormat(bool condition, string format, params object[] args)
         => UnityEngine.Debug.AssertFormat(condition, format, args);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void AssertFormat(bool condition, Object context, string format, params object[] args)
         => UnityEngine.Debug.AssertFormat(condition, context, format, args);
 
@@ -91,19 +91,19 @@ public static class Debug
 
     #region DrawLine
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color, float duration)
         => UnityEngine.Debug.DrawLine(start, end, color, duration);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color)
         => UnityEngine.Debug.DrawLine(start, end, color);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color = default, float duration = 0.0f, bool depthTest = true)
         => UnityEngine.Debug.DrawLine(start, end, color, duration, depthTest);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end)
         => UnityEngine.Debug.DrawLine(start, end);
 
@@ -111,19 +111,19 @@ public static class Debug
 
     #region DrawRay
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color, float duration)
         => UnityEngine.Debug.DrawRay(start, dir, color, duration);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color = default, float duration = 0.0f, bool depthTest = true)
         => UnityEngine.Debug.DrawRay(start, dir, color, duration, depthTest);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir)
         => UnityEngine.Debug.DrawRay(start, dir);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color)
         => UnityEngine.Debug.DrawRay(start, dir, color);
 
@@ -131,19 +131,19 @@ public static class Debug
 
     #region Log
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Log(object message, UnityEngine.Object context)
         => UnityEngine.Debug.Log(message, context);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Log(object message)
         => UnityEngine.Debug.Log(message);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogFormat(Object context, string format, params object[] args)
         => UnityEngine.Debug.LogFormat(context, format, args);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogFormat(string format, params object[] args)
         => UnityEngine.Debug.LogFormat(format, args);
 
@@ -151,19 +151,19 @@ public static class Debug
 
     #region LogAssertion
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogAssertion(object message, Object context)
         => UnityEngine.Debug.LogAssertion(message, context);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogAssertion(object message)
         => UnityEngine.Debug.LogAssertion(message);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogAssertionFormat(Object context, string format, params object[] args)
         => UnityEngine.Debug.LogAssertionFormat(context, format, args);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogAssertionFormat(string format, params object[] args)
         => UnityEngine.Debug.LogAssertionFormat(format, args);
 
@@ -171,19 +171,19 @@ public static class Debug
 
     #region LogError
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogError(object message, Object context)
         => UnityEngine.Debug.LogError(message, context);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogError(object message)
         => UnityEngine.Debug.LogError(message);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogErrorFormat(string format, params object[] args)
         => UnityEngine.Debug.LogErrorFormat(format, args);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogErrorFormat(Object context, string format, params object[] args)
         => UnityEngine.Debug.LogErrorFormat(context, format, args);
 
@@ -191,11 +191,11 @@ public static class Debug
 
     #region LogException
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogException(Exception exception, Object context)
         => UnityEngine.Debug.LogException(exception, context);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogException(Exception exception)
         => UnityEngine.Debug.LogException(exception);
 
@@ -203,19 +203,19 @@ public static class Debug
 
     #region LogWarning
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogWarning(object message)
         => UnityEngine.Debug.LogWarning(message);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogWarning(object message, Object context)
         => UnityEngine.Debug.LogWarning(message, context);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogWarningFormat(string format, params object[] args)
         => UnityEngine.Debug.LogWarningFormat(format, args);
 
-    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogWarningFormat(Object context, string format, params object[] args)
         => UnityEngine.Debug.LogWarningFormat(context, format, args);
 
