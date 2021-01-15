@@ -19,9 +19,9 @@ public static class WebNetworkManager
         AccessToken = Rest.GetBearerOAuthToken(token);
     }
 
-    private static T GetJson<T>(Response req, string group = null)
+    private static T GetJson<T>(Response response, string group = null)
     {
-        var res = req.ResponseBody;
+        var body = response.ResponseBody;
 
         if (string.IsNullOrWhiteSpace(group) == false)
         {
@@ -29,12 +29,12 @@ public static class WebNetworkManager
             builder.Append("{\"");
             builder.Append(group);
             builder.Append("\":");
-            builder.Append(res);
+            builder.Append(body);
             builder.Append("}");
-            res = builder.ToString();
+            body = builder.ToString();
         }
 
-        var data = JsonConvert.DeserializeObject<T>(res);
+        var data = JsonConvert.DeserializeObject<T>(body);
         return data;
     }
 
