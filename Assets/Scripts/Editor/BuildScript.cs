@@ -36,36 +36,6 @@ public class BuildScript
         return scenes.ToArray();
     }
 
-    [MenuItem("Build/Development/iOS")]
-    public static void IOSDevelopment()
-    {
-        if (Directory.Exists(IOS_DEVELOPMENT_FOLDER))
-            Directory.Delete(IOS_DEVELOPMENT_FOLDER);
-
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
-
-        bool success = EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.iOS, BuildTarget.iOS);
-        if (!success) return;
-
-        var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_DEVELOPMENT_FOLDER, BuildTarget.iOS, BuildOptions.Development);
-        BuildReport(report);
-    }
-
-    [MenuItem("Build/Release/iOS")]
-    public static void IOSRelease()
-    {
-        if (Directory.Exists(IOS_RELEASE_FOLDER))
-            Directory.Delete(IOS_RELEASE_FOLDER);
-
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
-
-        bool success = EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.iOS, BuildTarget.iOS);
-        if (!success) return;
-
-        var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_RELEASE_FOLDER, BuildTarget.iOS, BuildOptions.None);
-        BuildReport(report);
-    }
-
     [MenuItem("Build/Development/Android")]
     public static void AndroidDevelopment()
     {
@@ -93,6 +63,36 @@ public class BuildScript
         if (!success) return;
 
         var report = BuildPipeline.BuildPlayer(GetScenes(), ANDROID_RELEASE_FILE, BuildTarget.Android, BuildOptions.None);
+        BuildReport(report);
+    }
+
+    [MenuItem("Build/Development/iOS")]
+    public static void IOSDevelopment()
+    {
+        if (Directory.Exists(IOS_DEVELOPMENT_FOLDER))
+            Directory.Delete(IOS_DEVELOPMENT_FOLDER);
+
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
+
+        bool success = EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.iOS, BuildTarget.iOS);
+        if (!success) return;
+
+        var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_DEVELOPMENT_FOLDER, BuildTarget.iOS, BuildOptions.Development);
+        BuildReport(report);
+    }
+
+    [MenuItem("Build/Release/iOS")]
+    public static void IOSRelease()
+    {
+        if (Directory.Exists(IOS_RELEASE_FOLDER))
+            Directory.Delete(IOS_RELEASE_FOLDER);
+
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
+
+        bool success = EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.iOS, BuildTarget.iOS);
+        if (!success) return;
+
+        var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_RELEASE_FOLDER, BuildTarget.iOS, BuildOptions.None);
         BuildReport(report);
     }
 
