@@ -68,7 +68,7 @@ public static class CanvasExtensions
             viewportCorners[i] = Camera.main.WorldToViewportPoint(worldCorners[i]);
 #else
             viewportCorners[i] = CameraCache.Main.WorldToViewportPoint(worldCorners[i]);
-#endif
+#endif // UNITY_2020_2_OR_NEWERM
         }
 
         return viewportCorners;
@@ -92,7 +92,7 @@ public static class CanvasExtensions
             screenCorners[i] = Camera.main.WorldToScreenPoint(worldCorners[i]);
 #else
             screenCorners[i] = CameraCache.Main.WorldToScreenPoint(worldCorners[i]);
-#endif
+#endif // UNITY_2020_2_OR_NEWER
         }
 
         return screenCorners;
