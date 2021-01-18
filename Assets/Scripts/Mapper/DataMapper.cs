@@ -9,10 +9,9 @@ public class DataMapper : MonoBehaviour
 
     private HashSet<PropertyMapper> propertyMappers;
 
-    private void InitPropertyMappers()
+    public HashSet<PropertyMapper> GetPropertyMappers()
     {
-        if (propertyMappers == null)
-            propertyMappers = new HashSet<PropertyMapper>();
+        var mappers = new HashSet<PropertyMapper>();
 
         var pMappers = GetComponentsInChildren<PropertyMapper>(true);
         for (int i = 0; i < pMappers.Length; i++)
@@ -20,7 +19,7 @@ public class DataMapper : MonoBehaviour
             var mapper = pMappers[i];
             if (mapper == null) continue;
 
-            propertyMappers.Add(mapper);
+            mappers.Add(mapper);
         }
 
         var dMappers = GetComponentsInChildren<DataMapper>(true);
@@ -38,9 +37,11 @@ public class DataMapper : MonoBehaviour
                 var subMapper = subPropertyMappers[j];
                 if (subMapper == null || dgo == subMapper.gameObject) continue;
 
-                propertyMappers.Remove(subMapper);
+                mappers.Remove(subMapper);
             }
         }
+
+        return mappers;
     }
 
     public void Reload()
@@ -62,7 +63,11 @@ public class DataMapper : MonoBehaviour
 
         data = any;
 
-        if (propertyMappers == null) InitPropertyMappers();
+        if (propertyMappers == null)
+        {
+            var pMappers = GetPropertyMappers();
+            propertyMappers = new HashSet<PropertyMapper>(pMappers);
+        }
 
         foreach (var mapper in propertyMappers)
         {

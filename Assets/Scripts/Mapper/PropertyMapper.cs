@@ -135,6 +135,14 @@ public class PropertyMapper : MonoBehaviour
         return DataTypes.maps[dm.InspectorDataType];
     }
 
+    public void ResetPropertyMapper()
+    {
+        defaultValue = string.Empty;
+        format = string.Empty;
+        propertyName = string.Empty;
+        subPropertyName = string.Empty;
+    }
+
     public T GetDataType<T>() where T : BaseData
     {
         DataMapper dm = null;

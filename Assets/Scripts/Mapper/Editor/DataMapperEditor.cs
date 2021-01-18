@@ -10,6 +10,7 @@ public class DataMapperEditor : Editor
     private const string NONE = "None";
 
     private string searchKey;
+    private int currentIndex = -1;
 
     private DataMapper mapper;
 
@@ -47,11 +48,23 @@ public class DataMapperEditor : Editor
         types.Insert(0, NONE);
 
         var currentTypeName = !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE;
-        var index = types.FindIndex(type => type == currentTypeName);
-        index = EditorGUILayout.Popup(index, types.ToArray());
+        EditorGUI.BeginChangeCheck();
+        currentIndex = EditorGUILayout.Popup(types.FindIndex(type => type == currentTypeName), types.ToArray());
 
-        if (!searching || index >= 0)
-            mapper.InspectorDataType = types[index] != NONE ? types[index] : null;
+        if (EditorGUI.EndChangeCheck())
+        {
+            var pMappers = mapper.GetPropertyMappers();
+            if (pMappers != null && pMappers.Count > 0)
+            {
+                Parallel.ForEach(pMappers, (pMapper) =>
+                {
+                    pMapper.ResetPropertyMapper();
+                });
+            }
+
+            if (currentIndex >= 0)
+                mapper.InspectorDataType = types[currentIndex] != NONE ? types[currentIndex] : null;
+        }
 
         EditorGUILayout.LabelField("Selected Data Class : ", !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE);
     }

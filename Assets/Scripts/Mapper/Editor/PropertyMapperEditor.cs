@@ -13,6 +13,8 @@ public class PropertyMapperEditor : Editor
 
     private string searchKey;
     private string subSearchKey;
+    private int currentIndex = -1;
+    private int currentSubIndex = -1;
 
     private PropertyMapper mapper;
 
@@ -25,6 +27,7 @@ public class PropertyMapperEditor : Editor
         if (mapper == null) return;
 
         names = new List<string>();
+        returnTypeDic = new Dictionary<string, Type>();
 
         var type = mapper.GetDataMapperDataType();
         if (type != null)
@@ -42,7 +45,6 @@ public class PropertyMapperEditor : Editor
             var properties = TypeCache.GetProperties(type);
             if (properties != null)
             {
-                returnTypeDic = new Dictionary<string, Type>(properties.Length);
                 Parallel.ForEach(properties, (property) =>
                 {
                     var name = property.Name;
@@ -82,11 +84,14 @@ public class PropertyMapperEditor : Editor
         tempNames.Insert(0, NONE);
 
         var currentTypeName = !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : NONE;
-        var index = tempNames.FindIndex(type => type == currentTypeName);
-        index = EditorGUILayout.Popup(index, tempNames.ToArray());
+        EditorGUI.BeginChangeCheck();
+        currentIndex = EditorGUILayout.Popup(tempNames.FindIndex(type => type == currentTypeName), tempNames.ToArray());
 
-        if (!searching || index >= 0)
-            mapper.propertyName = tempNames[index] != NONE ? tempNames[index] : null;
+        if (EditorGUI.EndChangeCheck())
+        {
+            if (currentIndex >= 0)
+                mapper.propertyName = tempNames[currentIndex] != NONE ? tempNames[currentIndex] : null;
+        }
 
         EditorGUILayout.LabelField("Property Name : ", !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : NONE);
 
@@ -135,11 +140,14 @@ public class PropertyMapperEditor : Editor
         tempNames.Insert(0, NONE);
 
         var currentTypeName = !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : NONE;
-        var index = tempNames.FindIndex(type => type == currentTypeName);
-        index = EditorGUILayout.Popup(index, tempNames.ToArray());
+        EditorGUI.BeginChangeCheck();
+        currentSubIndex = EditorGUILayout.Popup(tempNames.FindIndex(type => type == currentTypeName), tempNames.ToArray());
 
-        if (!searching || index >= 0)
-            mapper.subPropertyName = tempNames[index] != NONE ? tempNames[index] : null;
+        if (EditorGUI.EndChangeCheck())
+        {
+            if (currentSubIndex >= 0)
+                mapper.subPropertyName = tempNames[currentSubIndex] != NONE ? tempNames[currentSubIndex] : null;
+        }
 
         EditorGUILayout.LabelField("Sub Property Name : ", !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : NONE);
     }
