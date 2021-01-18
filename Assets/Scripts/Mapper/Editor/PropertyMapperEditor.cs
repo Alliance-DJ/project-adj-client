@@ -11,6 +11,8 @@ public class PropertyMapperEditor : Editor
 {
     private const string NONE = "None";
 
+    private string defaultValue;
+    private string format;
     private string searchKey;
     private string subSearchKey;
     private int currentIndex = -1;
@@ -59,17 +61,27 @@ public class PropertyMapperEditor : Editor
     {
         if (mapper == null) return;
 
-        string defaultValue = mapper.defaultValue;
-        defaultValue = EditorGUILayout.TextField("Default Value : ", defaultValue);
-        mapper.defaultValue = defaultValue;
+        EditorGUI.BeginChangeCheck();
+        defaultValue = EditorGUILayout.TextField("Default Value : ", mapper.defaultValue);
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(mapper, "Change PropertyMapper Default Value");
+            mapper.defaultValue = defaultValue;
+        }
 
         EditorGUILayout.Space();
 
         EditorGUILayout.LabelField("Format");
 
-        string format = mapper.format;
-        format = EditorGUILayout.TextArea(format, GUILayout.MinHeight(80f));
-        mapper.format = format;
+        EditorGUI.BeginChangeCheck();
+        format = EditorGUILayout.TextArea(mapper.format, GUILayout.MinHeight(80f));
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(mapper, "Change PropertyMapper Format");
+            mapper.format = format;
+        }
 
         EditorGUILayout.Space();
 
@@ -89,6 +101,7 @@ public class PropertyMapperEditor : Editor
 
         if (EditorGUI.EndChangeCheck())
         {
+            Undo.RecordObject(mapper, "Change PropertyMapper PropertyData");
             if (currentIndex >= 0)
                 mapper.propertyName = tempNames[currentIndex] != NONE ? tempNames[currentIndex] : null;
         }
@@ -145,6 +158,7 @@ public class PropertyMapperEditor : Editor
 
         if (EditorGUI.EndChangeCheck())
         {
+            Undo.RecordObject(mapper, "Change PropertyMapper SubPropertyData");
             if (currentSubIndex >= 0)
                 mapper.subPropertyName = tempNames[currentSubIndex] != NONE ? tempNames[currentSubIndex] : null;
         }

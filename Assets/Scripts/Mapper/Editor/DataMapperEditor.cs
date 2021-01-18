@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 
@@ -53,9 +54,12 @@ public class DataMapperEditor : Editor
 
         if (EditorGUI.EndChangeCheck())
         {
+            Undo.RecordObject(mapper, "Change DataMapper Data");
+
             var pMappers = mapper.GetPropertyMappers();
             if (pMappers != null && pMappers.Count > 0)
             {
+                Undo.RecordObjects(pMappers.ToArray(), "Reset PropertyMapper Data");
                 Parallel.ForEach(pMappers, (pMapper) =>
                 {
                     pMapper.ResetPropertyMapper();
