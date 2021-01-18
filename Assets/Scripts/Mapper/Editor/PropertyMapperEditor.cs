@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,29 +32,23 @@ public class PropertyMapperEditor : Editor
             var fields = TypeCache.GetFields(type);
             if (fields != null)
             {
-                for (int i = 0; i < fields.Length; i++)
+                Parallel.ForEach(fields, (field) =>
                 {
-                    var field = fields[i];
-                    if (field == null) continue;
-
                     var name = field.Name;
                     names.Add(name);
-                }
+                });
             }
 
             var properties = TypeCache.GetProperties(type);
             if (properties != null)
             {
                 returnTypeDic = new Dictionary<string, Type>(properties.Length);
-                for (int i = 0; i < properties.Length; i++)
+                Parallel.ForEach(properties, (property) =>
                 {
-                    var property = properties[i];
-                    if (property == null) continue;
-
                     var name = property.Name;
                     names.Add(name);
                     returnTypeDic[name] = property.GetGetMethod().ReturnType;
-                }
+                });
             }
         }
     }
@@ -114,27 +109,21 @@ public class PropertyMapperEditor : Editor
         var fields = TypeCache.GetFields(type);
         if (fields != null)
         {
-            for (int i = 0; i < fields.Length; i++)
+            Parallel.ForEach(fields, (field) =>
             {
-                var field = fields[i];
-                if (field == null) continue;
-
                 var name = field.Name;
                 tempNames.Add(name);
-            }
+            });
         }
 
         var properties = TypeCache.GetProperties(type);
         if (properties != null)
         {
-            for (int i = 0; i < properties.Length; i++)
+            Parallel.ForEach(properties, (property) =>
             {
-                var property = properties[i];
-                if (property == null) continue;
-
                 var name = property.Name;
                 tempNames.Add(name);
-            }
+            });
         }
         tempNames.Sort();
 

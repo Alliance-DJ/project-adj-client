@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEditor;
 
 [CustomEditor(typeof(DataMapper))]
@@ -24,13 +25,10 @@ public class DataMapperEditor : Editor
         var dataTypes = TypeCache.GetSubClasses<BaseData>();
         if (dataTypes != null)
         {
-            for (int i = 0; i < dataTypes.Count; i++)
+            Parallel.ForEach(dataTypes, (type) =>
             {
-                var type = dataTypes[i];
-                if (type == null) continue;
-
                 dataTypeNames.Add(type.Name);
-            }
+            });
         }
     }
 
