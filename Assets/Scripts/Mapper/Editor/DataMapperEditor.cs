@@ -39,7 +39,7 @@ public class DataMapperEditor : Editor
         var types = new List<string>(dataTypeNames);
         types.Sort();
 
-        searchKey = EditorGUILayout.TextField("Search Model : ", searchKey);
+        searchKey = EditorGUILayout.TextField("Search Data : ", searchKey);
         var searching = !string.IsNullOrEmpty(searchKey);
         if (searching)
             types.RemoveAll(name => !name.ToLower().Contains(searchKey.ToLower()));
