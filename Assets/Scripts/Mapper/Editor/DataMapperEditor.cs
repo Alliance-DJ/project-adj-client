@@ -9,10 +9,12 @@ public class DataMapperEditor : Editor
     private const string NONE = "None";
 
     private string searchKey;
-    private readonly List<string> dataTypeNames = new List<string>();
+    private List<string> dataTypeNames;
 
     private void OnEnable()
     {
+        dataTypeNames = new List<string>();
+
         var dataTypes = TypeCache.GetSubClasses<BaseData>();
         if (dataTypes != null)
         {

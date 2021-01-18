@@ -12,12 +12,14 @@ public class PropertyMapperEditor : Editor
 
     private string searchKey;
     private string subSearchKey;
-    private readonly List<string> names = new List<string>();
+    private List<string> names;
     private Dictionary<string, Type> returnTypeDic;
 
     private void OnEnable()
     {
         PropertyMapper mapper = target as PropertyMapper;
+
+        names = new List<string>();
 
         var type = mapper.GetDataMapperDataType();
         if (type != null)
