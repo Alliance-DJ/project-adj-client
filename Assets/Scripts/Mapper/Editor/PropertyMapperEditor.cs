@@ -12,12 +12,16 @@ public class PropertyMapperEditor : Editor
 
     private string searchKey;
     private string subSearchKey;
+
+    private PropertyMapper mapper;
+
     private List<string> names;
     private Dictionary<string, Type> returnTypeDic;
 
     private void OnEnable()
     {
-        PropertyMapper mapper = target as PropertyMapper;
+        mapper = target as PropertyMapper;
+        if (mapper == null) return;
 
         names = new List<string>();
 
@@ -56,7 +60,7 @@ public class PropertyMapperEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        var mapper = target as PropertyMapper;
+        if (mapper == null) return;
 
         string defaultValue = mapper.defaultValue;
         defaultValue = EditorGUILayout.TextField("Default Value : ", defaultValue);
@@ -96,13 +100,13 @@ public class PropertyMapperEditor : Editor
             returnTypeDic != null && returnTypeDic.TryGetValue(propertyName, out var type) &&
             type.BaseType == typeof(BaseData))
         {
-            SetSubProperties(mapper, type);
+            SetSubProperties(type);
         }
     }
 
-    private void SetSubProperties(PropertyMapper mapper, Type type)
+    private void SetSubProperties(Type type)
     {
-        if (type == null) return;
+        if (mapper == null || type == null) return;
 
         EditorGUILayout.Space();
 

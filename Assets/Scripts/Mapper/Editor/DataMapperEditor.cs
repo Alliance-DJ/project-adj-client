@@ -9,10 +9,16 @@ public class DataMapperEditor : Editor
     private const string NONE = "None";
 
     private string searchKey;
+
+    private DataMapper mapper;
+
     private List<string> dataTypeNames;
 
     private void OnEnable()
     {
+        mapper = target as DataMapper;
+        if (mapper == null) return;
+
         dataTypeNames = new List<string>();
 
         var dataTypes = TypeCache.GetSubClasses<BaseData>();
@@ -30,7 +36,8 @@ public class DataMapperEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        var mapper = target as DataMapper;
+        if (mapper == null) return;
+
         var types = new List<string>(dataTypeNames);
         types.Sort();
 
