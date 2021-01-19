@@ -67,9 +67,6 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
                         var type = types[0];
                         instance = type;
 
-                        var obj = type.gameObject;
-                        DontDestroyOnLoad(obj);
-
                         if (types.Length > 1)
                             Debug.LogError($"There is more than one {typeof(T).Name} in the scene.");
                     }
@@ -87,6 +84,11 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
 
             return _instance.Value;
         }
+    }
+
+    protected virtual void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
     }
 
     protected virtual void OnDestroy()
