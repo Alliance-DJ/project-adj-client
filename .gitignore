@@ -75,3 +75,7 @@ crashlytics-build.properties
 
 # MacOS
 .DS_Store
+
+#Asset
+/[Aa]ssets/Best HTTP/*
+/[Aa]ssets/Best HTTP.meta
