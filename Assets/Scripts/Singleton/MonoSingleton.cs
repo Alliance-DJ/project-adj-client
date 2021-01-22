@@ -79,12 +79,12 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
         }
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         DontDestroyOnLoad(gameObject);
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         _instance = null;
     }
