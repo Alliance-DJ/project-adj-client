@@ -80,7 +80,9 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
 
     protected virtual void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        var types = FindObjectsOfType<T>();
+        if (types.Length == 1)
+            DontDestroyOnLoad(gameObject);
     }
 
     protected virtual void OnDestroy()
