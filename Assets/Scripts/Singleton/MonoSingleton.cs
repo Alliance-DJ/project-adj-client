@@ -38,7 +38,6 @@ public class MonoSingleton<T> : MonoBehaviour where T : Component
 
     protected virtual void OnDestroy()
     {
-        Debug.Log("Singleton Destroy");
         _instance = null;
     }
 }
