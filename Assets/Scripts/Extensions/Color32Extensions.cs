@@ -47,16 +47,16 @@ public static class Color32Extensions
 
         if (hexstring.Length != 8)
         {
-            throw new ArgumentException(string.Format("{0} is not a valid color string.", hexstring));
+            throw new ArgumentException($"{hexstring} is not a valid color string.");
         }
 
-        byte r = byte.Parse(hexstring.Substring(0, 2), NumberStyles.HexNumber);
-        byte g = byte.Parse(hexstring.Substring(2, 2), NumberStyles.HexNumber);
-        byte b = byte.Parse(hexstring.Substring(4, 2), NumberStyles.HexNumber);
-        byte a = byte.Parse(hexstring.Substring(6, 2), NumberStyles.HexNumber);
+        var r = byte.Parse(hexstring.Substring(0, 2), NumberStyles.HexNumber);
+        var g = byte.Parse(hexstring.Substring(2, 2), NumberStyles.HexNumber);
+        var b = byte.Parse(hexstring.Substring(4, 2), NumberStyles.HexNumber);
+        var a = byte.Parse(hexstring.Substring(6, 2), NumberStyles.HexNumber);
 
         const float maxRgbValue = 255;
-        Color c = new Color(r / maxRgbValue, g / maxRgbValue, b / maxRgbValue, a / maxRgbValue);
+        var c = new Color(r / maxRgbValue, g / maxRgbValue, b / maxRgbValue, a / maxRgbValue);
         return c;
     }
 }

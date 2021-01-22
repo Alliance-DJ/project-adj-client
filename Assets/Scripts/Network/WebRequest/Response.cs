@@ -15,6 +15,7 @@ public struct Response
     /// Response body from the resource.
     /// </summary>
     public string ResponseBody => responseBody ??= responseBodyAction?.Invoke();
+
     private string responseBody;
     private readonly System.Func<string> responseBodyAction;
 
@@ -22,6 +23,7 @@ public struct Response
     /// Response data from the resource.
     /// </summary>
     public byte[] ResponseData => responseData ??= responseDataAction?.Invoke();
+
     private byte[] responseData;
     private readonly System.Func<byte[]> responseDataAction;
 
@@ -43,7 +45,8 @@ public struct Response
         ResponseCode = responseCode;
     }
 
-    public Response(bool successful, System.Func<string> responseBodyAction, System.Func<byte[]> responseDataAction, long responseCode)
+    public Response(bool successful, System.Func<string> responseBodyAction, System.Func<byte[]> responseDataAction,
+        long responseCode)
     {
         Successful = successful;
         this.responseBodyAction = responseBodyAction;

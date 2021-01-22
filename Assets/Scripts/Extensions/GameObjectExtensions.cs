@@ -20,7 +20,7 @@ public static class GameObjectExtensions
     /// </remarks>
     public static void SetChildrenActive(this GameObject root, bool isActive)
     {
-        for (int i = 0; i < root.transform.childCount; i++)
+        for (var i = 0; i < root.transform.childCount; i++)
         {
             root.transform.GetChild(i).gameObject.SetActive(isActive);
         }
@@ -52,14 +52,18 @@ public static class GameObjectExtensions
     /// <param name="cache">The previously set layer for each object</param>
     public static void SetLayerRecursively(this GameObject root, int layer, out Dictionary<GameObject, int> cache)
     {
-        if (root == null) { throw new ArgumentNullException(nameof(root)); }
+        if (root == null)
+        {
+            throw new ArgumentNullException(nameof(root));
+        }
 
         cache = new Dictionary<GameObject, int>();
 
         foreach (var child in root.transform.EnumerateHierarchy())
         {
-            cache[child.gameObject] = child.gameObject.layer;
-            child.gameObject.layer = layer;
+            var gameObject = child.gameObject;
+            cache[gameObject] = gameObject.layer;
+            gameObject.layer = layer;
         }
     }
 
@@ -70,14 +74,26 @@ public static class GameObjectExtensions
     /// <param name="cache">The previously set layer for each object</param>
     public static void ApplyLayerCacheRecursively(this GameObject root, Dictionary<GameObject, int> cache)
     {
-        if (root == null) { throw new ArgumentNullException(nameof(root)); }
-        if (cache == null) { throw new ArgumentNullException(nameof(cache)); }
+        if (root == null)
+        {
+            throw new ArgumentNullException(nameof(root));
+        }
+
+        if (cache == null)
+        {
+            throw new ArgumentNullException(nameof(cache));
+        }
 
         foreach (var child in root.transform.EnumerateHierarchy())
         {
-            if (!cache.TryGetValue(child.gameObject, out int layer)) { continue; }
-            child.gameObject.layer = layer;
-            cache.Remove(child.gameObject);
+            if (!cache.TryGetValue(child.gameObject, out var layer))
+            {
+                continue;
+            }
+
+            var gameObject = child.gameObject;
+            gameObject.layer = layer;
+            cache.Remove(gameObject);
         }
     }
 
@@ -101,11 +117,11 @@ public static class GameObjectExtensions
     public static void ApplyToHierarchy(this GameObject root, Action<GameObject> action)
     {
         action(root);
-        Transform[] items = root.GetComponentsInChildren<Transform>();
+        var items = root.GetComponentsInChildren<Transform>();
 
-        for (var i = 0; i < items.Length; i++)
+        foreach (var t in items)
         {
-            action(items[i].gameObject);
+            action(t.gameObject);
         }
     }
 
@@ -129,7 +145,7 @@ public static class GameObjectExtensions
     /// <param name="action">Action to perform.</param>
     public static void ForEachComponent<T>(this GameObject gameObject, Action<T> action) where T : Component
     {
-        foreach (T i in gameObject.GetComponents<T>())
+        foreach (var i in gameObject.GetComponents<T>())
         {
             action(i);
         }
@@ -153,7 +169,8 @@ public static class GameObjectExtensions
     /// <param name="gameObject">the GameObject requiring the component</param>
     /// <param name="requiringTypes">A list of types that do require the component in question</param>
     /// <returns>true if <typeparamref name="T"/> appears in any RequireComponentAttribute, otherwise false </returns>
-    public static bool IsComponentRequired<T>(this GameObject gameObject, out List<Type> requiringTypes) where T : Component
+    public static bool IsComponentRequired<T>(this GameObject gameObject, out List<Type> requiringTypes)
+        where T : Component
     {
         var genericType = typeof(T);
         requiringTypes = null;
@@ -171,20 +188,14 @@ public static class GameObjectExtensions
 
             foreach (var attribute in attributes)
             {
-                if (attribute is RequireComponent requireComponentAttribute)
-                {
-                    if (requireComponentAttribute.m_Type0 == genericType ||
-                        requireComponentAttribute.m_Type1 == genericType ||
-                        requireComponentAttribute.m_Type2 == genericType)
-                    {
-                        if (requiringTypes == null)
-                        {
-                            requiringTypes = new List<Type>();
-                        }
+                if (!(attribute is RequireComponent requireComponentAttribute)) continue;
 
-                        requiringTypes.Add(monoBehaviourType);
-                    }
-                }
+                if (requireComponentAttribute.m_Type0 != genericType &&
+                    requireComponentAttribute.m_Type1 != genericType &&
+                    requireComponentAttribute.m_Type2 != genericType) continue;
+
+                requiringTypes ??= new List<Type>();
+                requiringTypes.Add(monoBehaviourType);
             }
         }
 #endif // UNITY_EDITOR

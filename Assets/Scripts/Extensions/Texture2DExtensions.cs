@@ -27,8 +27,8 @@ public static class Texture2DExtensions
         }
 
         Color32 toColor = fillColor; // Implicit cast
-        Color32[] colors = new Color32[width * height];
-        for (int i = 0; i < colors.Length; i++)
+        var colors = new Color32[width * height];
+        for (var i = 0; i < colors.Length; i++)
         {
             colors[i] = toColor;
         }
@@ -57,7 +57,7 @@ public static class Texture2DExtensions
     /// <remarks>You should call this in OnPostRender.</remarks>
     public static Texture2D CaptureScreenRegion(int x, int y, int width, int height)
     {
-        Texture2D tex = new Texture2D(width, height);
+        var tex = new Texture2D(width, height);
         tex.ReadPixels(new Rect(x, y, Screen.width, Screen.height), 0, 0);
         tex.Apply();
         return tex;
@@ -73,9 +73,9 @@ public static class Texture2DExtensions
     /// <param name="height">height of the region to capture</param>
     public static Texture2D CreateTextureFromRegion(this Texture2D texture2D, int x, int y, int width, int height)
     {
-        Color[] pixels = texture2D.GetPixels(x, y, width, height);
+        var pixels = texture2D.GetPixels(x, y, width, height);
 
-        Texture2D destTex = new Texture2D(width, height);
+        var destTex = new Texture2D(width, height);
         destTex.SetPixels(pixels);
         destTex.Apply();
 

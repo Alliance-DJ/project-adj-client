@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -61,20 +62,20 @@ public static class BoundsExtensions
     private const int CAPSULE_Z_AXIS = 2;
 
     // Edges used to render the bounds.
-    private static readonly int[] boundsEdges = new int[]
+    private static readonly int[] boundsEdges =
     {
-             LBF, LBB,
-             LBB, LTB,
-             LTB, LTF,
-             LTF, LBF,
-             LBF, RTB,
-             RTB, RTF,
-             RTF, RBF,
-             RBF, RBB,
-             RBB, RTB,
-             RTF, LBB,
-             RBF, LTB,
-             RBB, LTF
+        LBF, LBB,
+        LBB, LTB,
+        LTB, LTF,
+        LTF, LBF,
+        LBF, RTB,
+        RTB, RTF,
+        RTF, RBF,
+        RBF, RBB,
+        RBB, RTB,
+        RTF, LBB,
+        RBF, LTB,
+        RBB, LTF
     };
 
     public enum Axis
@@ -84,7 +85,7 @@ public static class BoundsExtensions
         Z
     }
 
-    private static Vector3[] corners = null;
+    private static Vector3[] corners;
 
     private static readonly Vector3[] rectTransformCorners = new Vector3[4];
 
@@ -122,14 +123,14 @@ public static class BoundsExtensions
     public static void GetCornerPositions(this Bounds bounds, Transform transform, ref Vector3[] positions)
     {
         // Calculate the local points to transform.
-        Vector3 center = bounds.center;
-        Vector3 extents = bounds.extents;
-        float leftEdge = center.x - extents.x;
-        float rightEdge = center.x + extents.x;
-        float bottomEdge = center.y - extents.y;
-        float topEdge = center.y + extents.y;
-        float frontEdge = center.z - extents.z;
-        float backEdge = center.z + extents.z;
+        var center = bounds.center;
+        var extents = bounds.extents;
+        var leftEdge = center.x - extents.x;
+        var rightEdge = center.x + extents.x;
+        var bottomEdge = center.y - extents.y;
+        var topEdge = center.y + extents.y;
+        var frontEdge = center.z - extents.z;
+        var backEdge = center.z + extents.z;
 
         // Allocate the array if needed.
         const int numPoints = 8;
@@ -191,14 +192,14 @@ public static class BoundsExtensions
     /// </summary>
     public static void GetCornerPositionsFromRendererBounds(this Bounds bounds, ref Vector3[] positions)
     {
-        Vector3 center = bounds.center;
-        Vector3 extents = bounds.extents;
-        float leftEdge = center.x - extents.x;
-        float rightEdge = center.x + extents.x;
-        float bottomEdge = center.y - extents.y;
-        float topEdge = center.y + extents.y;
-        float frontEdge = center.z - extents.z;
-        float backEdge = center.z + extents.z;
+        var center = bounds.center;
+        var extents = bounds.extents;
+        var leftEdge = center.x - extents.x;
+        var rightEdge = center.x + extents.x;
+        var bottomEdge = center.y - extents.y;
+        var topEdge = center.y + extents.y;
+        var frontEdge = center.z - extents.z;
+        var backEdge = center.z + extents.z;
 
         const int numPoints = 8;
         if (positions == null || positions.Length != numPoints)
@@ -218,8 +219,8 @@ public static class BoundsExtensions
 
     public static void GetFacePositions(this Bounds bounds, Transform transform, ref Vector3[] positions)
     {
-        Vector3 center = bounds.center;
-        Vector3 extents = bounds.extents;
+        var center = bounds.center;
+        var extents = bounds.extents;
 
         const int numPoints = 6;
         if (positions == null || positions.Length != numPoints)
@@ -241,14 +242,14 @@ public static class BoundsExtensions
     public static void GetCornerAndMidPointPositions(this Bounds bounds, Transform transform, ref Vector3[] positions)
     {
         // Calculate the local points to transform.
-        Vector3 center = bounds.center;
-        Vector3 extents = bounds.extents;
-        float leftEdge = center.x - extents.x;
-        float rightEdge = center.x + extents.x;
-        float bottomEdge = center.y - extents.y;
-        float topEdge = center.y + extents.y;
-        float frontEdge = center.z - extents.z;
-        float backEdge = center.z + extents.z;
+        var center = bounds.center;
+        var extents = bounds.extents;
+        var leftEdge = center.x - extents.x;
+        var rightEdge = center.x + extents.x;
+        var bottomEdge = center.y - extents.y;
+        var topEdge = center.y + extents.y;
+        var frontEdge = center.z - extents.z;
+        var backEdge = center.z + extents.z;
 
         // Allocate the array if needed.
         const int numPoints = LTF_LTB + 1;
@@ -286,11 +287,12 @@ public static class BoundsExtensions
     /// <summary>
     /// Gets all the corner points and mid points from Renderer's Bounds, ignoring the z axis
     /// </summary>
-    public static void GetCornerAndMidPointPositions2D(this Bounds bounds, Transform transform, ref Vector3[] positions, Axis flattenAxis)
+    public static void GetCornerAndMidPointPositions2D(this Bounds bounds, Transform transform, ref Vector3[] positions,
+        Axis flattenAxis)
     {
         // Calculate the local points to transform.
-        Vector3 center = bounds.center;
-        Vector3 extents = bounds.extents;
+        var center = bounds.center;
+        var extents = bounds.extents;
 
         // Allocate the array if needed.
         const int numPoints = LB_LT + 1;
@@ -305,7 +307,6 @@ public static class BoundsExtensions
         float topEdge;
         switch (flattenAxis)
         {
-            case Axis.X:
             default:
                 leftEdge = center.z - extents.z;
                 rightEdge = center.z + extents.z;
@@ -396,8 +397,9 @@ public static class BoundsExtensions
     /// <returns>Scale represented as a Vector3 </returns>
     public static Vector3 GetScaleToMatchBounds(this Bounds bounds, Bounds otherBounds, Vector3 padding = default)
     {
-        Vector3 szA = otherBounds.size + new Vector3(otherBounds.size.x * padding.x, otherBounds.size.y * padding.y, otherBounds.size.z * padding.z);
-        Vector3 szB = bounds.size;
+        var szA = otherBounds.size + new Vector3(otherBounds.size.x * padding.x, otherBounds.size.y * padding.y,
+            otherBounds.size.z * padding.z);
+        var szB = bounds.size;
         Assert.IsTrue(szB.x != 0 && szB.y != 0 && szB.z != 0, "The bounds of the object must not be zero.");
         return new Vector3(szA.x / szB.x, szA.y / szB.y, szA.z / szB.z);
     }
@@ -411,8 +413,10 @@ public static class BoundsExtensions
     {
         var objectSize = bounds.size;
         var containerSize = containerBounds.size;
-        Assert.IsTrue(objectSize.x != 0 && objectSize.y != 0 && objectSize.z != 0, "The bounds of the container must not be zero.");
-        return Mathf.Min(containerSize.x / objectSize.x, containerSize.y / objectSize.y, containerSize.z / objectSize.z);
+        Assert.IsTrue(objectSize.x != 0 && objectSize.y != 0 && objectSize.z != 0,
+            "The bounds of the container must not be zero.");
+        return Mathf.Min(containerSize.x / objectSize.x, containerSize.y / objectSize.y,
+            containerSize.z / objectSize.z);
     }
 
     /// <summary>
@@ -422,23 +426,23 @@ public static class BoundsExtensions
     /// <param name="boundsPoints">array reference that gets filled with points</param>
     /// <param name="ignoreLayers">layerMask to simplify search</param>
     /// <param name="relativeTo">compute bounds relative to this transform</param>
-    public static void GetColliderBoundsPoints(GameObject target, List<Vector3> boundsPoints, LayerMask ignoreLayers, Transform relativeTo = null)
+    public static void GetColliderBoundsPoints(GameObject target, List<Vector3> boundsPoints, LayerMask ignoreLayers,
+        Transform relativeTo = null)
     {
-        Collider[] colliders = target.GetComponentsInChildren<Collider>();
-        for (int i = 0; i < colliders.Length; i++)
+        var colliders = target.GetComponentsInChildren<Collider>();
+        foreach (var t in colliders)
         {
-            GetColliderBoundsPoints(colliders[i], boundsPoints, ignoreLayers, relativeTo);
+            GetColliderBoundsPoints(t, boundsPoints, ignoreLayers, relativeTo);
         }
     }
 
     private static void InverseTransformPoints(ref Vector3[] positions, Transform relativeTo)
     {
-        if (relativeTo)
+        if (!relativeTo) return;
+
+        for (var i = 0; i < positions.Length; ++i)
         {
-            for (var i = 0; i < positions.Length; ++i)
-            {
-                positions[i] = relativeTo.InverseTransformPoint(positions[i]);
-            }
+            positions[i] = relativeTo.InverseTransformPoint(positions[i]);
         }
     }
 
@@ -448,55 +452,58 @@ public static class BoundsExtensions
     /// <param name="collider">Target collider</param>
     /// <param name="boundsPoints">array reference that gets filled with points</param>
     /// <param name="ignoreLayers">layerMask to simplify search</param>
-    public static void GetColliderBoundsPoints(Collider collider, List<Vector3> boundsPoints, LayerMask ignoreLayers, Transform relativeTo = null)
+    public static void GetColliderBoundsPoints(Collider collider, List<Vector3> boundsPoints, LayerMask ignoreLayers,
+        Transform relativeTo = null)
     {
-        if (ignoreLayers == (1 << collider.gameObject.layer | ignoreLayers)) { return; }
+        if (ignoreLayers == (1 << collider.gameObject.layer | ignoreLayers))
+        {
+            return;
+        }
 
-        if (collider is SphereCollider)
+        switch (collider)
         {
-            SphereCollider sc = collider as SphereCollider;
-            Bounds sphereBounds = new Bounds(sc.center, Vector3.one * sc.radius * 2);
-            sphereBounds.GetFacePositions(sc.transform, ref corners);
-            InverseTransformPoints(ref corners, relativeTo);
-            boundsPoints.AddRange(corners);
-        }
-        else if (collider is BoxCollider)
-        {
-            BoxCollider bc = collider as BoxCollider;
-            Bounds boxBounds = new Bounds(bc.center, bc.size);
-            boxBounds.GetCornerPositions(bc.transform, ref corners);
-            InverseTransformPoints(ref corners, relativeTo);
-            boundsPoints.AddRange(corners);
-        }
-        else if (collider is MeshCollider)
-        {
-            MeshCollider mc = collider as MeshCollider;
-            Bounds meshBounds = mc.sharedMesh.bounds;
-            meshBounds.GetCornerPositions(mc.transform, ref corners);
-            InverseTransformPoints(ref corners, relativeTo);
-            boundsPoints.AddRange(corners);
-        }
-        else if (collider is CapsuleCollider)
-        {
-            CapsuleCollider cc = collider as CapsuleCollider;
-            Bounds capsuleBounds = new Bounds(cc.center, Vector3.zero);
-            switch (cc.direction)
+            case SphereCollider sphereCollider:
             {
-                case CAPSULE_X_AXIS:
-                    capsuleBounds.size = new Vector3(cc.height, cc.radius * 2, cc.radius * 2);
-                    break;
-
-                case CAPSULE_Y_AXIS:
-                    capsuleBounds.size = new Vector3(cc.radius * 2, cc.height, cc.radius * 2);
-                    break;
-
-                case CAPSULE_Z_AXIS:
-                    capsuleBounds.size = new Vector3(cc.radius * 2, cc.radius * 2, cc.height);
-                    break;
+                var sphereBounds = new Bounds(sphereCollider.center, Vector3.one * sphereCollider.radius * 2);
+                sphereBounds.GetFacePositions(sphereCollider.transform, ref corners);
+                InverseTransformPoints(ref corners, relativeTo);
+                boundsPoints.AddRange(corners);
+                break;
             }
-            capsuleBounds.GetFacePositions(cc.transform, ref corners);
-            InverseTransformPoints(ref corners, relativeTo);
-            boundsPoints.AddRange(corners);
+            case BoxCollider boxCollider:
+            {
+                var boxBounds = new Bounds(boxCollider.center, boxCollider.size);
+                boxBounds.GetCornerPositions(boxCollider.transform, ref corners);
+                InverseTransformPoints(ref corners, relativeTo);
+                boundsPoints.AddRange(corners);
+                break;
+            }
+            case MeshCollider meshCollider:
+            {
+                var meshBounds = meshCollider.sharedMesh.bounds;
+                meshBounds.GetCornerPositions(meshCollider.transform, ref corners);
+                InverseTransformPoints(ref corners, relativeTo);
+                boundsPoints.AddRange(corners);
+                break;
+            }
+            case CapsuleCollider capsuleCollider:
+            {
+                var capsuleBounds = new Bounds(capsuleCollider.center, Vector3.zero);
+                var radius = capsuleCollider.radius;
+                var height = capsuleCollider.height;
+                capsuleBounds.size = capsuleCollider.direction switch
+                {
+                    CAPSULE_X_AXIS => new Vector3(height, radius * 2, radius * 2),
+                    CAPSULE_Y_AXIS => new Vector3(radius * 2, height, radius * 2),
+                    CAPSULE_Z_AXIS => new Vector3(radius * 2, radius * 2, height),
+                    _ => capsuleBounds.size
+                };
+
+                capsuleBounds.GetFacePositions(capsuleCollider.transform, ref corners);
+                InverseTransformPoints(ref corners, relativeTo);
+                boundsPoints.AddRange(corners);
+                break;
+            }
         }
     }
 
@@ -523,10 +530,9 @@ public static class BoundsExtensions
     /// <param name="ignoreLayers">layerMask to simplify search</param>
     public static void GetRenderBoundsPoints(GameObject target, List<Vector3> boundsPoints, LayerMask ignoreLayers)
     {
-        Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
-        for (int i = 0; i < renderers.Length; ++i)
+        var renderers = target.GetComponentsInChildren<Renderer>();
+        foreach (var rendererObj in renderers)
         {
-            Renderer rendererObj = renderers[i];
             if (ignoreLayers == (1 << rendererObj.gameObject.layer | ignoreLayers))
             {
                 continue;
@@ -560,23 +566,23 @@ public static class BoundsExtensions
     /// <param name="ignoreLayers">layerMask to simplify search</param>
     public static void GetMeshFilterBoundsPoints(GameObject target, List<Vector3> boundsPoints, LayerMask ignoreLayers)
     {
-        MeshFilter[] meshFilters = target.GetComponentsInChildren<MeshFilter>();
-        for (int i = 0; i < meshFilters.Length; i++)
+        var meshFilters = target.GetComponentsInChildren<MeshFilter>();
+        foreach (var meshFilterObj in meshFilters)
         {
-            MeshFilter meshFilterObj = meshFilters[i];
             if (ignoreLayers == (1 << meshFilterObj.gameObject.layer | ignoreLayers))
             {
                 continue;
             }
 
-            Bounds meshBounds = meshFilterObj.sharedMesh.bounds;
+            var meshBounds = meshFilterObj.sharedMesh.bounds;
             meshBounds.GetCornerPositions(meshFilterObj.transform, ref corners);
             boundsPoints.AddRange(corners);
         }
-        RectTransform[] rectTransforms = target.GetComponentsInChildren<RectTransform>();
-        for (int i = 0; i < rectTransforms.Length; i++)
+
+        var rectTransforms = target.GetComponentsInChildren<RectTransform>();
+        foreach (var t in rectTransforms)
         {
-            rectTransforms[i].GetWorldCorners(rectTransformCorners);
+            t.GetWorldCorners(rectTransformCorners);
             boundsPoints.AddRange(rectTransformCorners);
         }
     }
@@ -611,16 +617,19 @@ public static class BoundsExtensions
         // We will 'imagine' that we want to rotate the bounds' extents vector using the rotation information
         // stored inside the specified transform matrix. We will need these when calculating the new size if
         // the transformed bounds.
-        Vector3 rotatedExtentsRight = rightAxis * bounds.extents.x;
-        Vector3 rotatedExtentsUp = upAxis * bounds.extents.y;
-        Vector3 rotatedExtentsLook = lookAxis * bounds.extents.z;
+        var rotatedExtentsRight = rightAxis * bounds.extents.x;
+        var rotatedExtentsUp = upAxis * bounds.extents.y;
+        var rotatedExtentsLook = lookAxis * bounds.extents.z;
 
         // Calculate the new bounds size along each axis. The size on each axis is calculated by summing up the
         // corresponding vector component values of the rotated extents vectors. We multiply by 2 because we want
         // to get a size and currently we are working with extents which represent half the size.
-        float newSizeX = (Mathf.Abs(rotatedExtentsRight.x) + Mathf.Abs(rotatedExtentsUp.x) + Mathf.Abs(rotatedExtentsLook.x)) * 2.0f;
-        float newSizeY = (Mathf.Abs(rotatedExtentsRight.y) + Mathf.Abs(rotatedExtentsUp.y) + Mathf.Abs(rotatedExtentsLook.y)) * 2.0f;
-        float newSizeZ = (Mathf.Abs(rotatedExtentsRight.z) + Mathf.Abs(rotatedExtentsUp.z) + Mathf.Abs(rotatedExtentsLook.z)) * 2.0f;
+        var newSizeX = (Mathf.Abs(rotatedExtentsRight.x) + Mathf.Abs(rotatedExtentsUp.x) +
+                        Mathf.Abs(rotatedExtentsLook.x)) * 2.0f;
+        var newSizeY = (Mathf.Abs(rotatedExtentsRight.y) + Mathf.Abs(rotatedExtentsUp.y) +
+                        Mathf.Abs(rotatedExtentsLook.y)) * 2.0f;
+        var newSizeZ = (Mathf.Abs(rotatedExtentsRight.z) + Mathf.Abs(rotatedExtentsUp.z) +
+                        Mathf.Abs(rotatedExtentsLook.z)) * 2.0f;
 
         // Construct the transformed 'Bounds' instance
         var transformedBounds = new Bounds
@@ -642,21 +651,29 @@ public static class BoundsExtensions
     /// </param>
     public static Vector2[] GetScreenSpaceCornerPoints(this Bounds bounds, Camera camera)
     {
-        Vector3 aabbCenter = bounds.center;
-        Vector3 aabbExtents = bounds.extents;
+        var aabbCenter = bounds.center;
+        var aabbExtents = bounds.extents;
 
         //  Return the screen space point array
         return new Vector2[]
         {
-            camera.WorldToScreenPoint(new Vector3(aabbCenter.x - aabbExtents.x, aabbCenter.y - aabbExtents.y, aabbCenter.z - aabbExtents.z)),
-            camera.WorldToScreenPoint(new Vector3(aabbCenter.x + aabbExtents.x, aabbCenter.y - aabbExtents.y, aabbCenter.z - aabbExtents.z)),
-            camera.WorldToScreenPoint(new Vector3(aabbCenter.x + aabbExtents.x, aabbCenter.y + aabbExtents.y, aabbCenter.z - aabbExtents.z)),
-            camera.WorldToScreenPoint(new Vector3(aabbCenter.x - aabbExtents.x, aabbCenter.y + aabbExtents.y, aabbCenter.z - aabbExtents.z)),
+            camera.WorldToScreenPoint(new Vector3(aabbCenter.x - aabbExtents.x, aabbCenter.y - aabbExtents.y,
+                aabbCenter.z - aabbExtents.z)),
+            camera.WorldToScreenPoint(new Vector3(aabbCenter.x + aabbExtents.x, aabbCenter.y - aabbExtents.y,
+                aabbCenter.z - aabbExtents.z)),
+            camera.WorldToScreenPoint(new Vector3(aabbCenter.x + aabbExtents.x, aabbCenter.y + aabbExtents.y,
+                aabbCenter.z - aabbExtents.z)),
+            camera.WorldToScreenPoint(new Vector3(aabbCenter.x - aabbExtents.x, aabbCenter.y + aabbExtents.y,
+                aabbCenter.z - aabbExtents.z)),
 
-            camera.WorldToScreenPoint(new Vector3(aabbCenter.x - aabbExtents.x, aabbCenter.y - aabbExtents.y, aabbCenter.z + aabbExtents.z)),
-            camera.WorldToScreenPoint(new Vector3(aabbCenter.x + aabbExtents.x, aabbCenter.y - aabbExtents.y, aabbCenter.z + aabbExtents.z)),
-            camera.WorldToScreenPoint(new Vector3(aabbCenter.x + aabbExtents.x, aabbCenter.y + aabbExtents.y, aabbCenter.z + aabbExtents.z)),
-            camera.WorldToScreenPoint(new Vector3(aabbCenter.x - aabbExtents.x, aabbCenter.y + aabbExtents.y, aabbCenter.z + aabbExtents.z))
+            camera.WorldToScreenPoint(new Vector3(aabbCenter.x - aabbExtents.x, aabbCenter.y - aabbExtents.y,
+                aabbCenter.z + aabbExtents.z)),
+            camera.WorldToScreenPoint(new Vector3(aabbCenter.x + aabbExtents.x, aabbCenter.y - aabbExtents.y,
+                aabbCenter.z + aabbExtents.z)),
+            camera.WorldToScreenPoint(new Vector3(aabbCenter.x + aabbExtents.x, aabbCenter.y + aabbExtents.y,
+                aabbCenter.z + aabbExtents.z)),
+            camera.WorldToScreenPoint(new Vector3(aabbCenter.x - aabbExtents.x, aabbCenter.y + aabbExtents.y,
+                aabbCenter.z + aabbExtents.z))
         };
     }
 
@@ -666,18 +683,19 @@ public static class BoundsExtensions
     public static Rect GetScreenRectangle(this Bounds bounds, Camera camera)
     {
         // Retrieve the bounds' corner points in screen space
-        Vector2[] screenSpaceCornerPoints = bounds.GetScreenSpaceCornerPoints(camera);
+        var screenSpaceCornerPoints = bounds.GetScreenSpaceCornerPoints(camera);
 
         // Identify the minimum and maximum points in the array
         Vector3 minScreenPoint = screenSpaceCornerPoints[0], maxScreenPoint = screenSpaceCornerPoints[0];
-        for (int screenPointIndex = 1; screenPointIndex < screenSpaceCornerPoints.Length; ++screenPointIndex)
+        for (var screenPointIndex = 1; screenPointIndex < screenSpaceCornerPoints.Length; ++screenPointIndex)
         {
             minScreenPoint = Vector3.Min(minScreenPoint, screenSpaceCornerPoints[screenPointIndex]);
             maxScreenPoint = Vector3.Max(maxScreenPoint, screenSpaceCornerPoints[screenPointIndex]);
         }
 
         // Return the screen space rectangle
-        return new Rect(minScreenPoint.x, minScreenPoint.y, maxScreenPoint.x - minScreenPoint.x, maxScreenPoint.y - minScreenPoint.y);
+        return new Rect(minScreenPoint.x, minScreenPoint.y, maxScreenPoint.x - minScreenPoint.x,
+            maxScreenPoint.y - minScreenPoint.y);
     }
 
     /// <summary>
@@ -693,7 +711,7 @@ public static class BoundsExtensions
     /// </summary>
     public static Bounds ExpandToContain(this Bounds originalBounds, Bounds otherBounds)
     {
-        Bounds tmpBounds = originalBounds;
+        var tmpBounds = originalBounds;
 
         tmpBounds.Encapsulate(otherBounds);
 
@@ -713,17 +731,15 @@ public static class BoundsExtensions
     /// </summary>
     public static bool CloserToPoint(this Bounds bounds, Vector3 point, Bounds otherBounds)
     {
-        Vector3 distToClosestPoint1 = bounds.ClosestPoint(point) - point;
-        Vector3 distToClosestPoint2 = otherBounds.ClosestPoint(point) - point;
+        var distToClosestPoint1 = bounds.ClosestPoint(point) - point;
+        var distToClosestPoint2 = otherBounds.ClosestPoint(point) - point;
 
-        if (distToClosestPoint1.magnitude == distToClosestPoint2.magnitude)
-        {
-            Vector3 toCenter1 = point - bounds.center;
-            Vector3 toCenter2 = point - otherBounds.center;
-            return (toCenter1.magnitude <= toCenter2.magnitude);
-        }
+        if (Math.Abs(distToClosestPoint1.magnitude - distToClosestPoint2.magnitude) > 0f)
+            return (distToClosestPoint1.magnitude <= distToClosestPoint2.magnitude);
 
-        return (distToClosestPoint1.magnitude <= distToClosestPoint2.magnitude);
+        var toCenter1 = point - bounds.center;
+        var toCenter2 = point - otherBounds.center;
+        return (toCenter1.magnitude <= toCenter2.magnitude);
     }
 
     /// <summary>
@@ -743,10 +759,10 @@ public static class BoundsExtensions
         var b = new Vector3(x, -y, -z);
         var c = new Vector3(x, y, -z);
 
-        var verticies = new Vector3[]
+        var verticies = new[]
         {
-                bounds.min, center + a, center + b, center + c,
-                bounds.max, center - a, center - b, center - c
+            bounds.min, center + a, center + b, center + c,
+            bounds.max, center - a, center - b, center - c
         };
 
         for (var i = 0; i < boundsEdges.Length; i += 2)

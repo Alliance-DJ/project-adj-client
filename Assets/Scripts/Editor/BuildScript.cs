@@ -1,37 +1,33 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-public class BuildScript
+public static class BuildScript
 {
     private static readonly string PRODUCT_NAME = Application.productName;
     private static readonly string VERSION = Application.version;
 
-    public static string APP_FOLDER = Directory.GetCurrentDirectory();
+    public static readonly string APP_FOLDER = Directory.GetCurrentDirectory();
 
-    public static string APK_NAME = $"{PRODUCT_NAME}_{VERSION}";
-    public static string ANDROID_FOLDER = $"{APP_FOLDER}/Builds/Android";
-    public static string ANDROID_DEVELOPMENT_FILE = $"{ANDROID_FOLDER}/Development/{APK_NAME}_DEV.apk";
-    public static string ANDROID_RELEASE_FILE = $"{ANDROID_FOLDER}/Release/{APK_NAME}_REL.apk";
+    public static readonly string APK_NAME = $"{PRODUCT_NAME}_{VERSION}";
+    public static readonly string ANDROID_FOLDER = $"{APP_FOLDER}/Builds/Android";
+    public static readonly string ANDROID_DEVELOPMENT_FILE = $"{ANDROID_FOLDER}/Development/{APK_NAME}_DEV.apk";
+    public static readonly string ANDROID_RELEASE_FILE = $"{ANDROID_FOLDER}/Release/{APK_NAME}_REL.apk";
 
-    public static string IOS_FOLDER = $"{APP_FOLDER}/Builds/iOS";
-    public static string IOS_DEVELOPMENT_FOLDER = $"{IOS_FOLDER}/Development/{VERSION}";
-    public static string IOS_RELEASE_FOLDER = $"{IOS_FOLDER}/Release/{VERSION}";
+    public static readonly string IOS_FOLDER = $"{APP_FOLDER}/Builds/iOS";
+    public static readonly string IOS_DEVELOPMENT_FOLDER = $"{IOS_FOLDER}/Development/{VERSION}";
+    public static readonly string IOS_RELEASE_FOLDER = $"{IOS_FOLDER}/Release/{VERSION}";
 
     private static string[] GetScenes()
     {
         var settingScenes = EditorBuildSettings.scenes;
-        List<string> scenes = new List<string>(settingScenes.Length);
-        for (int i = 0; i < settingScenes.Length; i++)
-        {
-            var scene = settingScenes[i];
-            if (scene == null || !scene.enabled) continue;
-
-            scenes.Add(scene.path);
-        }
+        var scenes = new List<string>(settingScenes.Length);
+        scenes.AddRange(from scene in settingScenes where scene != null && scene.enabled select scene.path);
 
         return scenes.ToArray();
     }
@@ -44,10 +40,12 @@ public class BuildScript
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
 
-        bool success = EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Android, BuildTarget.Android);
+        var success =
+            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Android, BuildTarget.Android);
         if (!success) return;
 
-        var report = BuildPipeline.BuildPlayer(GetScenes(), ANDROID_DEVELOPMENT_FILE, BuildTarget.Android, BuildOptions.Development);
+        var report = BuildPipeline.BuildPlayer(GetScenes(), ANDROID_DEVELOPMENT_FILE, BuildTarget.Android,
+            BuildOptions.Development);
         BuildReport(report);
     }
 
@@ -59,10 +57,12 @@ public class BuildScript
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
 
-        bool success = EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Android, BuildTarget.Android);
+        var success =
+            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Android, BuildTarget.Android);
         if (!success) return;
 
-        var report = BuildPipeline.BuildPlayer(GetScenes(), ANDROID_RELEASE_FILE, BuildTarget.Android, BuildOptions.None);
+        var report =
+            BuildPipeline.BuildPlayer(GetScenes(), ANDROID_RELEASE_FILE, BuildTarget.Android, BuildOptions.None);
         BuildReport(report);
     }
 
@@ -74,10 +74,11 @@ public class BuildScript
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
 
-        bool success = EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.iOS, BuildTarget.iOS);
+        var success = EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.iOS, BuildTarget.iOS);
         if (!success) return;
 
-        var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_DEVELOPMENT_FOLDER, BuildTarget.iOS, BuildOptions.Development);
+        var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_DEVELOPMENT_FOLDER, BuildTarget.iOS,
+            BuildOptions.Development);
         BuildReport(report);
     }
 
@@ -89,7 +90,7 @@ public class BuildScript
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
 
-        bool success = EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.iOS, BuildTarget.iOS);
+        var success = EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.iOS, BuildTarget.iOS);
         if (!success) return;
 
         var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_RELEASE_FOLDER, BuildTarget.iOS, BuildOptions.None);
@@ -98,9 +99,9 @@ public class BuildScript
 
     private static void OpenInMac(string path)
     {
-        bool openInsidesOfFolder = false;
+        var openInsidesOfFolder = false;
 
-        string macPath = path.Replace("\\", "/");
+        var macPath = path.Replace("\\", "/");
 
         if (Directory.Exists(macPath))
             openInsidesOfFolder = true;
@@ -111,7 +112,7 @@ public class BuildScript
         if (!macPath.EndsWith("\""))
             macPath += "\"";
 
-        string arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
+        var arguments = (openInsidesOfFolder ? "" : "-R ") + macPath;
 
         try
         {
@@ -125,9 +126,9 @@ public class BuildScript
 
     private static void OpenInWin(string path)
     {
-        bool openInsidesOfFolder = false;
+        var openInsidesOfFolder = false;
 
-        string winPath = path.Replace("/", "\\");
+        var winPath = path.Replace("/", "\\");
 
         if (Directory.Exists(winPath))
             openInsidesOfFolder = true;
@@ -144,11 +145,11 @@ public class BuildScript
 
     public static void Open(string path)
     {
-        if (SystemInfo.operatingSystem.IndexOf("Windows") != -1)
+        if (SystemInfo.operatingSystem.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) != -1)
         {
             OpenInWin(path);
         }
-        else if (SystemInfo.operatingSystem.IndexOf("Mac OS") != -1)
+        else if (SystemInfo.operatingSystem.IndexOf("Mac OS", StringComparison.OrdinalIgnoreCase) != -1)
         {
             OpenInMac(path);
         }

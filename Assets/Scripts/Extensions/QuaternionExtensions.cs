@@ -10,8 +10,10 @@ public static class QuaternionExtensions
 {
     public static bool IsValidRotation(this Quaternion rotation)
     {
-        return !float.IsNaN(rotation.x) && !float.IsNaN(rotation.y) && !float.IsNaN(rotation.z) && !float.IsNaN(rotation.w) &&
-               !float.IsInfinity(rotation.x) && !float.IsInfinity(rotation.y) && !float.IsInfinity(rotation.z) && !float.IsInfinity(rotation.w);
+        return !float.IsNaN(rotation.x) && !float.IsNaN(rotation.y) && !float.IsNaN(rotation.z) &&
+               !float.IsNaN(rotation.w) &&
+               !float.IsInfinity(rotation.x) && !float.IsInfinity(rotation.y) && !float.IsInfinity(rotation.z) &&
+               !float.IsInfinity(rotation.w);
     }
 
     /// <summary>

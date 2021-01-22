@@ -44,28 +44,28 @@ public static class CollectionsExtensions
     /// <param name="elements">The collection of sorted elements to be inserted into.</param>
     /// <param name="toInsert">The element to insert.</param>
     /// <param name="comparer">The comparer to use when sorting or null to use <see cref="Comparer{T}.Default"/>.</param>
-    public static int SortedInsert<TElement>(this List<TElement> elements, TElement toInsert, IComparer<TElement> comparer = null)
+    public static int SortedInsert<TElement>(this List<TElement> elements, TElement toInsert,
+        IComparer<TElement> comparer = null)
     {
         var effectiveComparer = comparer ?? Comparer<TElement>.Default;
 
         if (Application.isEditor)
         {
-            for (int iElement = 0; iElement < elements.Count - 1; iElement++)
+            for (var iElement = 0; iElement < elements.Count - 1; iElement++)
             {
                 var element = elements[iElement];
                 var nextElement = elements[iElement + 1];
 
-                if (effectiveComparer.Compare(element, nextElement) > 0)
-                {
-                    Debug.LogWarning("Elements must already be sorted to call this method.");
-                    break;
-                }
+                if (effectiveComparer.Compare(element, nextElement) <= 0) continue;
+
+                Debug.LogWarning("Elements must already be sorted to call this method.");
+                break;
             }
         }
 
-        int searchResult = elements.BinarySearch(toInsert, effectiveComparer);
+        var searchResult = elements.BinarySearch(toInsert, effectiveComparer);
 
-        int insertionIndex = searchResult >= 0
+        var insertionIndex = searchResult >= 0
             ? searchResult
             : ~searchResult;
 
@@ -84,10 +84,9 @@ public static class CollectionsExtensions
     {
         foreach (var element in elements)
         {
-            if (element != null)
-            {
-                element.Dispose();
-            }
+            if (element == null) continue;
+
+            element.Dispose();
         }
     }
 
@@ -99,14 +98,11 @@ public static class CollectionsExtensions
     public static void DisposeElements<TElement>(this IList<TElement> elements)
         where TElement : IDisposable
     {
-        for (int iElement = 0; iElement < elements.Count; iElement++)
+        foreach (var element in elements)
         {
-            var element = elements[iElement];
+            if (element == null) continue;
 
-            if (element != null)
-            {
-                element.Dispose();
-            }
+            element.Dispose();
         }
     }
 
@@ -118,79 +114,83 @@ public static class CollectionsExtensions
     /// <returns>array in the type of data stored in the Dictionary</returns>
     public static T[] ExportDictionaryValuesAsArray<T>(this Dictionary<uint, T> input)
     {
-        T[] output = new T[input.Count];
+        var output = new T[input.Count];
         input.Values.CopyTo(output, 0);
         return output;
     }
 
     public static void AddDicList<K, V>(this Dictionary<K, List<V>> dic, K key, V value)
     {
-        if (!dic.TryGetValue(key, out List<V> r))
+        if (!dic.TryGetValue(key, out var r))
         {
             r = new List<V>();
             dic[key] = r;
         }
+
         r.Add(value);
     }
 
     public static void AddDicHashSet<K, V>(this Dictionary<K, HashSet<V>> dic, K key, V value)
     {
-        if (!dic.TryGetValue(key, out HashSet<V> r))
+        if (!dic.TryGetValue(key, out var r))
         {
             r = new HashSet<V>();
             dic[key] = r;
         }
+
         r.Add(value);
     }
 
     public static void AddDicDic<K1, K2, V>(this Dictionary<K1, Dictionary<K2, V>> dic, K1 key1, K2 key2, V value)
     {
-        if (!dic.TryGetValue(key1, out Dictionary<K2, V> dic2))
+        if (!dic.TryGetValue(key1, out var dic2))
         {
             dic2 = new Dictionary<K2, V>();
             dic[key1] = dic2;
         }
+
         dic2[key2] = value;
     }
 
-    public static void AddDicDicList<K1, K2, V>(this Dictionary<K1, Dictionary<K2, List<V>>> dic, K1 key1, K2 key2, V value)
+    public static void AddDicDicList<K1, K2, V>(this Dictionary<K1, Dictionary<K2, List<V>>> dic, K1 key1, K2 key2,
+        V value)
     {
-        if (!dic.TryGetValue(key1, out Dictionary<K2, List<V>> dic2))
+        if (!dic.TryGetValue(key1, out var dic2))
         {
             dic2 = new Dictionary<K2, List<V>>();
             dic[key1] = dic2;
         }
+
         dic2.AddDicList(key2, value);
     }
 
-    public static bool TryGetValueDicDic<K1, K2, V>(this Dictionary<K1, Dictionary<K2, V>> dic, K1 key1, K2 key2, out V value)
+    public static bool TryGetValueDicDic<K1, K2, V>(this Dictionary<K1, Dictionary<K2, V>> dic, K1 key1, K2 key2,
+        out V value)
     {
-        if (!dic.TryGetValue(key1, out Dictionary<K2, V> dic2))
-        {
-            value = default;
-            return false;
-        }
-        return dic2.TryGetValue(key2, out value);
+        if (dic.TryGetValue(key1, out var dic2)) return dic2.TryGetValue(key2, out value);
+
+        value = default;
+        return false;
     }
 
-    public static void AddDic3<K1, K2, K3, V>(this Dictionary<K1, Dictionary<K2, Dictionary<K3, V>>> dic, K1 key1, K2 key2, K3 key3, V value)
+    public static void AddDic3<K1, K2, K3, V>(this Dictionary<K1, Dictionary<K2, Dictionary<K3, V>>> dic, K1 key1,
+        K2 key2, K3 key3, V value)
     {
-        if (!dic.TryGetValue(key1, out Dictionary<K2, Dictionary<K3, V>> dic2))
+        if (!dic.TryGetValue(key1, out var dic2))
         {
             dic2 = new Dictionary<K2, Dictionary<K3, V>>();
             dic[key1] = dic2;
         }
+
         dic2.AddDicDic(key2, key3, value);
     }
 
-    public static bool TryGetValueDic3<K1, K2, K3, V>(this Dictionary<K1, Dictionary<K2, Dictionary<K3, V>>> dic, K1 key1, K2 key2, K3 key3, out V value)
+    public static bool TryGetValueDic3<K1, K2, K3, V>(this Dictionary<K1, Dictionary<K2, Dictionary<K3, V>>> dic,
+        K1 key1, K2 key2, K3 key3, out V value)
     {
-        if (!dic.TryGetValue(key1, out Dictionary<K2, Dictionary<K3, V>> dic2))
-        {
-            value = default;
-            return false;
-        }
+        if (dic.TryGetValue(key1, out var dic2)) return dic2.TryGetValueDicDic(key2, key3, out value);
 
-        return dic2.TryGetValueDicDic(key2, key3, out value);
+        value = default;
+        return false;
     }
 }

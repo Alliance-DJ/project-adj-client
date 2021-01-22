@@ -15,7 +15,7 @@ public static class ArrayExtensions
     /// <param name="index">The index to look for.</param>
     public static int WrapIndex(this Array array, int index)
     {
-        int length = array.Length;
+        var length = array.Length;
         return ((index % length) + length) % length;
     }
 

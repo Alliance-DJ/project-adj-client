@@ -27,8 +27,8 @@ public static class MathExtensions
     public static Vector3Int PowerOfTwoGreaterThanOrEqualTo(this Vector3Int v)
     {
         return new Vector3Int(PowerOfTwoGreaterThanOrEqualTo(v.x),
-                              PowerOfTwoGreaterThanOrEqualTo(v.y),
-                              PowerOfTwoGreaterThanOrEqualTo(v.z));
+            PowerOfTwoGreaterThanOrEqualTo(v.y),
+            PowerOfTwoGreaterThanOrEqualTo(v.z));
     }
 
     public static int CubicToLinearIndex(Vector3Int ndx, Vector3Int size)
@@ -41,15 +41,15 @@ public static class MathExtensions
     public static Vector3Int LinearToCubicIndex(int linearIndex, Vector3Int size)
     {
         return new Vector3Int((linearIndex / 1) % size.x,
-                              (linearIndex / size.x) % size.y,
-                              (linearIndex / (size.x * size.y)) % size.z);
+            (linearIndex / size.x) % size.y,
+            (linearIndex / (size.x * size.y)) % size.z);
     }
 
     public static Vector3 ClampComponentWise(Vector3 value, Vector3 min, Vector3 max)
     {
         return new Vector3(Mathf.Clamp(value.x, min.x, max.x),
-                           Mathf.Clamp(value.y, min.y, max.y),
-                           Mathf.Clamp(value.z, min.z, max.z));
+            Mathf.Clamp(value.y, min.y, max.y),
+            Mathf.Clamp(value.z, min.z, max.z));
     }
 
     /// <summary>

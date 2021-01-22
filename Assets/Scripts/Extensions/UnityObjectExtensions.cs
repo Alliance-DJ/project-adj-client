@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using UnityEngine;
-
 using Object = UnityEngine.Object;
 
 /// <summary>
@@ -38,10 +37,7 @@ public static class UnityObjectExtensions
             // Must use DestroyImmediate in edit mode but it is not allowed when called from
             // trigger/contact, animation event callbacks or OnValidate. Must use Destroy instead.
             // Delay call to counter this issue in editor
-            UnityEditor.EditorApplication.delayCall += () =>
-            {
-                Object.DestroyImmediate(obj);
-            };
+            UnityEditor.EditorApplication.delayCall += () => { Object.DestroyImmediate(obj); };
 #else
             Object.DestroyImmediate(obj);
 #endif
@@ -59,5 +55,6 @@ public static class UnityObjectExtensions
     /// Properly checks an interface for null and returns the MonoBehaviour implementing it.
     /// </summary>
     /// <returns>True if the implementer of the interface is a MonoBehaviour and the MonoBehaviour is not null.</returns>
-    public static bool TryGetMonoBehaviour<T>(this T @interface, out MonoBehaviour monoBehaviour) where T : class => (monoBehaviour = @interface as MonoBehaviour) != null;
+    public static bool TryGetMonoBehaviour<T>(this T @interface, out MonoBehaviour monoBehaviour) where T : class =>
+        (monoBehaviour = @interface as MonoBehaviour) != null;
 }

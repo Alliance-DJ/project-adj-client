@@ -15,7 +15,11 @@ public static class EnumerableExtensions
     /// <returns>Max or default value of T</returns>
     public static T MaxOrDefault<T>(this IEnumerable<T> items, IComparer<T> comparer = null)
     {
-        if (items == null) { throw new ArgumentNullException("items"); }
+        if (items == null)
+        {
+            throw new ArgumentNullException(nameof(items));
+        }
+
         comparer ??= Comparer<T>.Default;
 
         using var enumerator = items.GetEnumerator();
@@ -32,6 +36,7 @@ public static class EnumerableExtensions
                 max = enumerator.Current;
             }
         }
+
         return max;
     }
 }

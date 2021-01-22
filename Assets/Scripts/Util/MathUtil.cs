@@ -17,7 +17,7 @@ public static class MathUtil
     /// <returns>Point to.</returns>
     public static Vector3 TransformPointFromTo(Transform from, Transform to, Vector3 fromPoint)
     {
-        Vector3 worldPoint = (from == null) ? fromPoint : from.TransformPoint(fromPoint);
+        var worldPoint = (from == null) ? fromPoint : from.TransformPoint(fromPoint);
         return (to == null) ? worldPoint : to.InverseTransformPoint(worldPoint);
     }
 
@@ -28,7 +28,7 @@ public static class MathUtil
     /// <returns>Direction to.</returns>
     public static Vector3 TransformDirectionFromTo(Transform from, Transform to, Vector3 fromDirection)
     {
-        Vector3 worldDirection = (from == null) ? fromDirection : from.TransformDirection(fromDirection);
+        var worldDirection = (from == null) ? fromDirection : from.TransformDirection(fromDirection);
         return (to == null) ? worldDirection : to.InverseTransformDirection(worldDirection);
     }
 
@@ -38,8 +38,8 @@ public static class MathUtil
     /// </summary>
     public static Vector3 TransformVectorFromTo(Transform from, Transform to, Vector3 vecInFrom)
     {
-        Vector3 vecInWorld = (from == null) ? vecInFrom : from.TransformVector(vecInFrom);
-        Vector3 vecInTo = (to == null) ? vecInWorld : to.InverseTransformVector(vecInWorld);
+        var vecInWorld = (from == null) ? vecInFrom : from.TransformVector(vecInFrom);
+        var vecInTo = (to == null) ? vecInWorld : to.InverseTransformVector(vecInWorld);
         return vecInTo;
     }
 
@@ -49,7 +49,7 @@ public static class MathUtil
     /// </summary>
     public static float ScaleFromAngularSizeAndDistance(float angle, float distance)
     {
-        float scale = 2.0f * distance * Mathf.Tan(angle * Mathf.Deg2Rad * 0.5f);
+        var scale = 2.0f * distance * Mathf.Tan(angle * Mathf.Deg2Rad * 0.5f);
         return scale;
     }
 
@@ -64,7 +64,7 @@ public static class MathUtil
     /// </summary>
     public static Ray TransformRayFromTo(Transform from, Transform to, Ray rayToConvert)
     {
-        Ray outputRay = new Ray
+        var outputRay = new Ray
         {
             origin = TransformPointFromTo(from, to, rayToConvert.origin),
             direction = TransformDirectionFromTo(from, to, rayToConvert.direction)
@@ -82,7 +82,7 @@ public static class MathUtil
         // TODO: test and replace with this simpler, more unity-friendly code
         //       Quaternion q = Quaternion.LookRotation(m.GetColumn(2),m.GetColumn(1));
 
-        Quaternion q = new Quaternion
+        var q = new Quaternion
         {
             w = Mathf.Sqrt(Mathf.Max(0, 1 + m[0, 0] + m[1, 1] + m[2, 2])) / 2,
             x = Mathf.Sqrt(Mathf.Max(0, 1 + m[0, 0] - m[1, 1] - m[2, 2])) / 2,
@@ -100,8 +100,8 @@ public static class MathUtil
     /// </summary>
     public static void ToTranslationRotation(Matrix4x4 unityMtx, out Vector3 translation, out Quaternion rotation)
     {
-        Vector3 upwards = new Vector3(unityMtx.m01, unityMtx.m11, unityMtx.m21);
-        Vector3 forward = new Vector3(unityMtx.m02, unityMtx.m12, unityMtx.m22);
+        var upwards = new Vector3(unityMtx.m01, unityMtx.m11, unityMtx.m21);
+        var forward = new Vector3(unityMtx.m02, unityMtx.m12, unityMtx.m22);
         translation = new Vector3(unityMtx.m03, unityMtx.m13, unityMtx.m23);
         rotation = Quaternion.LookRotation(forward, upwards);
     }
@@ -138,77 +138,77 @@ public static class MathUtil
     /// </summary>
     public static float DistanceOfPointToLine(Vector3 point, Vector3 linePointA, Vector3 linePointB)
     {
-        Vector3 closestPoint = ClosestPointOnLineToPoint(point, linePointA, linePointB);
+        var closestPoint = ClosestPointOnLineToPoint(point, linePointA, linePointB);
         return (point - closestPoint).magnitude;
     }
 
     public static Vector3 ClosestPointOnLineToPoint(Vector3 point, Vector3 linePointA, Vector3 linePointB)
     {
-        Vector3 v = linePointB - linePointA;
-        Vector3 w = point - linePointA;
+        var v = linePointB - linePointA;
+        var w = point - linePointA;
 
-        float c1 = Vector3.Dot(w, v);
-        float c2 = Vector3.Dot(v, v);
-        float b = c1 / c2;
+        var c1 = Vector3.Dot(w, v);
+        var c2 = Vector3.Dot(v, v);
+        var b = c1 / c2;
 
-        Vector3 pointB = linePointA + (v * b);
+        var pointB = linePointA + (v * b);
 
         return pointB;
     }
 
     public static float DistanceOfPointToLineSegment(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
     {
-        Vector3 closestPoint = ClosestPointOnLineSegmentToPoint(point, lineStart, lineEnd);
+        var closestPoint = ClosestPointOnLineSegmentToPoint(point, lineStart, lineEnd);
         return (point - closestPoint).magnitude;
     }
 
     public static Vector3 ClosestPointOnLineSegmentToPoint(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
     {
-        Vector3 v = lineEnd - lineStart;
-        Vector3 w = point - lineStart;
+        var v = lineEnd - lineStart;
+        var w = point - lineStart;
 
-        float c1 = Vector3.Dot(w, v);
+        var c1 = Vector3.Dot(w, v);
         if (c1 <= 0)
         {
             return lineStart;
         }
 
-        float c2 = Vector3.Dot(v, v);
+        var c2 = Vector3.Dot(v, v);
         if (c2 <= c1)
         {
             return lineEnd;
         }
 
-        float b = c1 / c2;
+        var b = c1 / c2;
 
-        Vector3 pointB = lineStart + (v * b);
+        var pointB = lineStart + (v * b);
 
         return pointB;
     }
 
     public static bool TestPlanesAABB(Plane[] planes, int planeMask, Bounds bounds, out bool entirelyInside)
     {
-        int planeIndex = 0;
-        int entirelyInsideCount = 0;
-        Vector3 boundsCenter = bounds.center;  // center of bounds
-        Vector3 boundsExtent = bounds.extents; // half diagonal
-                                               // do intersection test for each active frame
-        int mask = 1;
+        var planeIndex = 0;
+        var entirelyInsideCount = 0;
+        var boundsCenter = bounds.center; // center of bounds
+        var boundsExtent = bounds.extents; // half diagonal
+        // do intersection test for each active frame
+        var mask = 1;
 
         // while active frames
         while (mask <= planeMask)
         {
             // if active
-            if ((uint)(planeMask & mask) != 0)
+            if ((uint) (planeMask & mask) != 0)
             {
-                Plane p = planes[planeIndex];
-                Vector3 n = p.normal;
+                var p = planes[planeIndex];
+                var n = p.normal;
                 n.x = Mathf.Abs(n.x);
                 n.y = Mathf.Abs(n.y);
                 n.z = Mathf.Abs(n.z);
 
-                float distance = p.GetDistanceToPoint(boundsCenter);
-                float radius = Vector3.Dot(boundsExtent, n);
+                var distance = p.GetDistanceToPoint(boundsCenter);
+                var radius = Vector3.Dot(boundsExtent, n);
 
                 if (distance + radius < 0)
                 {
@@ -252,7 +252,8 @@ public static class MathUtil
     /// <returns>true if in range, otherwise false</returns>
     public static bool InRange(Vector3 vec, Vector3 lower, Vector3 upper)
     {
-        return vec.x >= lower.x && vec.x <= upper.x && vec.y >= lower.y && vec.y <= upper.y && vec.z >= lower.z && vec.z <= upper.z;
+        return vec.x >= lower.x && vec.x <= upper.x && vec.y >= lower.y && vec.y <= upper.y && vec.z >= lower.z &&
+               vec.z <= upper.z;
     }
 
     /// <summary>
@@ -263,7 +264,7 @@ public static class MathUtil
     /// <returns>element-wise (a+b)</returns>
     public static Matrix4x4 Add(Matrix4x4 a, Matrix4x4 b)
     {
-        Matrix4x4 result = new Matrix4x4();
+        var result = new Matrix4x4();
         result.SetColumn(0, a.GetColumn(0) + b.GetColumn(0));
         result.SetColumn(1, a.GetColumn(1) + b.GetColumn(1));
         result.SetColumn(2, a.GetColumn(2) + b.GetColumn(2));
@@ -279,7 +280,7 @@ public static class MathUtil
     /// <returns>element-wise (a-b)</returns>
     public static Matrix4x4 Subtract(Matrix4x4 a, Matrix4x4 b)
     {
-        Matrix4x4 result = new Matrix4x4();
+        var result = new Matrix4x4();
         result.SetColumn(0, a.GetColumn(0) - b.GetColumn(0));
         result.SetColumn(1, a.GetColumn(1) - b.GetColumn(1));
         result.SetColumn(2, a.GetColumn(2) - b.GetColumn(2));
@@ -306,22 +307,23 @@ public static class MathUtil
     /// <returns>point nearest to the lines</returns>
     public static Vector3 NearestPointToLines(Ray p, Ray q)
     {
-        float a = Vector3.Dot(p.direction, p.direction);
-        float b = Vector3.Dot(p.direction, q.direction);
-        float c = Vector3.Dot(q.direction, q.direction);
-        Vector3 w0 = p.origin - q.origin;
-        float den = a * c - b * b;
-        float epsilon = 0.00001f;
+        var a = Vector3.Dot(p.direction, p.direction);
+        var b = Vector3.Dot(p.direction, q.direction);
+        var c = Vector3.Dot(q.direction, q.direction);
+        var w0 = p.origin - q.origin;
+        var den = a * c - b * b;
+        const float epsilon = 0.00001f;
         if (den < epsilon)
         {
             // parallel, so just average origins
             return 0.5f * (p.origin + q.origin);
         }
-        float d = Vector3.Dot(p.direction, w0);
-        float e = Vector3.Dot(q.direction, w0);
-        float sc = (b * e - c * d) / den;
-        float tc = (a * e - b * d) / den;
-        Vector3 point = 0.5f * (p.origin + sc * p.direction + q.origin + tc * q.direction);
+
+        var d = Vector3.Dot(p.direction, w0);
+        var e = Vector3.Dot(q.direction, w0);
+        var sc = (b * e - c * d) / den;
+        var tc = (a * e - b * d) / den;
+        var point = 0.5f * (p.origin + sc * p.direction + q.origin + tc * q.direction);
         return point;
     }
 
@@ -337,41 +339,40 @@ public static class MathUtil
     /// <param name="ransac_threshold">minimum distance from point to line for a line to be considered an inlier</param>
     /// <param name="numActualInliers">return number of inliers: lines that are within ransac_threshold of nearest point</param>
     /// <returns>point nearest to the set of lines, ignoring outliers</returns>
-    public static Vector3 NearestPointToLinesRANSAC(List<Ray> rays, int ransac_iterations, float ransac_threshold, out int numActualInliers)
+    public static Vector3 NearestPointToLinesRANSAC(List<Ray> rays, int ransac_iterations, float ransac_threshold,
+        out int numActualInliers)
     {
         // start with something, just in case no inliers - this works for case of 1 or 2 rays
-        Vector3 nearestPoint = NearestPointToLines(rays[0], rays[rays.Count - 1]);
+        var nearestPoint = NearestPointToLines(rays[0], rays[rays.Count - 1]);
         numActualInliers = 0;
         if (rays.Count > 2)
         {
-            for (int it = 0; it < ransac_iterations; it++)
+            for (var it = 0; it < ransac_iterations; it++)
             {
-                Vector3 testPoint = NearestPointToLines(rays[Random.Range(0, rays.Count)], rays[Random.Range(0, rays.Count)]);
+                var testPoint =
+                    NearestPointToLines(rays[Random.Range(0, rays.Count)], rays[Random.Range(0, rays.Count)]);
 
                 // count inliers
-                int numInliersForIteration = 0;
-                for (int ind = 0; ind < rays.Count; ++ind)
-                {
-                    if (DistanceOfPointToLine(rays[ind], testPoint) < ransac_threshold)
-                        ++numInliersForIteration;
-                }
+                var numInliersForIteration = rays.Count(t => DistanceOfPointToLine(t, testPoint) < ransac_threshold);
 
                 // remember best
-                if (numInliersForIteration > numActualInliers)
-                {
-                    numActualInliers = numInliersForIteration;
-                    nearestPoint = testPoint;
-                }
+                if (numInliersForIteration <= numActualInliers) continue;
+
+                numActualInliers = numInliersForIteration;
+                nearestPoint = testPoint;
             }
         }
 
         // now find and count actual inliers and do least-squares to find best fit
-        IEnumerable<Ray> inlierList = rays.Where(r => DistanceOfPointToLine(r, nearestPoint) < ransac_threshold);
-        numActualInliers = inlierList.Count();
+        var point = nearestPoint;
+        var inlierList = rays.Where(r => DistanceOfPointToLine(r, point) < ransac_threshold);
+        var list = inlierList.ToList();
+        numActualInliers = list.Count();
         if (numActualInliers >= 2)
         {
-            nearestPoint = NearestPointToLinesLeastSquares(inlierList);
+            nearestPoint = NearestPointToLinesLeastSquares(list);
         }
+
         return nearestPoint;
     }
 
@@ -394,24 +395,24 @@ public static class MathUtil
         //  | =====             |   =====
         //  \   i               /     i
 
-        Matrix4x4 sumOfProduct = Matrix4x4.zero;
-        Vector4 sumOfProductTimesDirection = Vector4.zero;
+        var sumOfProduct = Matrix4x4.zero;
+        var sumOfProductTimesDirection = Vector4.zero;
 
-        foreach (Ray r in rays)
+        foreach (var r in rays)
         {
             Vector4 point = r.origin;
-            Matrix4x4 directionColumnMatrix = new Matrix4x4();
-            Vector3 rNormal = r.direction.normalized;
+            var directionColumnMatrix = new Matrix4x4();
+            var rNormal = r.direction.normalized;
             directionColumnMatrix.SetColumn(0, rNormal);
-            Matrix4x4 directionRowMatrix = directionColumnMatrix.transpose;
-            Matrix4x4 product = directionColumnMatrix * directionRowMatrix;
-            Matrix4x4 identityMinusDirectionProduct = Subtract(Matrix4x4.identity, product);
+            var directionRowMatrix = directionColumnMatrix.transpose;
+            var product = directionColumnMatrix * directionRowMatrix;
+            var identityMinusDirectionProduct = Subtract(Matrix4x4.identity, product);
             sumOfProduct = Add(sumOfProduct, identityMinusDirectionProduct);
-            Vector4 vectorProduct = identityMinusDirectionProduct * point;
+            var vectorProduct = identityMinusDirectionProduct * point;
             sumOfProductTimesDirection += vectorProduct;
         }
 
-        Matrix4x4 sumOfProductInverse = sumOfProduct.inverse;
+        var sumOfProductInverse = sumOfProduct.inverse;
         Vector3 nearestPoint = sumOfProductInverse * sumOfProductTimesDirection;
         return nearestPoint;
     }
@@ -423,7 +424,7 @@ public static class MathUtil
     /// <returns>Angle, in radians.</returns>
     public static float DegreesToRadians(double degrees)
     {
-        return (float)(degrees * Mathf.Deg2Rad);
+        return (float) (degrees * Mathf.Deg2Rad);
     }
 
     /// <summary>
@@ -446,7 +447,7 @@ public static class MathUtil
     /// </returns>
     public static float GetAngleBetween(Vector2 pointA, Vector2 pointB)
     {
-        Vector2 diff = pointA - pointB;
+        var diff = pointA - pointB;
         return RadiansToDegrees(Mathf.Atan2(diff.y, diff.x));
     }
 
@@ -495,20 +496,20 @@ public static class MathUtil
         float verticalFOV, float horizontalFOV,
         float minPlaneDistance, float maxPlaneDistance)
     {
-        Vector3 deltaPos = testPosition - frameOfReference.position;
-        Vector3 referenceDeltaPos = TransformDirectionFromTo(null, frameOfReference, deltaPos);
+        var deltaPos = testPosition - frameOfReference.position;
+        var referenceDeltaPos = TransformDirectionFromTo(null, frameOfReference, deltaPos);
 
         if (referenceDeltaPos.z < minPlaneDistance || referenceDeltaPos.z > maxPlaneDistance)
         {
             return false;
         }
 
-        float verticalFovHalf = verticalFOV * 0.5f;
-        float horizontalFovHalf = horizontalFOV * 0.5f;
+        var verticalFovHalf = verticalFOV * 0.5f;
+        var horizontalFovHalf = horizontalFOV * 0.5f;
 
         referenceDeltaPos = referenceDeltaPos.normalized;
-        float yaw = Mathf.Asin(referenceDeltaPos.x) * Mathf.Rad2Deg;
-        float pitch = Mathf.Asin(referenceDeltaPos.y) * Mathf.Rad2Deg;
+        var yaw = Mathf.Asin(referenceDeltaPos.x) * Mathf.Rad2Deg;
+        var pitch = Mathf.Asin(referenceDeltaPos.y) * Mathf.Rad2Deg;
 
         return Mathf.Abs(yaw) < horizontalFovHalf && Mathf.Abs(pitch) < verticalFovHalf;
     }

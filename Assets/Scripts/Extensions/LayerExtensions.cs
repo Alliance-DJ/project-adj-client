@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -21,7 +23,7 @@ public static class LayerExtensions
     /// <returns>LayerMaskList index, or -1 for not found</returns>
     public static int FindLayerListIndex(this int layer, LayerMask[] layerMasks)
     {
-        for (int j = 0; j < layerMasks.Length; j++)
+        for (var j = 0; j < layerMasks.Length; j++)
         {
             if (layer.IsInLayerMask(layerMasks[j]))
             {
@@ -45,14 +47,9 @@ public static class LayerExtensions
     /// Combines provided layers into a single layer mask.
     /// </summary>
     /// <returns>The combined layer mask</returns>
-    public static int Combine(this LayerMask[] layerMaskList)
+    public static int Combine(this IEnumerable<LayerMask> layerMaskList)
     {
-        int combinedLayerMask = 0;
-        for (int i = 0; i < layerMaskList.Length; i++)
-        {
-            combinedLayerMask |= layerMaskList[i].value;
-        }
-        return combinedLayerMask;
+        return layerMaskList.Aggregate(0, (current, t) => current | t.value);
     }
 
     /// <summary>

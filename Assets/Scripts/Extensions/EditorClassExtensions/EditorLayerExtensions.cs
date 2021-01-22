@@ -4,11 +4,10 @@
 #if UNITY_EDITOR
 
 using UnityEditor;
-using UnityEngine;
 
 public static class EditorLayerExtensions
 {
-    private static SerializedProperty tagManagerLayers = null;
+    private static SerializedProperty tagManagerLayers;
 
     /// <summary>
     /// The current layers defined in the Tag Manager.
@@ -28,7 +27,7 @@ public static class EditorLayerExtensions
 
     private static void InitializeTagManager()
     {
-        Object[] tagAssets = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
+        var tagAssets = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
 
         if ((tagAssets == null) || (tagAssets.Length == 0))
         {
@@ -52,7 +51,7 @@ public static class EditorLayerExtensions
     /// </returns>
     public static bool SetupLayer(int layerId, string layerName)
     {
-        SerializedProperty layer = TagManagerLayers.GetArrayElementAtIndex(layerId);
+        var layer = TagManagerLayers.GetArrayElementAtIndex(layerId);
 
         if (!string.IsNullOrEmpty(layer.stringValue))
         {
@@ -71,17 +70,16 @@ public static class EditorLayerExtensions
     /// </summary>
     public static void RemoveLayer(string layerName)
     {
-        for (int i = 0; i < TagManagerLayers.arraySize; i++)
+        for (var i = 0; i < TagManagerLayers.arraySize; i++)
         {
             var layer = TagManagerLayers.GetArrayElementAtIndex(i);
 
-            if (layer.stringValue == layerName)
-            {
-                layer.stringValue = string.Empty;
-                layer.serializedObject.ApplyModifiedProperties();
-                AssetDatabase.SaveAssets();
-                break;
-            }
+            if (layer.stringValue != layerName) continue;
+
+            layer.stringValue = string.Empty;
+            layer.serializedObject.ApplyModifiedProperties();
+            AssetDatabase.SaveAssets();
+            break;
         }
     }
 }

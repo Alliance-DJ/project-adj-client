@@ -24,19 +24,16 @@ public static class Debug
 {
     public static bool developerConsoleVisible
     {
-        get { return UnityEngine.Debug.developerConsoleVisible; }
-        set { UnityEngine.Debug.developerConsoleVisible = value; }
+        get => UnityEngine.Debug.developerConsoleVisible;
+        set => UnityEngine.Debug.developerConsoleVisible = value;
     }
 
-    public static ILogger unityLogger
-    { get { return UnityEngine.Debug.unityLogger; } }
+    public static ILogger unityLogger => UnityEngine.Debug.unityLogger;
 
-    public static bool isDebugBuild
-    { get { return UnityEngine.Debug.isDebugBuild; } }
+    public static bool isDebugBuild => UnityEngine.Debug.isDebugBuild;
 
     [Obsolete("Debug.logger is obsolete. Please use Debug.unityLogger instead (UnityUpgradable) -> unityLogger")]
-    public static ILogger logger
-    { get { return UnityEngine.Debug.logger; } }
+    public static ILogger logger => UnityEngine.Debug.logger;
 
     #region Assert
 
@@ -65,7 +62,9 @@ public static class Debug
         => UnityEngine.Debug.Assert(condition);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-    [Obsolete("Assert(bool, string, params object[]) is obsolete. Use AssertFormat(bool, string, params object[]) (UnityUpgradable) -> AssertFormat(*)", true)]
+    [Obsolete(
+        "Assert(bool, string, params object[]) is obsolete. Use AssertFormat(bool, string, params object[]) (UnityUpgradable) -> AssertFormat(*)",
+        true)]
     public static void Assert(bool condition, string format, params object[] args)
         => UnityEngine.Debug.AssertFormat(condition, format, args);
 
@@ -99,7 +98,8 @@ public static class Debug
         => UnityEngine.Debug.DrawLine(start, end, color);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-    public static void DrawLine(Vector3 start, Vector3 end, Color color = default, float duration = 0.0f, bool depthTest = true)
+    public static void DrawLine(Vector3 start, Vector3 end, Color color = default, float duration = 0.0f,
+        bool depthTest = true)
         => UnityEngine.Debug.DrawLine(start, end, color, duration, depthTest);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
@@ -115,7 +115,8 @@ public static class Debug
         => UnityEngine.Debug.DrawRay(start, dir, color, duration);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-    public static void DrawRay(Vector3 start, Vector3 dir, Color color = default, float duration = 0.0f, bool depthTest = true)
+    public static void DrawRay(Vector3 start, Vector3 dir, Color color = default, float duration = 0.0f,
+        bool depthTest = true)
         => UnityEngine.Debug.DrawRay(start, dir, color, duration, depthTest);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]

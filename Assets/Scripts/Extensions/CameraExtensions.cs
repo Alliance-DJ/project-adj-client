@@ -30,11 +30,11 @@ public static class CameraExtensions
     /// <param name="camera">The camera to check the point against</param>
     public static bool IsInFOV(this Camera camera, Vector3 position)
     {
-        Vector3 screenPoint = camera.WorldToViewportPoint(position);
+        var screenPoint = camera.WorldToViewportPoint(position);
 
         return screenPoint.z >= camera.nearClipPlane && screenPoint.z <= camera.farClipPlane
-            && screenPoint.x >= 0 && screenPoint.x <= 1
-            && screenPoint.y >= 0 && screenPoint.y <= 1;
+                                                     && screenPoint.x >= 0 && screenPoint.x <= 1
+                                                     && screenPoint.y >= 0 && screenPoint.y <= 1;
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public static class CameraExtensions
             camera.fieldOfView + coneAngleBufferDegrees,
             camera.nearClipPlane,
             camera.farClipPlane
-            );
+        );
     }
 
     /// <summary>

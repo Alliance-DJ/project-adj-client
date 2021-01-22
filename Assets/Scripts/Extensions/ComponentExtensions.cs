@@ -46,8 +46,8 @@ public static class ComponentExtensions
     /// </remarks>
     public static T EnsureComponent<T>(this GameObject gameObject) where T : Component
     {
-        T foundComponent = gameObject.GetComponent<T>();
-        return foundComponent ?? gameObject.AddComponent<T>();
+        var foundComponent = gameObject.GetComponent<T>();
+        return foundComponent ? foundComponent : gameObject.AddComponent<T>();
     }
 
     /// <summary>

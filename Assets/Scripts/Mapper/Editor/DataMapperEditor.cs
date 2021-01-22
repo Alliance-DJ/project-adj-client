@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(DataMapper))]
@@ -27,10 +28,7 @@ public class DataMapperEditor : Editor
         var dataTypes = TypeCache.GetSubClasses<BaseData>();
         if (dataTypes != null)
         {
-            Parallel.ForEach(dataTypes, (type) =>
-            {
-                dataTypeNames.Add(type.Name);
-            });
+            Parallel.ForEach(dataTypes, (type) => { dataTypeNames.Add(type.Name); });
         }
     }
 
@@ -44,7 +42,7 @@ public class DataMapperEditor : Editor
         searchKey = EditorGUILayout.TextField("Search Data : ", searchKey);
         var searching = !string.IsNullOrEmpty(searchKey);
         if (searching)
-            types.RemoveAll(name => !name.ToLower().Contains(searchKey.ToLower()));
+            types.RemoveAll(n => !n.ToLower().Contains(searchKey.ToLower()));
 
         types.Insert(0, NONE);
 
@@ -59,18 +57,16 @@ public class DataMapperEditor : Editor
             var pMappers = mapper.GetPropertyMappers();
             if (pMappers != null && pMappers.Count > 0)
             {
-                Undo.RecordObjects(pMappers.ToArray(), "Reset PropertyMapper Data");
-                Parallel.ForEach(pMappers, (pMapper) =>
-                {
-                    pMapper.ResetPropertyMapper();
-                });
+                Undo.RecordObjects(pMappers.ToArray<Object>(), "Reset PropertyMapper Data");
+                Parallel.ForEach(pMappers, (pMapper) => { pMapper.ResetPropertyMapper(); });
             }
 
             if (currentIndex >= 0)
                 mapper.InspectorDataType = types[currentIndex] != NONE ? types[currentIndex] : null;
         }
 
-        EditorGUILayout.LabelField("Selected Data Class : ", !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE);
+        EditorGUILayout.LabelField("Selected Data Class : ",
+            !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE);
     }
 }
 

@@ -32,28 +32,27 @@ public class PropertyMapperEditor : Editor
         returnTypeDic = new Dictionary<string, Type>();
 
         var type = mapper.GetDataMapperDataType();
-        if (type != null)
-        {
-            var fields = TypeCache.GetFields(type);
-            if (fields != null)
-            {
-                Parallel.ForEach(fields, (field) =>
-                {
-                    var name = field.Name;
-                    names.Add(name);
-                });
-            }
+        if (type == null) return;
 
-            var properties = TypeCache.GetProperties(type);
-            if (properties != null)
+        var fields = TypeCache.GetFields(type);
+        if (fields != null)
+        {
+            Parallel.ForEach(fields, (field) =>
             {
-                Parallel.ForEach(properties, (property) =>
-                {
-                    var name = property.Name;
-                    names.Add(name);
-                    returnTypeDic[name] = property.GetGetMethod().ReturnType;
-                });
-            }
+                var fName = field.Name;
+                names.Add(fName);
+            });
+        }
+
+        var properties = TypeCache.GetProperties(type);
+        if (properties != null)
+        {
+            Parallel.ForEach(properties, (property) =>
+            {
+                var pName = property.Name;
+                names.Add(pName);
+                returnTypeDic[pName] = property.GetGetMethod().ReturnType;
+            });
         }
     }
 
@@ -91,13 +90,13 @@ public class PropertyMapperEditor : Editor
         searchKey = EditorGUILayout.TextField("Search Property: ", searchKey);
         var searching = !string.IsNullOrEmpty(searchKey);
         if (searching)
-            tempNames.RemoveAll(name => !name.ToLower().Contains(searchKey.ToLower()));
+            tempNames.RemoveAll(n => !n.ToLower().Contains(searchKey.ToLower()));
 
         tempNames.Insert(0, NONE);
 
         var currentTypeName = !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : NONE;
         EditorGUI.BeginChangeCheck();
-        currentIndex = EditorGUILayout.Popup(tempNames.FindIndex(type => type == currentTypeName), tempNames.ToArray());
+        currentIndex = EditorGUILayout.Popup(tempNames.FindIndex(t => t == currentTypeName), tempNames.ToArray());
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -106,7 +105,8 @@ public class PropertyMapperEditor : Editor
                 mapper.propertyName = tempNames[currentIndex] != NONE ? tempNames[currentIndex] : null;
         }
 
-        EditorGUILayout.LabelField("Property Name : ", !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : NONE);
+        EditorGUILayout.LabelField("Property Name : ",
+            !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : NONE);
 
         string propertyName = mapper.propertyName;
         if (!string.IsNullOrEmpty(propertyName) &&
@@ -123,14 +123,14 @@ public class PropertyMapperEditor : Editor
 
         EditorGUILayout.Space();
 
-        List<string> tempNames = new List<string>();
+        var tempNames = new List<string>();
         var fields = TypeCache.GetFields(type);
         if (fields != null)
         {
             Parallel.ForEach(fields, (field) =>
             {
-                var name = field.Name;
-                tempNames.Add(name);
+                var fName = field.Name;
+                tempNames.Add(fName);
             });
         }
 
@@ -139,22 +139,24 @@ public class PropertyMapperEditor : Editor
         {
             Parallel.ForEach(properties, (property) =>
             {
-                var name = property.Name;
-                tempNames.Add(name);
+                var pName = property.Name;
+                tempNames.Add(pName);
             });
         }
+
         tempNames.Sort();
 
         subSearchKey = EditorGUILayout.TextField("Search Sub : ", subSearchKey);
         var searching = !string.IsNullOrEmpty(subSearchKey);
         if (searching)
-            tempNames.RemoveAll(name => !name.ToLower().Contains(subSearchKey.ToLower()));
+            tempNames.RemoveAll(n => !n.ToLower().Contains(subSearchKey.ToLower()));
 
         tempNames.Insert(0, NONE);
 
         var currentTypeName = !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : NONE;
         EditorGUI.BeginChangeCheck();
-        currentSubIndex = EditorGUILayout.Popup(tempNames.FindIndex(type => type == currentTypeName), tempNames.ToArray());
+        currentSubIndex =
+            EditorGUILayout.Popup(tempNames.FindIndex(t => t == currentTypeName), tempNames.ToArray());
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -163,7 +165,8 @@ public class PropertyMapperEditor : Editor
                 mapper.subPropertyName = tempNames[currentSubIndex] != NONE ? tempNames[currentSubIndex] : null;
         }
 
-        EditorGUILayout.LabelField("Sub Property Name : ", !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : NONE);
+        EditorGUILayout.LabelField("Sub Property Name : ",
+            !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : NONE);
     }
 }
 

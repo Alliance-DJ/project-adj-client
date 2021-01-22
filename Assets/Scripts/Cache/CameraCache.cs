@@ -21,7 +21,8 @@ public static class CameraCache
             if (cachedCamera != null)
             {
                 if (cachedCamera.gameObject.activeInHierarchy)
-                {   // If the cached camera is active, return it
+                {
+                    // If the cached camera is active, return it
                     // Otherwise, our playspace may have been disabled
                     // We'll have to search for the next available
                     return cachedCamera;
@@ -36,15 +37,17 @@ public static class CameraCache
                 Debug.Log("No main camera found. Searching for cameras in the scene.");
 
                 // If no main camera was found, try to determine one.
-                Camera[] cameras = GameObject.FindObjectsOfType<Camera>();
+                var cameras = Object.FindObjectsOfType<Camera>();
                 if (cameras.Length == 0)
                 {
                     Debug.LogWarning("No cameras found. Creating a \"MainCamera\".");
-                    mainCamera = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener)) { tag = "MainCamera" }.GetComponent<Camera>();
+                    mainCamera = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener))
+                        {tag = "MainCamera"}.GetComponent<Camera>();
                 }
                 else
                 {
-                    Debug.LogWarning("The camera in the scene to be tagged as \"MainCamera\". Please ensure the application's main camera is tagged.");
+                    Debug.LogWarning(
+                        "The camera in the scene to be tagged as \"MainCamera\". Please ensure the application's main camera is tagged.");
                 }
             }
 

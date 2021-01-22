@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -46,7 +47,11 @@ public static class TransformExtensions
     /// <param name="root">Start point of the traversion set</param>
     public static IEnumerable<Transform> EnumerateHierarchy(this Transform root)
     {
-        if (root == null) { throw new ArgumentNullException("root"); }
+        if (root == null)
+        {
+            throw new ArgumentNullException(nameof(root));
+        }
+
         return root.EnumerateHierarchyCore(new List<Transform>(0));
     }
 
@@ -57,11 +62,17 @@ public static class TransformExtensions
     /// <param name="ignore">Transforms and all its children to be ignored</param>
     public static IEnumerable<Transform> EnumerateHierarchy(this Transform root, ICollection<Transform> ignore)
     {
-        if (root == null) { throw new ArgumentNullException("root"); }
+        if (root == null)
+        {
+            throw new ArgumentNullException(nameof(root));
+        }
+
         if (ignore == null)
         {
-            throw new ArgumentNullException("ignore", "Ignore collection can't be null, use EnumerateHierarchy(root) instead.");
+            throw new ArgumentNullException(nameof(ignore),
+                "Ignore collection can't be null, use EnumerateHierarchy(root) instead.");
         }
+
         return root.EnumerateHierarchyCore(ignore);
     }
 
@@ -79,7 +90,10 @@ public static class TransformExtensions
         {
             var parentTransform = transformQueue.Dequeue();
 
-            if (!parentTransform || ignore.Contains(parentTransform)) { continue; }
+            if (!parentTransform || ignore.Contains(parentTransform))
+            {
+                continue;
+            }
 
             for (var i = 0; i < parentTransform.childCount; i++)
             {
@@ -98,14 +112,18 @@ public static class TransformExtensions
     /// If no colliders attached, returns a bounds of center and extents 0</returns>
     public static Bounds GetColliderBounds(this Transform transform)
     {
-        Collider[] colliders = transform.GetComponentsInChildren<Collider>();
-        if (colliders.Length == 0) { return new Bounds(); }
+        var colliders = transform.GetComponentsInChildren<Collider>();
+        if (colliders.Length == 0)
+        {
+            return new Bounds();
+        }
 
-        Bounds bounds = colliders[0].bounds;
-        for (int i = 1; i < colliders.Length; i++)
+        var bounds = colliders[0].bounds;
+        for (var i = 1; i < colliders.Length; i++)
         {
             bounds.Encapsulate(colliders[i].bounds);
         }
+
         return bounds;
     }
 
@@ -127,16 +145,8 @@ public static class TransformExtensions
     /// <returns>The component of type <typeparamref name="T"/>. Null if it none was found.</returns>
     public static T FindAncestorComponent<T>(this Transform startTransform, bool includeSelf = true) where T : Component
     {
-        foreach (Transform transform in startTransform.EnumerateAncestors(includeSelf))
-        {
-            T component = transform.GetComponent<T>();
-            if (component != null)
-            {
-                return component;
-            }
-        }
-
-        return null;
+        return startTransform.EnumerateAncestors(includeSelf).Select(transform => transform.GetComponent<T>())
+            .FirstOrDefault(component => component != null);
     }
 
     /// <summary>
@@ -152,7 +162,7 @@ public static class TransformExtensions
             startTransform = startTransform.parent;
         }
 
-        for (Transform transform = startTransform; transform != null; transform = transform.parent)
+        for (var transform = startTransform; transform != null; transform = transform.parent)
         {
             yield return transform;
         }
@@ -166,17 +176,17 @@ public static class TransformExtensions
     /// <returns>World size.</returns>
     public static Vector3 TransformSize(this Transform transform, Vector3 localSize)
     {
-        Vector3 transformedSize = new Vector3(localSize.x, localSize.y, localSize.z);
+        var transformedSize = new Vector3(localSize.x, localSize.y, localSize.z);
 
-        Transform t = transform;
+        var t = transform;
         do
         {
-            transformedSize.x *= t.localScale.x;
-            transformedSize.y *= t.localScale.y;
-            transformedSize.z *= t.localScale.z;
+            var localScale = t.localScale;
+            transformedSize.x *= localScale.x;
+            transformedSize.y *= localScale.y;
+            transformedSize.z *= localScale.z;
             t = t.parent;
-        }
-        while (t != null);
+        } while (t != null);
 
         return transformedSize;
     }
@@ -189,17 +199,17 @@ public static class TransformExtensions
     /// <returns>World size.</returns>
     public static Vector3 InverseTransformSize(this Transform transform, Vector3 worldSize)
     {
-        Vector3 transformedSize = new Vector3(worldSize.x, worldSize.y, worldSize.z);
+        var transformedSize = new Vector3(worldSize.x, worldSize.y, worldSize.z);
 
-        Transform t = transform;
+        var t = transform;
         do
         {
-            transformedSize.x /= t.localScale.x;
-            transformedSize.y /= t.localScale.y;
-            transformedSize.z /= t.localScale.z;
+            var localScale = t.localScale;
+            transformedSize.x /= localScale.x;
+            transformedSize.y /= localScale.y;
+            transformedSize.z /= localScale.z;
             t = t.parent;
-        }
-        while (t != null);
+        } while (t != null);
 
         return transformedSize;
     }
@@ -210,9 +220,9 @@ public static class TransformExtensions
     /// <param name="t">The transform to get the depth for.</param>
     public static int GetDepth(this Transform t)
     {
-        int depth = -1;
+        var depth = -1;
 
-        Transform root = t.transform.root;
+        var root = t.transform.root;
         if (root == t.transform)
         {
             return depth;
@@ -252,20 +262,22 @@ public static class TransformExtensions
     /// <returns>returns found transform or null if none found</returns>
     public static Transform GetChildRecursive(Transform t, string name)
     {
-        int numChildren = t.childCount;
-        for (int ii = 0; ii < numChildren; ++ii)
+        var numChildren = t.childCount;
+        for (var ii = 0; ii < numChildren; ++ii)
         {
-            Transform child = t.GetChild(ii);
+            var child = t.GetChild(ii);
             if (child.name == name)
             {
                 return child;
             }
-            Transform foundIt = GetChildRecursive(child, name);
+
+            var foundIt = GetChildRecursive(child, name);
             if (foundIt != null)
             {
                 return foundIt;
             }
         }
+
         return null;
     }
 }

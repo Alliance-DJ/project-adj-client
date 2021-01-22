@@ -19,7 +19,8 @@ public static class ScriptableObjectExtensions
     /// <param name="scriptableObject"><see href="https://docs.unity3d.com/ScriptReference/ScriptableObject.html">ScriptableObject</see> you want to create an asset file for.</param>
     /// <param name="path">Optional path for the new asset.</param>
     /// <param name="fileName">Optional filename for the new asset.</param>
-    public static ScriptableObject CreateAsset(this ScriptableObject scriptableObject, string path = null, string fileName = null)
+    public static ScriptableObject CreateAsset(this ScriptableObject scriptableObject, string path = null,
+        string fileName = null)
     {
         var name = string.IsNullOrEmpty(fileName) ? $"{scriptableObject.GetType().Name}" : fileName;
 
@@ -56,12 +57,12 @@ public static class ScriptableObjectExtensions
     public static T[] GetAllInstances<T>() where T : ScriptableObject
     {
         // FindAssets uses tags check documentation for more info
-        string[] guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+        var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
         var instances = new T[guids.Length];
 
-        for (int i = 0; i < guids.Length; i++)
+        for (var i = 0; i < guids.Length; i++)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            var path = AssetDatabase.GUIDToAssetPath(guids[i]);
             instances[i] = AssetDatabase.LoadAssetAtPath<T>(path);
         }
 
@@ -76,12 +77,12 @@ public static class ScriptableObjectExtensions
     public static ScriptableObject[] GetAllInstances(Type assetType)
     {
         // FindAssets uses tags check documentation for more info
-        string[] guids = AssetDatabase.FindAssets($"t:{assetType.Name}");
+        var guids = AssetDatabase.FindAssets($"t:{assetType.Name}");
         var instances = new ScriptableObject[guids.Length];
 
-        for (int i = 0; i < guids.Length; i++)
+        for (var i = 0; i < guids.Length; i++)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            var path = AssetDatabase.GUIDToAssetPath(guids[i]);
             instances[i] = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
         }
 

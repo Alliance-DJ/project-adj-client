@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DataMapper : MonoBehaviour
@@ -14,27 +15,24 @@ public class DataMapper : MonoBehaviour
         var mappers = new HashSet<PropertyMapper>();
 
         var pMappers = GetComponentsInChildren<PropertyMapper>(true);
-        for (int i = 0; i < pMappers.Length; i++)
+        foreach (var mapper in pMappers)
         {
-            var mapper = pMappers[i];
             if (mapper == null) continue;
 
             mappers.Add(mapper);
         }
 
         var dMappers = GetComponentsInChildren<DataMapper>(true);
-        for (int i = 0; i < dMappers.Length; i++)
+        foreach (var mapper in dMappers)
         {
-            var mapper = dMappers[i];
             if (mapper == null) continue;
 
             var dgo = mapper.gameObject;
             if (dgo == gameObject) continue;
 
             var subPropertyMappers = mapper.GetComponentsInChildren<PropertyMapper>(true);
-            for (int j = 0; j < subPropertyMappers.Length; j++)
+            foreach (var subMapper in subPropertyMappers)
             {
-                var subMapper = subPropertyMappers[j];
                 if (subMapper == null || dgo == subMapper.gameObject) continue;
 
                 mappers.Remove(subMapper);
@@ -69,29 +67,24 @@ public class DataMapper : MonoBehaviour
             propertyMappers = new HashSet<PropertyMapper>(pMappers);
         }
 
-        foreach (var mapper in propertyMappers)
+        foreach (var mapper in propertyMappers.Where(mapper => mapper != null))
         {
-            if (mapper == null) continue;
-
             mapper.ExtractValue(data);
         }
     }
 
     public T GetData<T>() where T : BaseData
     {
-        if (data == null)
+        switch (data)
         {
-            return null;
+            case null:
+                return null;
+            case T d:
+                return d;
+            default:
+                Debug.LogError("NOT MATCH TYPE");
+                return null;
         }
-
-        var d = data as T;
-        if (d == null)
-        {
-            Debug.LogError("NOT MATCH TYPE");
-            return null;
-        }
-
-        return d;
     }
 
 #if UNITY_EDITOR

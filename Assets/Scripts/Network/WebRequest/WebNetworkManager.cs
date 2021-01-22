@@ -3,14 +3,13 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
-
 using Data = System.Collections.Generic.Dictionary<string, string>;
 using Header = System.Collections.Generic.Dictionary<string, string>;
 using Query = System.Collections.Generic.Dictionary<string, string>;
 
 public static class WebNetworkManager
 {
-    private static readonly string API_BASE_URL = "localhost:3000";  // host
+    private const string API_BASE_URL = "localhost:3000"; // host
 
     public static string AccessToken { get; private set; }
 
@@ -60,7 +59,8 @@ public static class WebNetworkManager
         }
     }
 
-    public static async Task<T> GET<T>(string endpoint, string group = "", Query query = null, bool useAccessToken = true)
+    public static async Task<T> GET<T>(string endpoint, string group = "", Query query = null,
+        bool useAccessToken = true)
     {
         var url = MakeURL(endpoint, query);
         Debug.Log($"GET - {url}");
@@ -70,9 +70,10 @@ public static class WebNetworkManager
         {
             headers = new Header()
             {
-                {"Authorization", AccessToken }
+                {"Authorization", AccessToken}
             };
         }
+
         var response = await Rest.GetAsync(url, headers);
 
         Debug.Log("EXIT - GET");
@@ -89,9 +90,10 @@ public static class WebNetworkManager
         {
             headers = new Header()
             {
-                {"Authorization", AccessToken }
+                {"Authorization", AccessToken}
             };
         }
+
         var response = await Rest.PostAsync(url, form, headers);
 
         Debug.Log("EXIT - POST");
@@ -108,9 +110,10 @@ public static class WebNetworkManager
         {
             headers = new Header()
             {
-                {"Authorization", AccessToken }
+                {"Authorization", AccessToken}
             };
         }
+
         var json = JsonConvert.SerializeObject(data);
         var response = await Rest.PutAsync(url, json, headers);
 
@@ -128,9 +131,10 @@ public static class WebNetworkManager
         {
             headers = new Header()
             {
-                {"Authorization", AccessToken }
+                {"Authorization", AccessToken}
             };
         }
+
         await Rest.DeleteAsync(url, headers);
 
         Debug.Log("EXIT - DELETE");
@@ -146,9 +150,10 @@ public static class WebNetworkManager
         {
             headers = new Header()
             {
-                {"Authorization", AccessToken }
+                {"Authorization", AccessToken}
             };
         }
+
         var json = JsonConvert.SerializeObject(data);
         var response = await Rest.PatchAsync(url, json, headers);
 

@@ -36,7 +36,8 @@ public static class SystemNumericsExtensions
     /// <summary>
     /// Converts this System.Numerics Quaternion to a UnityEngine Quaternion, storing values directly in referenced parameter
     /// </summary>
-    public static void ConvertToUnityQuaternion(this System.Numerics.Quaternion source, ref UnityEngine.Quaternion target)
+    public static void ConvertToUnityQuaternion(this System.Numerics.Quaternion source,
+        ref UnityEngine.Quaternion target)
     {
         target.x = -source.X;
         target.y = -source.Y;

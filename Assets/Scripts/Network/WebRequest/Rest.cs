@@ -54,7 +54,9 @@ public static class Rest
     /// <param name="certificateHandler">Optional certificate handler for custom certificate verification</param>
     /// <param name="disposeCertificateHandlerOnDispose">Optional bool. If true and <paramref name="certificateHandler"/> is not null, <paramref name="certificateHandler"/> will be disposed, when the underlying UnityWebRequest is disposed.</param>
     /// <returns>The response data.</returns>
-    public static async Task<Response> GetAsync(string query, Dictionary<string, string> headers = null, int timeout = -1, DownloadHandler downloadHandler = null, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> GetAsync(string query, Dictionary<string, string> headers = null,
+        int timeout = -1, DownloadHandler downloadHandler = null, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         using var webRequest = UnityWebRequest.Get(query);
         if (downloadHandler != null)
@@ -62,7 +64,8 @@ public static class Rest
             webRequest.downloadHandler = downloadHandler;
         }
 
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     #endregion GET
@@ -79,10 +82,13 @@ public static class Rest
     /// <param name="certificateHandler">Optional certificate handler for custom certificate verification</param>
     /// <param name="disposeCertificateHandlerOnDispose">Optional bool. If true and <paramref name="certificateHandler"/> is not null, <paramref name="certificateHandler"/> will be disposed, when the underlying UnityWebRequest is disposed.</param>
     /// <returns>The response data.</returns>
-    public static async Task<Response> PostAsync(string query, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> PostAsync(string query, Dictionary<string, string> headers = null,
+        int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null,
+        bool disposeCertificateHandlerOnDispose = true)
     {
         using var webRequest = UnityWebRequest.Post(query, null as string);
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     /// <summary>
@@ -96,10 +102,13 @@ public static class Rest
     /// <param name="certificateHandler">Optional certificate handler for custom certificate verification</param>
     /// <param name="disposeCertificateHandlerOnDispose">Optional bool. If true and <paramref name="certificateHandler"/> is not null, <paramref name="certificateHandler"/> will be disposed, when the underlying UnityWebRequest is disposed.</param>
     /// <returns>The response data.</returns>
-    public static async Task<Response> PostAsync(string query, WWWForm formData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> PostAsync(string query, WWWForm formData,
+        Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         using var webRequest = UnityWebRequest.Post(query, formData);
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     /// <summary>
@@ -113,7 +122,9 @@ public static class Rest
     /// <param name="certificateHandler">Optional certificate handler for custom certificate verification</param>
     /// <param name="disposeCertificateHandlerOnDispose">Optional bool. If true and <paramref name="certificateHandler"/> is not null, <paramref name="certificateHandler"/> will be disposed, when the underlying UnityWebRequest is disposed.</param>
     /// <returns>The response data.</returns>
-    public static async Task<Response> PostAsync(string query, string jsonData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> PostAsync(string query, string jsonData,
+        Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         using var webRequest = UnityWebRequest.Post(query, "POST");
         var data = new UTF8Encoding().GetBytes(jsonData);
@@ -121,7 +132,8 @@ public static class Rest
         webRequest.downloadHandler = new DownloadHandlerBuffer();
         webRequest.SetRequestHeader("Content-Type", "application/json");
         webRequest.SetRequestHeader("Accept", "application/json");
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     /// <summary>
@@ -135,13 +147,16 @@ public static class Rest
     /// <param name="certificateHandler">Optional certificate handler for custom certificate verification</param>
     /// <param name="disposeCertificateHandlerOnDispose">Optional bool. If true and <paramref name="certificateHandler"/> is not null, <paramref name="certificateHandler"/> will be disposed, when the underlying UnityWebRequest is disposed.</param>
     /// <returns>The response data.</returns>
-    public static async Task<Response> PostAsync(string query, byte[] bodyData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> PostAsync(string query, byte[] bodyData,
+        Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         using var webRequest = UnityWebRequest.Post(query, "POST");
         webRequest.uploadHandler = new UploadHandlerRaw(bodyData);
         webRequest.downloadHandler = new DownloadHandlerBuffer();
         webRequest.SetRequestHeader("Content-Type", "application/octet-stream");
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     #endregion POST
@@ -159,11 +174,14 @@ public static class Rest
     /// <param name="certificateHandler">Optional certificate handler for custom certificate verification</param>
     /// <param name="disposeCertificateHandlerOnDispose">Optional bool. If true and <paramref name="certificateHandler"/> is not null, <paramref name="certificateHandler"/> will be disposed, when the underlying UnityWebRequest is disposed.</param>
     /// <returns>The response data.</returns>
-    public static async Task<Response> PutAsync(string query, string jsonData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> PutAsync(string query, string jsonData,
+        Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         using var webRequest = UnityWebRequest.Put(query, jsonData);
         webRequest.SetRequestHeader("Content-Type", "application/json");
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     /// <summary>
@@ -177,11 +195,14 @@ public static class Rest
     /// <param name="certificateHandler">Optional certificate handler for custom certificate verification</param>
     /// <param name="disposeCertificateHandlerOnDispose">Optional bool. If true and <paramref name="certificateHandler"/> is not null, <paramref name="certificateHandler"/> will be disposed, when the underlying UnityWebRequest is disposed.</param>
     /// <returns>The response data.</returns>
-    public static async Task<Response> PutAsync(string query, byte[] bodyData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> PutAsync(string query, byte[] bodyData,
+        Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         using var webRequest = UnityWebRequest.Put(query, bodyData);
         webRequest.SetRequestHeader("Content-Type", "application/octet-stream");
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     #endregion PUT
@@ -198,34 +219,47 @@ public static class Rest
     /// <param name="certificateHandler">Optional certificate handler for custom certificate verification</param>
     /// <param name="disposeCertificateHandlerOnDispose">Optional bool. If true and <paramref name="certificateHandler"/> is not null, <paramref name="certificateHandler"/> will be disposed, when the underlying UnityWebRequest is disposed.</param>
     /// <returns>The response data.</returns>
-    public static async Task<Response> DeleteAsync(string query, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> DeleteAsync(string query, Dictionary<string, string> headers = null,
+        int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null,
+        bool disposeCertificateHandlerOnDispose = true)
     {
         using var webRequest = UnityWebRequest.Delete(query);
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     #endregion DELETE
 
     #region PATCH
 
-    public static async Task<Response> PatchAsync(string query, string jsonData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> PatchAsync(string query, string jsonData,
+        Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         var data = new UTF8Encoding().GetBytes(jsonData);
-        using var webRequest = new UnityWebRequest(query, kHttpVerbPatch, new DownloadHandlerBuffer(), new UploadHandlerRaw(data));
+        using var webRequest = new UnityWebRequest(query, kHttpVerbPatch, new DownloadHandlerBuffer(),
+            new UploadHandlerRaw(data));
         webRequest.SetRequestHeader("Content-Type", "application/json");
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
-    public static async Task<Response> PatchAsync(string query, byte[] bodyData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    public static async Task<Response> PatchAsync(string query, byte[] bodyData,
+        Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
-        using var webRequest = new UnityWebRequest(query, kHttpVerbPatch, new DownloadHandlerBuffer(), new UploadHandlerRaw(bodyData));
+        using var webRequest = new UnityWebRequest(query, kHttpVerbPatch, new DownloadHandlerBuffer(),
+            new UploadHandlerRaw(bodyData));
         webRequest.SetRequestHeader("Content-Type", "application/json");
-        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler, disposeCertificateHandlerOnDispose);
+        return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
+            disposeCertificateHandlerOnDispose);
     }
 
     #endregion PATCH
 
-    private static async Task<Response> ProcessRequestAsync(UnityWebRequest webRequest, int timeout, Dictionary<string, string> headers = null, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+    private static async Task<Response> ProcessRequestAsync(UnityWebRequest webRequest, int timeout,
+        Dictionary<string, string> headers = null, bool readResponseData = false,
+        CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
     {
         if (timeout > 0)
         {
@@ -244,7 +278,7 @@ public static class Rest
         if (webRequest.method == UnityWebRequest.kHttpVerbPOST ||
             webRequest.method == UnityWebRequest.kHttpVerbPUT)
         {
-            string contentType = webRequest.GetRequestHeader("Content-Type");
+            var contentType = webRequest.GetRequestHeader("Content-Type");
             if (contentType != null)
             {
                 contentType = contentType.Replace("\"", "");
@@ -257,30 +291,37 @@ public static class Rest
         await webRequest.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
-        if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+        if (webRequest.result == UnityWebRequest.Result.ConnectionError ||
+            webRequest.result == UnityWebRequest.Result.ProtocolError)
 #else
         if (webRequest.isNetworkError || webRequest.isHttpError)
 #endif // UNITY_2020_1_OR_NEWER
         {
-            if (webRequest.responseCode == 401) { return new Response(false, "Invalid Credentials", null, webRequest.responseCode); }
+            if (webRequest.responseCode == 401)
+            {
+                return new Response(false, "Invalid Credentials", null, webRequest.responseCode);
+            }
 
             if (webRequest.GetResponseHeaders() == null)
             {
                 return new Response(false, "Device Unavailable", null, webRequest.responseCode);
             }
 
-            string responseHeaders = webRequest.GetResponseHeaders().Aggregate(string.Empty, (current, header) => $"\n{header.Key}: {header.Value}");
-            string downloadHandlerText = webRequest.downloadHandler?.text;
+            var responseHeaders = webRequest.GetResponseHeaders()
+                .Aggregate(string.Empty, (current, header) => $"\n{header.Key}: {header.Value}");
+            var downloadHandlerText = webRequest.downloadHandler?.text;
             Debug.LogError($"REST Error: {webRequest.responseCode}\n{downloadHandlerText}{responseHeaders}");
-            return new Response(false, $"{responseHeaders}\n{downloadHandlerText}", webRequest.downloadHandler?.data, webRequest.responseCode);
+            return new Response(false, $"{responseHeaders}\n{downloadHandlerText}", webRequest.downloadHandler?.data,
+                webRequest.responseCode);
         }
+
         if (readResponseData)
         {
-            return new Response(true, webRequest.downloadHandler?.text, webRequest.downloadHandler?.data, webRequest.responseCode);
+            return new Response(true, webRequest.downloadHandler?.text, webRequest.downloadHandler?.data,
+                webRequest.responseCode);
         }
-        else // This option can be used only if action will be triggered in the same scope as the webrequest
-        {
-            return new Response(true, () => webRequest.downloadHandler?.text, () => webRequest.downloadHandler?.data, webRequest.responseCode);
-        }
+
+        return new Response(true, () => webRequest.downloadHandler?.text, () => webRequest.downloadHandler?.data,
+            webRequest.responseCode);
     }
 }

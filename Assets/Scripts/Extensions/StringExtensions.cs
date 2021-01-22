@@ -17,7 +17,7 @@ public static class StringExtensions
     /// <returns>Encoded string.</returns>
     public static string EncodeTo64(this string toEncode)
     {
-        byte[] toEncodeAsBytes = Encoding.ASCII.GetBytes(toEncode);
+        var toEncodeAsBytes = Encoding.ASCII.GetBytes(toEncode);
         return Convert.ToBase64String(toEncodeAsBytes);
     }
 
@@ -28,7 +28,7 @@ public static class StringExtensions
     /// <returns>Decoded string.</returns>
     public static string DecodeFrom64(this string encodedData)
     {
-        byte[] encodedDataAsBytes = Convert.FromBase64String(encodedData);
+        var encodedDataAsBytes = Convert.FromBase64String(encodedData);
         return Encoding.ASCII.GetString(encodedDataAsBytes);
     }
 
@@ -39,16 +39,27 @@ public static class StringExtensions
     public static string ToProperCase(this string value)
     {
         // If there are 0 or 1 characters, just return the string.
-        if (value == null) { return value; }
-        if (value.Length < 2) { return value.ToUpper(); }
+        if (value == null)
+        {
+            return null;
+        }
+
+        if (value.Length < 2)
+        {
+            return value.ToUpper();
+        }
+
         // If there's already spaces in the string, return.
-        if (value.Contains(" ")) { return value; }
+        if (value.Contains(" "))
+        {
+            return value;
+        }
 
         // Start with the first character.
-        string result = value.Substring(0, 1).ToUpper();
+        var result = value.Substring(0, 1).ToUpper();
 
         // Add the remaining characters.
-        for (int i = 1; i < value.Length; i++)
+        for (var i = 1; i < value.Length; i++)
         {
             if (char.IsLetter(value[i]) &&
                 char.IsUpper(value[i]))
@@ -65,7 +76,7 @@ public static class StringExtensions
                 // an acronym.
                 // e.g. "OpenVRLeftHand" -> "Open VR Left Hand"
                 else if (i < value.Length - 1 &&
-                    char.IsLetter(value[i + 1]) && char.IsLower(value[i + 1]))
+                         char.IsLetter(value[i + 1]) && char.IsLower(value[i + 1]))
                 {
                     result += " ";
                 }

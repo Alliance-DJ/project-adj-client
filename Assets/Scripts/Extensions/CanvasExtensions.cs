@@ -16,10 +16,10 @@ public static class CanvasExtensions
     /// <returns>A Plane for this canvas.</returns>
     public static Plane GetPlane(this Canvas canvas)
     {
-        Vector3[] corners = canvas.GetWorldCorners();
+        var corners = canvas.GetWorldCorners();
 
         // Now set a plane from any of the 3 corners (clockwise) so that we can compute our gaze intersection
-        Plane plane = new Plane(corners[0], corners[1], corners[2]);
+        var plane = new Plane(corners[0], corners[1], corners[2]);
 
         return plane;
     }
@@ -31,8 +31,8 @@ public static class CanvasExtensions
     /// <returns>An array of Vector3s that represent the corners of the canvas in world coordinates.</returns>
     public static Vector3[] GetWorldCorners(this Canvas canvas)
     {
-        Vector3[] worldCorners = new Vector3[4];
-        RectTransform rect = canvas.GetComponent<RectTransform>();
+        var worldCorners = new Vector3[4];
+        var rect = canvas.GetComponent<RectTransform>();
         rect.GetWorldCorners(worldCorners);
         return worldCorners;
     }
@@ -44,8 +44,8 @@ public static class CanvasExtensions
     /// <returns>An array of Vector3s that represent the corners of the canvas in local coordinates.</returns>
     public static Vector3[] GetLocalCorners(this Canvas canvas)
     {
-        Vector3[] localCorners = new Vector3[4];
-        RectTransform rect = canvas.GetComponent<RectTransform>();
+        var localCorners = new Vector3[4];
+        var rect = canvas.GetComponent<RectTransform>();
         rect.GetLocalCorners(localCorners);
         return localCorners;
     }
@@ -58,17 +58,19 @@ public static class CanvasExtensions
     /// <returns>An array of Vector3s that represent the corners of the canvas in viewport coordinates</returns>
     public static Vector3[] GetViewportCorners(this Canvas canvas)
     {
-        Vector3[] viewportCorners = new Vector3[4];
+        var viewportCorners = new Vector3[4];
+        var worldCorners = canvas.GetWorldCorners();
 
-        Vector3[] worldCorners = canvas.GetWorldCorners();
-
-        for (int i = 0; i < 4; i++)
-        {
 #if UNITY_2020_2_OR_NEWER
-            viewportCorners[i] = Camera.main.WorldToViewportPoint(worldCorners[i]);
+        var camera = Camera.main;
 #else
-            viewportCorners[i] = CameraCache.Main.WorldToViewportPoint(worldCorners[i]);
+        var camera = CameraCache.Main;
 #endif // UNITY_2020_2_OR_NEWERM
+        if (camera == null) return viewportCorners;
+
+        for (var i = 0; i < 4; i++)
+        {
+            viewportCorners[i] = camera.WorldToViewportPoint(worldCorners[i]);
         }
 
         return viewportCorners;
@@ -83,16 +85,19 @@ public static class CanvasExtensions
     /// <param name="canvas">The canvas to get the screen corners for.</param>
     public static Vector3[] GetScreenCorners(this Canvas canvas)
     {
-        Vector3[] screenCorners = new Vector3[4];
-        Vector3[] worldCorners = canvas.GetWorldCorners();
+        var screenCorners = new Vector3[4];
+        var worldCorners = canvas.GetWorldCorners();
 
-        for (int i = 0; i < 4; i++)
-        {
 #if UNITY_2020_2_OR_NEWER
-            screenCorners[i] = Camera.main.WorldToScreenPoint(worldCorners[i]);
+        var camera = Camera.main;
 #else
-            screenCorners[i] = CameraCache.Main.WorldToScreenPoint(worldCorners[i]);
-#endif // UNITY_2020_2_OR_NEWER
+        var camera = CameraCache.Main;
+#endif // UNITY_2020_2_OR_NEWERM
+        if (camera == null) return screenCorners;
+
+        for (var i = 0; i < 4; i++)
+        {
+            screenCorners[i] = camera.WorldToScreenPoint(worldCorners[i]);
         }
 
         return screenCorners;
@@ -104,11 +109,11 @@ public static class CanvasExtensions
     /// <param name="canvas">The canvas the get the screen rect for</param>
     public static Rect GetScreenRect(this Canvas canvas)
     {
-        Vector3[] screenCorners = canvas.GetScreenCorners();
-        float x = Mathf.Min(screenCorners[0].x, screenCorners[1].x);
-        float y = Mathf.Min(screenCorners[0].y, screenCorners[3].y);
-        float xMax = Mathf.Max(screenCorners[2].x, screenCorners[3].x);
-        float yMax = Mathf.Max(screenCorners[1].y, screenCorners[2].y);
+        var screenCorners = canvas.GetScreenCorners();
+        var x = Mathf.Min(screenCorners[0].x, screenCorners[1].x);
+        var y = Mathf.Min(screenCorners[0].y, screenCorners[3].y);
+        var xMax = Mathf.Max(screenCorners[2].x, screenCorners[3].x);
+        var yMax = Mathf.Max(screenCorners[1].y, screenCorners[2].y);
         return new Rect(x, y, xMax - x, yMax - y);
     }
 
@@ -121,33 +126,28 @@ public static class CanvasExtensions
     /// <param name="distance">The distance of the ray</param>
     /// <param name="hitPoint">The hitpoint of the ray</param>
     /// <param name="hitChildObject">The child object that was hit or the canvas itself if it has no active children that were within the hit range.</param>
-    public static bool Raycast(this Canvas canvas, Vector3 rayOrigin, Vector3 rayDirection, out float distance, out Vector3 hitPoint, out GameObject hitChildObject)
+    public static bool Raycast(this Canvas canvas, Vector3 rayOrigin, Vector3 rayDirection, out float distance,
+        out Vector3 hitPoint, out GameObject hitChildObject)
     {
         hitChildObject = null;
-        Plane plane = canvas.GetPlane();
-        Ray ray = new Ray(rayOrigin, rayDirection);
+        var plane = canvas.GetPlane();
+        var ray = new Ray(rayOrigin, rayDirection);
 
         if (plane.Raycast(ray, out distance))
         {
             // See if the point lies within the local canvas rect of the plane
-            Vector3[] corners = canvas.GetLocalCorners();
+            var corners = canvas.GetLocalCorners();
             hitPoint = rayOrigin + (rayDirection.normalized * distance);
-            Vector3 localHitPoint = canvas.transform.InverseTransformPoint(hitPoint);
+            var localHitPoint = canvas.transform.InverseTransformPoint(hitPoint);
             if (localHitPoint.x >= corners[0].x
                 && localHitPoint.x <= corners[3].x
                 && localHitPoint.y <= corners[2].y
                 && localHitPoint.y >= corners[3].y)
             {
                 // look for the child object that was hit
-                RectTransform rectTransform = GetChildRectTransformAtPoint(canvas.GetComponent<RectTransform>(), hitPoint, true, true, true);
-                if (rectTransform != null)
-                {
-                    hitChildObject = rectTransform.gameObject;
-                }
-                else
-                {
-                    hitChildObject = canvas.gameObject;
-                }
+                var rectTransform =
+                    GetChildRectTransformAtPoint(canvas.GetComponent<RectTransform>(), hitPoint, true, true, true);
+                hitChildObject = rectTransform != null ? rectTransform.gameObject : canvas.gameObject;
 
                 return true;
             }
@@ -166,39 +166,39 @@ public static class CanvasExtensions
     /// <param name="recursive">Indicates if the check should be done recursively</param>
     /// <param name="shouldReturnActive">If true, will only check children that are active, otherwise it will check all children.</param>
     /// <param name="shouldReturnRaycastable">If true, will only check children that if they have a graphic and have its member raycastTarget set to true, otherwise will ignore the raycastTarget value. Will still allow children to be checked that do not have a graphic component.</param>
-    public static RectTransform GetChildRectTransformAtPoint(this RectTransform rectTransformParent, Vector3 worldPoint, bool recursive, bool shouldReturnActive, bool shouldReturnRaycastable)
+    public static RectTransform GetChildRectTransformAtPoint(this RectTransform rectTransformParent, Vector3 worldPoint,
+        bool recursive, bool shouldReturnActive, bool shouldReturnRaycastable)
     {
-        Vector3[] localCorners = new Vector3[4];
-        Vector3 childLocalPoint;
-        RectTransform rectTransform;
-        for (int i = rectTransformParent.childCount - 1; i >= 0; i--)
+        var localCorners = new Vector3[4];
+        for (var i = rectTransformParent.childCount - 1; i >= 0; i--)
         {
-            rectTransform = rectTransformParent.GetChild(i).GetComponent<RectTransform>();
-            Graphic graphic = rectTransform.GetComponent<Graphic>();
-            bool shouldRaycast = ((shouldReturnRaycastable && graphic != null && graphic.raycastTarget) || graphic == null || !shouldReturnRaycastable);
-            if (((shouldReturnActive && rectTransform.gameObject.activeSelf) || !shouldReturnActive))
+            var rectTransform = rectTransformParent.GetChild(i).GetComponent<RectTransform>();
+            var graphic = rectTransform.GetComponent<Graphic>();
+            var shouldRaycast = ((shouldReturnRaycastable && graphic != null && graphic.raycastTarget) ||
+                                 graphic == null || !shouldReturnRaycastable);
+            if ((!shouldReturnActive || !rectTransform.gameObject.activeSelf) && shouldReturnActive) continue;
+
+            rectTransform.GetLocalCorners(localCorners);
+            var childLocalPoint = rectTransform.InverseTransformPoint(worldPoint);
+
+            if (recursive)
             {
-                rectTransform.GetLocalCorners(localCorners);
-                childLocalPoint = rectTransform.InverseTransformPoint(worldPoint);
+                var childRect = GetChildRectTransformAtPoint(rectTransform, worldPoint, true,
+                    shouldReturnActive, shouldReturnRaycastable);
 
-                if (recursive)
+                if (childRect != null)
                 {
-                    RectTransform childRect = GetChildRectTransformAtPoint(rectTransform, worldPoint, recursive, shouldReturnActive, shouldReturnRaycastable);
-
-                    if (childRect != null)
-                    {
-                        return childRect;
-                    }
+                    return childRect;
                 }
+            }
 
-                if (shouldRaycast
-                    && childLocalPoint.x >= localCorners[0].x
-                    && childLocalPoint.x <= localCorners[3].x
-                    && childLocalPoint.y <= localCorners[2].y
-                    && childLocalPoint.y >= localCorners[3].y)
-                {
-                    return rectTransform;
-                }
+            if (shouldRaycast
+                && childLocalPoint.x >= localCorners[0].x
+                && childLocalPoint.x <= localCorners[3].x
+                && childLocalPoint.y <= localCorners[2].y
+                && childLocalPoint.y >= localCorners[3].y)
+            {
+                return rectTransform;
             }
         }
 

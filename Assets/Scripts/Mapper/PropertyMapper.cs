@@ -4,13 +4,14 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PropertyMapper : MonoBehaviour
+public abstract class PropertyMapper : MonoBehaviour
 {
     public string defaultValue;
     public string format;
     public string propertyName, subPropertyName;
 
-    private static readonly Dictionary<Type, Dictionary<string, IReflectionGet>> cached = new Dictionary<Type, Dictionary<string, IReflectionGet>>();
+    private static readonly Dictionary<Type, Dictionary<string, IReflectionGet>> cached =
+        new Dictionary<Type, Dictionary<string, IReflectionGet>>();
 
     private interface IReflectionGet
     {
@@ -19,46 +20,46 @@ public class PropertyMapper : MonoBehaviour
 
     private class FieldGet : IReflectionGet
     {
-        public FieldInfo Field;
+        private readonly FieldInfo fieldInfo;
 
-        public FieldGet(FieldInfo field) => Field = field;
+        public FieldGet(FieldInfo field) => fieldInfo = field;
 
-        public object GetValue(object o) => Field.GetValue(o);
+        public object GetValue(object o) => fieldInfo.GetValue(o);
     }
 
     private class PropertyGet : IReflectionGet
     {
-        public PropertyInfo Property;
+        private readonly PropertyInfo propertyInfo;
 
-        public PropertyGet(PropertyInfo property) => Property = property;
+        public PropertyGet(PropertyInfo property) => propertyInfo = property;
 
-        public object GetValue(object o) => Property.GetValue(o);
+        public object GetValue(object o) => propertyInfo.GetValue(o);
     }
 
-    private IReflectionGet GetReflectionGet(Type type, string name)
+    private static IReflectionGet GetReflectionGet(Type type, string pName)
     {
-        if (cached.TryGetValueDicDic(type, name, out IReflectionGet r))
+        if (cached.TryGetValueDicDic(type, pName, out var r))
         {
             return r;
         }
 
-        var field = type.GetField(name);
+        var field = type.GetField(pName);
         if (field != null)
         {
             r = new FieldGet(field);
-            cached.AddDicDic(type, name, r);
+            cached.AddDicDic(type, pName, r);
             return r;
         }
 
-        var property = type.GetProperty(name);
+        var property = type.GetProperty(pName);
         if (property != null)
         {
             r = new PropertyGet(property);
-            cached.AddDicDic(type, name, r);
+            cached.AddDicDic(type, pName, r);
             return r;
         }
 
-        cached.AddDicDic(type, name, null);
+        cached.AddDicDic(type, pName, null);
         return null;
     }
 
@@ -69,22 +70,24 @@ public class PropertyMapper : MonoBehaviour
         object value = null;
         var type = data.GetType();
         var get = GetReflectionGet(type, propertyName);
-        if (get is FieldGet field)
+        switch (get)
         {
-            value = field.GetValue(data);
-        }
-        else if (get is PropertyGet property)
-        {
-            value = property.GetValue(data);
-            if (value != null)
+            case FieldGet field:
+                value = field.GetValue(data);
+                break;
+            case PropertyGet property:
             {
+                value = property.GetValue(data);
+                if (value == null) break;
+
                 var subType = value.GetType();
-                if (!string.IsNullOrEmpty(subPropertyName) && subType == typeof(BaseData))
-                {
-                    get = GetReflectionGet(subType, subPropertyName);
-                    if (get != null)
-                        value = get.GetValue(value);
-                }
+                if (string.IsNullOrEmpty(subPropertyName) || subType != typeof(BaseData)) break;
+
+                get = GetReflectionGet(subType, subPropertyName);
+                if (get == null) break;
+                
+                value = get.GetValue(value);
+                break;
             }
         }
 
@@ -93,7 +96,7 @@ public class PropertyMapper : MonoBehaviour
 
     public string GetFormattedString(object o)
     {
-        string ret = o.ToString();
+        var ret = o.ToString();
 
         if (string.IsNullOrEmpty(ret))
         {
@@ -113,26 +116,22 @@ public class PropertyMapper : MonoBehaviour
         return ret;
     }
 
-    // Editor Àü¿ë
+    // Editor ì „ìš©
     public Type GetDataMapperDataType()
     {
         DataMapper dm = null;
-        Transform t = transform;
+        var t = transform;
         while (t != null && dm == null)
         {
             t = t.parent;
             if (t != null) dm = t.GetComponent<DataMapper>();
         }
 
-        if (t == null || dm == null)
-        {
-            Debug.LogError("No DataMapper (this): " + gameObject.name, this);
-            return null;
-        }
+        if (t != null && dm != null)
+            return string.IsNullOrEmpty(dm.InspectorDataType) ? null : DataTypes.maps[dm.InspectorDataType];
 
-        if (string.IsNullOrEmpty(dm.InspectorDataType)) return null;
-
-        return DataTypes.maps[dm.InspectorDataType];
+        Debug.LogError("No DataMapper (this): " + gameObject.name, this);
+        return null;
     }
 
     public void ResetPropertyMapper()
@@ -146,7 +145,7 @@ public class PropertyMapper : MonoBehaviour
     public T GetDataType<T>() where T : BaseData
     {
         DataMapper dm = null;
-        Transform t = transform;
+        var t = transform;
         while (t != null && dm == null)
         {
             t = t.parent;
@@ -159,29 +158,32 @@ public class PropertyMapper : MonoBehaviour
             return null;
         }
 
+        if (dm == null)
+        {
+            return null;
+        }
+
         var ret = dm.GetData<T>();
         return ret;
     }
 
-    public virtual void SetPropertyValue(object v)
+    protected virtual void SetPropertyValue(object v)
     {
         if (v == null) return;
 
         var components = GetComponents<MonoBehaviour>();
-        for (int i = 0; i < components.Length; i++)
+        foreach (var c in components)
         {
-            var c = components[i];
             if (c == null) continue;
 
-            if (c is DataMapper mapper)
+            switch (c)
             {
-                mapper.SetData(v as BaseData);
-                return;
-            }
-            else if (c is Text txt)
-            {
-                SetText(txt, v);
-                continue;
+                case DataMapper mapper:
+                    mapper.SetData(v as BaseData);
+                    return;
+                case Text txt:
+                    SetText(txt, v);
+                    continue;
             }
         }
     }
@@ -190,7 +192,7 @@ public class PropertyMapper : MonoBehaviour
     {
         if (label == null) return;
 
-        string v = o.ToString();
+        var v = o.ToString();
         if (string.IsNullOrEmpty(v))
         {
             v = defaultValue;

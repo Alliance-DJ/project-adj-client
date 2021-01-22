@@ -45,7 +45,10 @@ public static class TypeCache
     public static List<Type> GetSubClasses(Type baseClassType)
     {
 #if !NETFX_CORE
-        if (baseClassType == null) { return null; }
+        if (baseClassType == null)
+        {
+            return null;
+        }
 
         if (!cache.ContainsKey(baseClassType))
         {
@@ -61,7 +64,10 @@ public static class TypeCache
     public static PropertyInfo[] GetProperties(Type baseClassType)
     {
 #if !NETFX_CORE
-        if (baseClassType == null) { return null; }
+        if (baseClassType == null)
+        {
+            return null;
+        }
 
         if (!propertiesCache.ContainsKey(baseClassType))
         {
@@ -77,7 +83,10 @@ public static class TypeCache
     public static FieldInfo[] GetFields(Type baseClassType)
     {
 #if !NETFX_CORE
-        if (baseClassType == null) { return null; }
+        if (baseClassType == null)
+        {
+            return null;
+        }
 
         if (!fieldsCache.ContainsKey(baseClassType))
         {

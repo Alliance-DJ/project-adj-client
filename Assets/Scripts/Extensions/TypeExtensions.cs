@@ -20,7 +20,7 @@ public static class TypeExtensions
     {
         if (!rootType.IsClass) return null;
 
-        if (searchAssemblies == null) { searchAssemblies = AppDomain.CurrentDomain.GetAssemblies(); }
+        searchAssemblies ??= AppDomain.CurrentDomain.GetAssemblies();
 
         var results = new List<Type>();
 
