@@ -331,15 +331,15 @@ public static class MathUtil
     /// Find 3D point that minimizes distance to a set of 2 or more lines, ignoring outliers
     /// </summary>
     /// <param name="rays">list of rays, each specifying a line, must have at least 1</param>
-    /// <param name="ransac_iterations">number of iterations:  log(1-p)/log(1-(1-E)^s)
+    /// <param name="ransacIterations">number of iterations:  log(1-p)/log(1-(1-E)^s)
     ///      where p is probability of at least one sample containing s points is all inliers
     ///      E is proportion of outliers (1-ransac_ratio)
     ///      e.g. p=0.999, ransac_ratio=0.54, s=2 ==>  log(0.001)/(log(1-0.54^2) = 20
     /// </param>
-    /// <param name="ransac_threshold">minimum distance from point to line for a line to be considered an inlier</param>
+    /// <param name="ransacThreshold">minimum distance from point to line for a line to be considered an inlier</param>
     /// <param name="numActualInliers">return number of inliers: lines that are within ransac_threshold of nearest point</param>
     /// <returns>point nearest to the set of lines, ignoring outliers</returns>
-    public static Vector3 NearestPointToLinesRANSAC(List<Ray> rays, int ransac_iterations, float ransac_threshold,
+    public static Vector3 NearestPointToLinesRansac(List<Ray> rays, int ransacIterations, float ransacThreshold,
         out int numActualInliers)
     {
         // start with something, just in case no inliers - this works for case of 1 or 2 rays
@@ -347,13 +347,13 @@ public static class MathUtil
         numActualInliers = 0;
         if (rays.Count > 2)
         {
-            for (var it = 0; it < ransac_iterations; it++)
+            for (var it = 0; it < ransacIterations; it++)
             {
                 var testPoint =
                     NearestPointToLines(rays[Random.Range(0, rays.Count)], rays[Random.Range(0, rays.Count)]);
 
                 // count inliers
-                var numInliersForIteration = rays.Count(t => DistanceOfPointToLine(t, testPoint) < ransac_threshold);
+                var numInliersForIteration = rays.Count(t => DistanceOfPointToLine(t, testPoint) < ransacThreshold);
 
                 // remember best
                 if (numInliersForIteration <= numActualInliers) continue;
@@ -365,7 +365,7 @@ public static class MathUtil
 
         // now find and count actual inliers and do least-squares to find best fit
         var point = nearestPoint;
-        var inlierList = rays.Where(r => DistanceOfPointToLine(r, point) < ransac_threshold);
+        var inlierList = rays.Where(r => DistanceOfPointToLine(r, point) < ransacThreshold);
         var list = inlierList.ToList();
         numActualInliers = list.Count();
         if (numActualInliers >= 2)

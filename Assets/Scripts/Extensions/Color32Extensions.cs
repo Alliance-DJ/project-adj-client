@@ -28,32 +28,32 @@ public static class Color32Extensions
     /// <summary>
     /// Creates a Color from a hexcode string
     /// </summary>
-    public static Color ParseHexcode(string hexstring)
+    public static Color ParseHexCode(string hexString)
     {
-        if (hexstring.StartsWith("#"))
+        if (hexString.StartsWith("#"))
         {
-            hexstring = hexstring.Substring(1);
+            hexString = hexString.Substring(1);
         }
 
-        if (hexstring.StartsWith("0x"))
+        if (hexString.StartsWith("0x"))
         {
-            hexstring = hexstring.Substring(2);
+            hexString = hexString.Substring(2);
         }
 
-        if (hexstring.Length == 6)
+        if (hexString.Length == 6)
         {
-            hexstring += "FF";
+            hexString += "FF";
         }
 
-        if (hexstring.Length != 8)
+        if (hexString.Length != 8)
         {
-            throw new ArgumentException($"{hexstring} is not a valid color string.");
+            throw new ArgumentException($"{hexString} is not a valid color string.");
         }
 
-        var r = byte.Parse(hexstring.Substring(0, 2), NumberStyles.HexNumber);
-        var g = byte.Parse(hexstring.Substring(2, 2), NumberStyles.HexNumber);
-        var b = byte.Parse(hexstring.Substring(4, 2), NumberStyles.HexNumber);
-        var a = byte.Parse(hexstring.Substring(6, 2), NumberStyles.HexNumber);
+        var r = byte.Parse(hexString.Substring(0, 2), NumberStyles.HexNumber);
+        var g = byte.Parse(hexString.Substring(2, 2), NumberStyles.HexNumber);
+        var b = byte.Parse(hexString.Substring(4, 2), NumberStyles.HexNumber);
+        var a = byte.Parse(hexString.Substring(6, 2), NumberStyles.HexNumber);
 
         const float maxRgbValue = 255;
         var c = new Color(r / maxRgbValue, g / maxRgbValue, b / maxRgbValue, a / maxRgbValue);

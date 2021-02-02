@@ -9,7 +9,7 @@ using UnityEngine;
 [CustomEditor(typeof(PropertyMapper), true)]
 public class PropertyMapperEditor : Editor
 {
-    private const string NONE = "None";
+    private const string None = "None";
 
     private string defaultValue;
     private string format;
@@ -92,9 +92,9 @@ public class PropertyMapperEditor : Editor
         if (searching)
             tempNames.RemoveAll(n => !n.ToLower().Contains(searchKey.ToLower()));
 
-        tempNames.Insert(0, NONE);
+        tempNames.Insert(0, None);
 
-        var currentTypeName = !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : NONE;
+        var currentTypeName = !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : None;
         EditorGUI.BeginChangeCheck();
         currentIndex = EditorGUILayout.Popup(tempNames.FindIndex(t => t == currentTypeName), tempNames.ToArray());
 
@@ -102,11 +102,11 @@ public class PropertyMapperEditor : Editor
         {
             Undo.RecordObject(mapper, "Change PropertyMapper PropertyData");
             if (currentIndex >= 0)
-                mapper.propertyName = tempNames[currentIndex] != NONE ? tempNames[currentIndex] : null;
+                mapper.propertyName = tempNames[currentIndex] != None ? tempNames[currentIndex] : null;
         }
 
         EditorGUILayout.LabelField("Property Name : ",
-            !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : NONE);
+            !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : None);
 
         string propertyName = mapper.propertyName;
         if (!string.IsNullOrEmpty(propertyName) &&
@@ -151,9 +151,9 @@ public class PropertyMapperEditor : Editor
         if (searching)
             tempNames.RemoveAll(n => !n.ToLower().Contains(subSearchKey.ToLower()));
 
-        tempNames.Insert(0, NONE);
+        tempNames.Insert(0, None);
 
-        var currentTypeName = !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : NONE;
+        var currentTypeName = !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : None;
         EditorGUI.BeginChangeCheck();
         currentSubIndex =
             EditorGUILayout.Popup(tempNames.FindIndex(t => t == currentTypeName), tempNames.ToArray());
@@ -162,11 +162,11 @@ public class PropertyMapperEditor : Editor
         {
             Undo.RecordObject(mapper, "Change PropertyMapper SubPropertyData");
             if (currentSubIndex >= 0)
-                mapper.subPropertyName = tempNames[currentSubIndex] != NONE ? tempNames[currentSubIndex] : null;
+                mapper.subPropertyName = tempNames[currentSubIndex] != None ? tempNames[currentSubIndex] : null;
         }
 
         EditorGUILayout.LabelField("Sub Property Name : ",
-            !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : NONE);
+            !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : None);
     }
 }
 

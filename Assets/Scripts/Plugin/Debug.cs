@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using UnityEngine;
 using ConditionalAttribute = System.Diagnostics.ConditionalAttribute;
 using Object = UnityEngine.Object;
@@ -98,8 +99,10 @@ public static class Debug
         => UnityEngine.Debug.DrawLine(start, end, color);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-    public static void DrawLine(Vector3 start, Vector3 end, Color color = default, float duration = 0.0f,
-        bool depthTest = true)
+    public static void DrawLine(Vector3 start, Vector3 end,
+        [DefaultValue("Color.white")] Color color,
+        [DefaultValue("0.0f")] float duration,
+        [DefaultValue("true")] bool depthTest)
         => UnityEngine.Debug.DrawLine(start, end, color, duration, depthTest);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
@@ -115,8 +118,10 @@ public static class Debug
         => UnityEngine.Debug.DrawRay(start, dir, color, duration);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-    public static void DrawRay(Vector3 start, Vector3 dir, Color color = default, float duration = 0.0f,
-        bool depthTest = true)
+    public static void DrawRay(Vector3 start, Vector3 dir,
+        [DefaultValue("Color.white")] Color color,
+        [DefaultValue("0.0f")] float duration,
+        [DefaultValue("true")] bool depthTest)
         => UnityEngine.Debug.DrawRay(start, dir, color, duration, depthTest);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
@@ -132,7 +137,7 @@ public static class Debug
     #region Log
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-    public static void Log(object message, UnityEngine.Object context)
+    public static void Log(object message, Object context)
         => UnityEngine.Debug.Log(message, context);
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]

@@ -9,7 +9,7 @@ public struct Response
     /// <summary>
     /// Was the REST call successful?
     /// </summary>
-    public bool Successful { get; }
+    public readonly bool Successful;
 
     /// <summary>
     /// Response body from the resource.
@@ -30,7 +30,7 @@ public struct Response
     /// <summary>
     /// Response code from the resource.
     /// </summary>
-    public long ResponseCode { get; }
+    public readonly long ResponseCode;
 
     /// <summary>
     /// Constructor.

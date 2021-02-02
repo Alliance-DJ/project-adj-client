@@ -7,7 +7,7 @@ using UnityEditor;
 
 public static class EditorLayerExtensions
 {
-    private static SerializedProperty tagManagerLayers;
+    private static SerializedProperty _tagManagerLayers;
 
     /// <summary>
     /// The current layers defined in the Tag Manager.
@@ -16,12 +16,12 @@ public static class EditorLayerExtensions
     {
         get
         {
-            if (tagManagerLayers == null)
+            if (_tagManagerLayers == null)
             {
                 InitializeTagManager();
             }
 
-            return tagManagerLayers;
+            return _tagManagerLayers;
         }
     }
 
@@ -36,9 +36,9 @@ public static class EditorLayerExtensions
         }
 
         var tagsManager = new SerializedObject(tagAssets);
-        tagManagerLayers = tagsManager.FindProperty("layers");
+        _tagManagerLayers = tagsManager.FindProperty("layers");
 
-        Debug.Assert(tagManagerLayers != null);
+        Debug.Assert(_tagManagerLayers != null);
     }
 
     /// <summary>

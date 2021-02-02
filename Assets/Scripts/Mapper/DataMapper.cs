@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DataMapper : MonoBehaviour
 {
-    public string InspectorDataType;
+    public string inspectorDataType;
 
     private BaseData data;
 
@@ -53,7 +53,7 @@ public class DataMapper : MonoBehaviour
     {
         if (any == null) return;
 
-        if (InspectorDataType == null || any.GetType().Name != InspectorDataType)
+        if (inspectorDataType == null || any.GetType().Name != inspectorDataType)
         {
             Debug.LogError("NOT MATCH TYPE");
             return;

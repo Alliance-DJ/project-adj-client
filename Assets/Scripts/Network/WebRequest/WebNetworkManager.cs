@@ -9,7 +9,7 @@ using Query = System.Collections.Generic.Dictionary<string, string>;
 
 public static class WebNetworkManager
 {
-    private const string API_BASE_URL = "localhost:3000"; // host
+    private const string APIBaseURL = "localhost:3000"; // host
 
     public static string AccessToken { get; private set; }
 
@@ -41,7 +41,7 @@ public static class WebNetworkManager
     {
         try
         {
-            var url = new StringBuilder($"{API_BASE_URL}{endpoint}");
+            var url = new StringBuilder($"{APIBaseURL}{endpoint}");
             Debug.Log($"ENDPOINT - {endpoint} QUERY - {query?.Count ?? -1}");
             if (query != null)
             {
@@ -59,7 +59,7 @@ public static class WebNetworkManager
         }
     }
 
-    public static async Task<T> GET<T>(string endpoint, string group = "", Query query = null,
+    public static async Task<T> Get<T>(string endpoint, string group = "", Query query = null,
         bool useAccessToken = true)
     {
         var url = MakeURL(endpoint, query);
@@ -80,7 +80,7 @@ public static class WebNetworkManager
         return GetJson<T>(response, group);
     }
 
-    public static async Task<T> POST<T>(string endpoint, WWWForm form, bool useAccessToken = true)
+    public static async Task<T> Post<T>(string endpoint, WWWForm form, bool useAccessToken = true)
     {
         var url = MakeURL(endpoint);
         Debug.Log($"POST - {url}");
@@ -100,7 +100,7 @@ public static class WebNetworkManager
         return GetJson<T>(response);
     }
 
-    public static async Task<T> PUT<T>(string endpoint, Data data, bool useAccessToken = true)
+    public static async Task<T> Put<T>(string endpoint, Data data, bool useAccessToken = true)
     {
         var url = MakeURL(endpoint);
         Debug.Log($"PUT - {url}");
@@ -121,7 +121,7 @@ public static class WebNetworkManager
         return GetJson<T>(response);
     }
 
-    public static async Task DELETE(string endpoint, bool useAccessToken = true)
+    public static async Task Delete(string endpoint, bool useAccessToken = true)
     {
         var url = MakeURL(endpoint);
         Debug.Log($"DELETE - {url}");
@@ -140,7 +140,7 @@ public static class WebNetworkManager
         Debug.Log("EXIT - DELETE");
     }
 
-    public static async Task<T> PATCH<T>(string endpoint, Data data, bool useAccessToken = true)
+    public static async Task<T> Patch<T>(string endpoint, Data data, bool useAccessToken = true)
     {
         var url = MakeURL(endpoint);
         Debug.Log($"PATCH - {url}");

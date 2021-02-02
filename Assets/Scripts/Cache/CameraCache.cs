@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 public static class CameraCache
 {
-    private static Camera cachedCamera;
+    private static Camera _cachedCamera;
 
     /// <summary>
     /// Returns a cached reference to the main camera and uses Camera.main if it hasn't been cached yet.
@@ -18,14 +18,14 @@ public static class CameraCache
     {
         get
         {
-            if (cachedCamera != null)
+            if (_cachedCamera != null)
             {
-                if (cachedCamera.gameObject.activeInHierarchy)
+                if (_cachedCamera.gameObject.activeInHierarchy)
                 {
                     // If the cached camera is active, return it
                     // Otherwise, our playspace may have been disabled
                     // We'll have to search for the next available
-                    return cachedCamera;
+                    return _cachedCamera;
                 }
             }
 
@@ -52,9 +52,9 @@ public static class CameraCache
             }
 
             // Cache the main camera
-            cachedCamera = mainCamera;
+            _cachedCamera = mainCamera;
 
-            return cachedCamera;
+            return _cachedCamera;
         }
     }
 }

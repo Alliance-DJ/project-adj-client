@@ -10,8 +10,7 @@ public abstract class PropertyMapper : MonoBehaviour
     public string format;
     public string propertyName, subPropertyName;
 
-    private static readonly Dictionary<Type, Dictionary<string, IReflectionGet>> cached =
-        new Dictionary<Type, Dictionary<string, IReflectionGet>>();
+    private static Dictionary<Type, Dictionary<string, IReflectionGet>> _cached;
 
     private interface IReflectionGet
     {
@@ -38,7 +37,8 @@ public abstract class PropertyMapper : MonoBehaviour
 
     private static IReflectionGet GetReflectionGet(Type type, string pName)
     {
-        if (cached.TryGetValueDicDic(type, pName, out var r))
+        _cached ??= new Dictionary<Type, Dictionary<string, IReflectionGet>>();
+        if (_cached.TryGetValueDicDic(type, pName, out var r))
         {
             return r;
         }
@@ -47,7 +47,7 @@ public abstract class PropertyMapper : MonoBehaviour
         if (field != null)
         {
             r = new FieldGet(field);
-            cached.AddDicDic(type, pName, r);
+            _cached.AddDicDic(type, pName, r);
             return r;
         }
 
@@ -55,11 +55,11 @@ public abstract class PropertyMapper : MonoBehaviour
         if (property != null)
         {
             r = new PropertyGet(property);
-            cached.AddDicDic(type, pName, r);
+            _cached.AddDicDic(type, pName, r);
             return r;
         }
 
-        cached.AddDicDic(type, pName, null);
+        _cached.AddDicDic(type, pName, null);
         return null;
     }
 
@@ -85,7 +85,7 @@ public abstract class PropertyMapper : MonoBehaviour
 
                 get = GetReflectionGet(subType, subPropertyName);
                 if (get == null) break;
-                
+
                 value = get.GetValue(value);
                 break;
             }
@@ -128,7 +128,7 @@ public abstract class PropertyMapper : MonoBehaviour
         }
 
         if (t != null && dm != null)
-            return string.IsNullOrEmpty(dm.InspectorDataType) ? null : DataTypes.maps[dm.InspectorDataType];
+            return string.IsNullOrEmpty(dm.inspectorDataType) ? null : DataTypes.Maps[dm.inspectorDataType];
 
         Debug.LogError("No DataMapper (this): " + gameObject.name, this);
         return null;

@@ -28,6 +28,7 @@ public static class CameraExtensions
     /// Returns if a point will be rendered on the screen in either eye
     /// </summary>
     /// <param name="camera">The camera to check the point against</param>
+    /// <param name="position"></param>
     public static bool IsInFOV(this Camera camera, Vector3 position)
     {
         var screenPoint = camera.WorldToViewportPoint(position);
@@ -43,6 +44,7 @@ public static class CameraExtensions
     /// By default, the cone's tip is "chopped off" by an amount defined by the camera's
     /// far and near clip planes.
     /// </summary>
+    /// <param name="camera"></param>
     /// <param name="point">Point to test</param>
     /// <param name="coneAngleBufferDegrees">Degrees to expand the cone radius by.</param>
     public static bool IsInFOVCone(this Camera camera,

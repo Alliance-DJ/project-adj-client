@@ -38,7 +38,7 @@ public static class CollectionsExtensions
     /// Inserts an item in its sorted position into an already sorted collection. This is useful if you need to consume the
     /// collection in between insertions and need it to stay correctly sorted the whole time. If you just need to insert a
     /// bunch of items and then consume the sorted collection at the end, it's faster to add all the elements and then use
-    /// <see cref="List{T}.Sort"/> at the end.
+    /// <see cref="List{T}.Sort()"/> at the end.
     /// </summary>
     /// <typeparam name="TElement">The type of element in the collection.</typeparam>
     /// <param name="elements">The collection of sorted elements to be inserted into.</param>
@@ -119,53 +119,53 @@ public static class CollectionsExtensions
         return output;
     }
 
-    public static void AddDicList<K, V>(this Dictionary<K, List<V>> dic, K key, V value)
+    public static void AddDicList<TK, TV>(this Dictionary<TK, List<TV>> dic, TK key, TV value)
     {
         if (!dic.TryGetValue(key, out var r))
         {
-            r = new List<V>();
+            r = new List<TV>();
             dic[key] = r;
         }
 
         r.Add(value);
     }
 
-    public static void AddDicHashSet<K, V>(this Dictionary<K, HashSet<V>> dic, K key, V value)
+    public static void AddDicHashSet<TK, TV>(this Dictionary<TK, HashSet<TV>> dic, TK key, TV value)
     {
         if (!dic.TryGetValue(key, out var r))
         {
-            r = new HashSet<V>();
+            r = new HashSet<TV>();
             dic[key] = r;
         }
 
         r.Add(value);
     }
 
-    public static void AddDicDic<K1, K2, V>(this Dictionary<K1, Dictionary<K2, V>> dic, K1 key1, K2 key2, V value)
+    public static void AddDicDic<TK1, TK2, TV>(this Dictionary<TK1, Dictionary<TK2, TV>> dic, TK1 key1, TK2 key2, TV value)
     {
         if (!dic.TryGetValue(key1, out var dic2))
         {
-            dic2 = new Dictionary<K2, V>();
+            dic2 = new Dictionary<TK2, TV>();
             dic[key1] = dic2;
         }
 
         dic2[key2] = value;
     }
 
-    public static void AddDicDicList<K1, K2, V>(this Dictionary<K1, Dictionary<K2, List<V>>> dic, K1 key1, K2 key2,
-        V value)
+    public static void AddDicDicList<TK1, TK2, TV>(this Dictionary<TK1, Dictionary<TK2, List<TV>>> dic, TK1 key1, TK2 key2,
+        TV value)
     {
         if (!dic.TryGetValue(key1, out var dic2))
         {
-            dic2 = new Dictionary<K2, List<V>>();
+            dic2 = new Dictionary<TK2, List<TV>>();
             dic[key1] = dic2;
         }
 
         dic2.AddDicList(key2, value);
     }
 
-    public static bool TryGetValueDicDic<K1, K2, V>(this Dictionary<K1, Dictionary<K2, V>> dic, K1 key1, K2 key2,
-        out V value)
+    public static bool TryGetValueDicDic<TK1, TK2, TV>(this Dictionary<TK1, Dictionary<TK2, TV>> dic, TK1 key1, TK2 key2,
+        out TV value)
     {
         if (dic.TryGetValue(key1, out var dic2)) return dic2.TryGetValue(key2, out value);
 
@@ -173,20 +173,20 @@ public static class CollectionsExtensions
         return false;
     }
 
-    public static void AddDic3<K1, K2, K3, V>(this Dictionary<K1, Dictionary<K2, Dictionary<K3, V>>> dic, K1 key1,
-        K2 key2, K3 key3, V value)
+    public static void AddDic3<TK1, TK2, TK3, TV>(this Dictionary<TK1, Dictionary<TK2, Dictionary<TK3, TV>>> dic, TK1 key1,
+        TK2 key2, TK3 key3, TV value)
     {
         if (!dic.TryGetValue(key1, out var dic2))
         {
-            dic2 = new Dictionary<K2, Dictionary<K3, V>>();
+            dic2 = new Dictionary<TK2, Dictionary<TK3, TV>>();
             dic[key1] = dic2;
         }
 
         dic2.AddDicDic(key2, key3, value);
     }
 
-    public static bool TryGetValueDic3<K1, K2, K3, V>(this Dictionary<K1, Dictionary<K2, Dictionary<K3, V>>> dic,
-        K1 key1, K2 key2, K3 key3, out V value)
+    public static bool TryGetValueDic3<TK1, TK2, TK3, TV>(this Dictionary<TK1, Dictionary<TK2, Dictionary<TK3, TV>>> dic,
+        TK1 key1, TK2 key2, TK3 key3, out TV value)
     {
         if (dic.TryGetValue(key1, out var dic2)) return dic2.TryGetValueDicDic(key2, key3, out value);
 

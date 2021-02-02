@@ -9,7 +9,7 @@ using UnityEditor;
 [CustomEditor(typeof(DataMapper))]
 public class DataMapperEditor : Editor
 {
-    private const string NONE = "None";
+    private const string None = "None";
 
     private string searchKey;
     private int currentIndex = -1;
@@ -44,9 +44,9 @@ public class DataMapperEditor : Editor
         if (searching)
             types.RemoveAll(n => !n.ToLower().Contains(searchKey.ToLower()));
 
-        types.Insert(0, NONE);
+        types.Insert(0, None);
 
-        var currentTypeName = !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE;
+        var currentTypeName = !string.IsNullOrEmpty(mapper.inspectorDataType) ? mapper.inspectorDataType : None;
         EditorGUI.BeginChangeCheck();
         currentIndex = EditorGUILayout.Popup(types.FindIndex(type => type == currentTypeName), types.ToArray());
 
@@ -62,11 +62,11 @@ public class DataMapperEditor : Editor
             }
 
             if (currentIndex >= 0)
-                mapper.InspectorDataType = types[currentIndex] != NONE ? types[currentIndex] : null;
+                mapper.inspectorDataType = types[currentIndex] != None ? types[currentIndex] : null;
         }
 
         EditorGUILayout.LabelField("Selected Data Class : ",
-            !string.IsNullOrEmpty(mapper.InspectorDataType) ? mapper.InspectorDataType : NONE);
+            !string.IsNullOrEmpty(mapper.inspectorDataType) ? mapper.inspectorDataType : None);
     }
 }
 

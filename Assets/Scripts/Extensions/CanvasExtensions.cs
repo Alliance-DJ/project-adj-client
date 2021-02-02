@@ -65,7 +65,7 @@ public static class CanvasExtensions
         var camera = Camera.main;
 #else
         var camera = CameraCache.Main;
-#endif // UNITY_2020_2_OR_NEWERM
+#endif // UNITY_2020_2_OR_NEWER
         if (camera == null) return viewportCorners;
 
         for (var i = 0; i < 4; i++)
@@ -92,7 +92,7 @@ public static class CanvasExtensions
         var camera = Camera.main;
 #else
         var camera = CameraCache.Main;
-#endif // UNITY_2020_2_OR_NEWERM
+#endif // UNITY_2020_2_OR_NEWER
         if (camera == null) return screenCorners;
 
         for (var i = 0; i < 4; i++)

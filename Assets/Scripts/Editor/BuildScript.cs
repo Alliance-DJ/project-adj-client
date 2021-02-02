@@ -9,19 +9,19 @@ using UnityEngine;
 
 public static class BuildScript
 {
-    private static readonly string PRODUCT_NAME = Application.productName;
-    private static readonly string VERSION = Application.version;
+    private static readonly string ProductName = Application.productName;
+    private static readonly string Version = Application.version;
 
-    public static readonly string APP_FOLDER = Directory.GetCurrentDirectory();
+    private static readonly string AppFolder = Directory.GetCurrentDirectory();
 
-    public static readonly string APK_NAME = $"{PRODUCT_NAME}_{VERSION}";
-    public static readonly string ANDROID_FOLDER = $"{APP_FOLDER}/Builds/Android";
-    public static readonly string ANDROID_DEVELOPMENT_FILE = $"{ANDROID_FOLDER}/Development/{APK_NAME}_DEV.apk";
-    public static readonly string ANDROID_RELEASE_FILE = $"{ANDROID_FOLDER}/Release/{APK_NAME}_REL.apk";
+    private static readonly string APKName = $"{ProductName}_{Version}";
+    private static readonly string AndroidFolder = $"{AppFolder}/Builds/Android";
+    private static readonly string AndroidDevelopmentFile = $"{AndroidFolder}/Development/{APKName}_DEV.apk";
+    private static readonly string AndroidReleaseFile = $"{AndroidFolder}/Release/{APKName}_REL.apk";
 
-    public static readonly string IOS_FOLDER = $"{APP_FOLDER}/Builds/iOS";
-    public static readonly string IOS_DEVELOPMENT_FOLDER = $"{IOS_FOLDER}/Development/{VERSION}";
-    public static readonly string IOS_RELEASE_FOLDER = $"{IOS_FOLDER}/Release/{VERSION}";
+    private static readonly string IOSFolder = $"{AppFolder}/Builds/iOS";
+    private static readonly string IOSDevelopmentFolder = $"{IOSFolder}/Development/{Version}";
+    private static readonly string IOSReleaseFolder = $"{IOSFolder}/Release/{Version}";
 
     private static string[] GetScenes()
     {
@@ -35,8 +35,8 @@ public static class BuildScript
     [MenuItem("Build/Development/Android")]
     public static void AndroidDevelopment()
     {
-        if (File.Exists(ANDROID_DEVELOPMENT_FILE))
-            File.Delete(ANDROID_DEVELOPMENT_FILE);
+        if (File.Exists(AndroidDevelopmentFile))
+            File.Delete(AndroidDevelopmentFile);
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
 
@@ -44,7 +44,7 @@ public static class BuildScript
             EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Android, BuildTarget.Android);
         if (!success) return;
 
-        var report = BuildPipeline.BuildPlayer(GetScenes(), ANDROID_DEVELOPMENT_FILE, BuildTarget.Android,
+        var report = BuildPipeline.BuildPlayer(GetScenes(), AndroidDevelopmentFile, BuildTarget.Android,
             BuildOptions.Development);
         BuildReport(report);
     }
@@ -52,8 +52,8 @@ public static class BuildScript
     [MenuItem("Build/Release/Android")]
     public static void AndroidRelease()
     {
-        if (File.Exists(ANDROID_RELEASE_FILE))
-            File.Delete(ANDROID_RELEASE_FILE);
+        if (File.Exists(AndroidReleaseFile))
+            File.Delete(AndroidReleaseFile);
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
 
@@ -62,22 +62,22 @@ public static class BuildScript
         if (!success) return;
 
         var report =
-            BuildPipeline.BuildPlayer(GetScenes(), ANDROID_RELEASE_FILE, BuildTarget.Android, BuildOptions.None);
+            BuildPipeline.BuildPlayer(GetScenes(), AndroidReleaseFile, BuildTarget.Android, BuildOptions.None);
         BuildReport(report);
     }
 
     [MenuItem("Build/Development/iOS")]
     public static void IOSDevelopment()
     {
-        if (Directory.Exists(IOS_DEVELOPMENT_FOLDER))
-            Directory.Delete(IOS_DEVELOPMENT_FOLDER);
+        if (Directory.Exists(IOSDevelopmentFolder))
+            Directory.Delete(IOSDevelopmentFolder);
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
 
         var success = EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.iOS, BuildTarget.iOS);
         if (!success) return;
 
-        var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_DEVELOPMENT_FOLDER, BuildTarget.iOS,
+        var report = BuildPipeline.BuildPlayer(GetScenes(), IOSDevelopmentFolder, BuildTarget.iOS,
             BuildOptions.Development);
         BuildReport(report);
     }
@@ -85,15 +85,15 @@ public static class BuildScript
     [MenuItem("Build/Release/iOS")]
     public static void IOSRelease()
     {
-        if (Directory.Exists(IOS_RELEASE_FOLDER))
-            Directory.Delete(IOS_RELEASE_FOLDER);
+        if (Directory.Exists(IOSReleaseFolder))
+            Directory.Delete(IOSReleaseFolder);
 
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
 
         var success = EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.iOS, BuildTarget.iOS);
         if (!success) return;
 
-        var report = BuildPipeline.BuildPlayer(GetScenes(), IOS_RELEASE_FOLDER, BuildTarget.iOS, BuildOptions.None);
+        var report = BuildPipeline.BuildPlayer(GetScenes(), IOSReleaseFolder, BuildTarget.iOS, BuildOptions.None);
         BuildReport(report);
     }
 
@@ -143,7 +143,7 @@ public static class BuildScript
         }
     }
 
-    public static void Open(string path)
+    private static void Open(string path)
     {
         if (SystemInfo.operatingSystem.IndexOf("Windows", StringComparison.OrdinalIgnoreCase) != -1)
         {
@@ -171,7 +171,6 @@ public static class BuildScript
                 if (!string.IsNullOrEmpty(path))
                     Open(path);
                 break;
-
             default:
                 Debug.Log($"Build Result : {result}");
                 break;

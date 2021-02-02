@@ -14,7 +14,7 @@ using UnityEngine.Networking;
 /// </summary>
 public static class Rest
 {
-    private const string kHttpVerbPatch = "PATCH";
+    public const string kHttpVerbPatch = "PATCH";
 
     #region Authentication
 

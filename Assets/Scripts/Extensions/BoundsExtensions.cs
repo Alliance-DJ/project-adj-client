@@ -9,52 +9,52 @@ using UnityEngine.Assertions;
 public static class BoundsExtensions
 {
     // Corners
-    public const int LBF = 0;
-    public const int LBB = 1;
-    public const int LTF = 2;
-    public const int LTB = 3;
-    public const int RBF = 4;
-    public const int RBB = 5;
-    public const int RTF = 6;
-    public const int RTB = 7;
+    private const int LBF = 0;
+    private const int LBB = 1;
+    private const int LTF = 2;
+    private const int LTB = 3;
+    private const int RBF = 4;
+    private const int RBB = 5;
+    private const int RTF = 6;
+    private const int RTB = 7;
 
     // X axis
-    public const int LTF_RTF = 8;
-    public const int LBF_RBF = 9;
-    public const int RTB_LTB = 10;
-    public const int RBB_LBB = 11;
+    private const int LTF_RTF = 8;
+    private const int LBF_RBF = 9;
+    private const int RTB_LTB = 10;
+    private const int RBB_LBB = 11;
 
     // Y axis
-    public const int LTF_LBF = 12;
-    public const int RTB_RBB = 13;
-    public const int LTB_LBB = 14;
-    public const int RTF_RBF = 15;
+    private const int LTF_LBF = 12;
+    private const int RTB_RBB = 13;
+    private const int LTB_LBB = 14;
+    private const int RTF_RBF = 15;
 
     // Z axis
-    public const int RBF_RBB = 16;
-    public const int RTF_RTB = 17;
-    public const int LBF_LBB = 18;
-    public const int LTF_LTB = 19;
+    private const int RBF_RBB = 16;
+    private const int RTF_RTB = 17;
+    private const int LBF_LBB = 18;
+    private const int LTF_LTB = 19;
 
     // 2D corners
-    public const int LT = 0;
-    public const int LB = 1;
-    public const int RT = 2;
-    public const int RB = 3;
+    private const int LT = 0;
+    private const int LB = 1;
+    private const int RT = 2;
+    private const int RB = 3;
 
     // 2D midpoints
-    public const int LT_RT = 4;
-    public const int RT_RB = 5;
-    public const int RB_LB = 6;
-    public const int LB_LT = 7;
+    private const int LT_RT = 4;
+    private const int RT_RB = 5;
+    private const int RB_LB = 6;
+    private const int LB_LT = 7;
 
     // Face points
-    public const int TOP = 0;
-    public const int BOT = 1;
-    public const int LFT = 2;
-    public const int RHT = 3;
-    public const int FWD = 4;
-    public const int BCK = 5;
+    private const int TOP = 0;
+    private const int BOT = 1;
+    private const int LFT = 2;
+    private const int RHT = 3;
+    private const int FWD = 4;
+    private const int BCK = 5;
 
     // Axis of the capsule’s lengthwise orientation in the object’s local space
     private const int CAPSULE_X_AXIS = 0;
@@ -62,7 +62,7 @@ public static class BoundsExtensions
     private const int CAPSULE_Z_AXIS = 2;
 
     // Edges used to render the bounds.
-    private static readonly int[] boundsEdges =
+    private static readonly int[] BoundsEdges =
     {
         LBF, LBB,
         LBB, LTB,
@@ -85,9 +85,9 @@ public static class BoundsExtensions
         Z
     }
 
-    private static Vector3[] corners;
+    private static Vector3[] _corners;
 
-    private static readonly Vector3[] rectTransformCorners = new Vector3[4];
+    private static readonly Vector3[] RectTransformCorners = new Vector3[4];
 
     #region Public Static Functions
 
@@ -160,14 +160,14 @@ public static class BoundsExtensions
     public static void GetCornerPositions(this Bounds bounds, ref Vector3[] positions)
     {
         // Calculate the local points to transform.
-        Vector3 center = bounds.center;
-        Vector3 extents = bounds.extents;
-        float leftEdge = center.x - extents.x;
-        float rightEdge = center.x + extents.x;
-        float bottomEdge = center.y - extents.y;
-        float topEdge = center.y + extents.y;
-        float frontEdge = center.z - extents.z;
-        float backEdge = center.z + extents.z;
+        var center = bounds.center;
+        var extents = bounds.extents;
+        var leftEdge = center.x - extents.x;
+        var rightEdge = center.x + extents.x;
+        var bottomEdge = center.y - extents.y;
+        var topEdge = center.y + extents.y;
+        var frontEdge = center.z - extents.z;
+        var backEdge = center.z + extents.z;
 
         // Allocate the array if needed.
         const int numPoints = 8;
@@ -392,6 +392,7 @@ public static class BoundsExtensions
     /// <summary>
     /// Calculates how much scale is required for this Bounds to match another Bounds.
     /// </summary>
+    /// <param name="bounds"></param>
     /// <param name="otherBounds">Object representation to be scaled to</param>
     /// <param name="padding">padding multiplied into another bounds</param>
     /// <returns>Scale represented as a Vector3 </returns>
@@ -407,6 +408,7 @@ public static class BoundsExtensions
     /// <summary>
     /// Calculates how much scale is required for this Bounds to fit inside another bounds without stretching.
     /// </summary>
+    /// <param name="bounds"></param>
     /// <param name="containerBounds">The bounds of the container we're trying to fit this object.</param>
     /// <returns>A single scale factor that can be applied to this object to fit inside the container.</returns>
     public static float GetScaleToFitInside(this Bounds bounds, Bounds containerBounds)
@@ -452,6 +454,7 @@ public static class BoundsExtensions
     /// <param name="collider">Target collider</param>
     /// <param name="boundsPoints">array reference that gets filled with points</param>
     /// <param name="ignoreLayers">layerMask to simplify search</param>
+    /// <param name="relativeTo"></param>
     public static void GetColliderBoundsPoints(Collider collider, List<Vector3> boundsPoints, LayerMask ignoreLayers,
         Transform relativeTo = null)
     {
@@ -465,25 +468,25 @@ public static class BoundsExtensions
             case SphereCollider sphereCollider:
             {
                 var sphereBounds = new Bounds(sphereCollider.center, Vector3.one * sphereCollider.radius * 2);
-                sphereBounds.GetFacePositions(sphereCollider.transform, ref corners);
-                InverseTransformPoints(ref corners, relativeTo);
-                boundsPoints.AddRange(corners);
+                sphereBounds.GetFacePositions(sphereCollider.transform, ref _corners);
+                InverseTransformPoints(ref _corners, relativeTo);
+                boundsPoints.AddRange(_corners);
                 break;
             }
             case BoxCollider boxCollider:
             {
                 var boxBounds = new Bounds(boxCollider.center, boxCollider.size);
-                boxBounds.GetCornerPositions(boxCollider.transform, ref corners);
-                InverseTransformPoints(ref corners, relativeTo);
-                boundsPoints.AddRange(corners);
+                boxBounds.GetCornerPositions(boxCollider.transform, ref _corners);
+                InverseTransformPoints(ref _corners, relativeTo);
+                boundsPoints.AddRange(_corners);
                 break;
             }
             case MeshCollider meshCollider:
             {
                 var meshBounds = meshCollider.sharedMesh.bounds;
-                meshBounds.GetCornerPositions(meshCollider.transform, ref corners);
-                InverseTransformPoints(ref corners, relativeTo);
-                boundsPoints.AddRange(corners);
+                meshBounds.GetCornerPositions(meshCollider.transform, ref _corners);
+                InverseTransformPoints(ref _corners, relativeTo);
+                boundsPoints.AddRange(_corners);
                 break;
             }
             case CapsuleCollider capsuleCollider:
@@ -499,9 +502,9 @@ public static class BoundsExtensions
                     _ => capsuleBounds.size
                 };
 
-                capsuleBounds.GetFacePositions(capsuleCollider.transform, ref corners);
-                InverseTransformPoints(ref corners, relativeTo);
-                boundsPoints.AddRange(corners);
+                capsuleBounds.GetFacePositions(capsuleCollider.transform, ref _corners);
+                InverseTransformPoints(ref _corners, relativeTo);
+                boundsPoints.AddRange(_corners);
                 break;
             }
         }
@@ -538,8 +541,8 @@ public static class BoundsExtensions
                 continue;
             }
 
-            rendererObj.bounds.GetCornerPositionsFromRendererBounds(ref corners);
-            boundsPoints.AddRange(corners);
+            rendererObj.bounds.GetCornerPositionsFromRendererBounds(ref _corners);
+            boundsPoints.AddRange(_corners);
         }
     }
 
@@ -575,15 +578,15 @@ public static class BoundsExtensions
             }
 
             var meshBounds = meshFilterObj.sharedMesh.bounds;
-            meshBounds.GetCornerPositions(meshFilterObj.transform, ref corners);
-            boundsPoints.AddRange(corners);
+            meshBounds.GetCornerPositions(meshFilterObj.transform, ref _corners);
+            boundsPoints.AddRange(_corners);
         }
 
         var rectTransforms = target.GetComponentsInChildren<RectTransform>();
         foreach (var t in rectTransforms)
         {
-            t.GetWorldCorners(rectTransformCorners);
-            boundsPoints.AddRange(rectTransformCorners);
+            t.GetWorldCorners(RectTransformCorners);
+            boundsPoints.AddRange(RectTransformCorners);
         }
     }
 
@@ -645,6 +648,7 @@ public static class BoundsExtensions
     /// <summary>
     /// Returns the screen space corner points of the specified 'Bounds' instance.
     /// </summary>
+    /// <param name="bounds"></param>
     /// <param name="camera">
     /// The camera used for rendering to the screen. This is needed to perform the
     /// transformation to screen space.
@@ -765,9 +769,9 @@ public static class BoundsExtensions
             bounds.max, center - a, center - b, center - c
         };
 
-        for (var i = 0; i < boundsEdges.Length; i += 2)
+        for (var i = 0; i < BoundsEdges.Length; i += 2)
         {
-            Debug.DrawLine(verticies[boundsEdges[i]], verticies[boundsEdges[i + 1]], color, duration, depthTest);
+            Debug.DrawLine(verticies[BoundsEdges[i]], verticies[BoundsEdges[i + 1]], color, duration, depthTest);
         }
     }
 

@@ -7,7 +7,7 @@ public abstract class BaseData
 
 public static class DataTypes
 {
-    public static readonly Dictionary<string, Type> maps = new Dictionary<string, Type>
+    public static readonly Dictionary<string, Type> Maps = new Dictionary<string, Type>
     {
         {"Test1", typeof(Test1)},
         {"Test2", typeof(Test2)},
