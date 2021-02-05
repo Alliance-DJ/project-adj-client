@@ -250,7 +250,7 @@ public static class Rest
     {
         using var webRequest = new UnityWebRequest(query, kHttpVerbPatch, new DownloadHandlerBuffer(),
             new UploadHandlerRaw(bodyData));
-        webRequest.SetRequestHeader("Content-Type", "application/json");
+        webRequest.SetRequestHeader("Content-Type", "application/octet-stream");
         return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData, certificateHandler,
             disposeCertificateHandlerOnDispose);
     }
