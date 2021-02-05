@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 using Data = System.Collections.Generic.Dictionary<string, string>;
+
 using Header = System.Collections.Generic.Dictionary<string, string>;
 using Query = System.Collections.Generic.Dictionary<string, string>;
 
@@ -18,21 +19,9 @@ public static class WebNetworkManager
         AccessToken = Rest.GetBearerOAuthToken(token);
     }
 
-    private static T GetJson<T>(Response response, string group = null)
+    private static T GetJson<T>(Response response)
     {
         var body = response.ResponseBody;
-
-        if (string.IsNullOrWhiteSpace(group) == false)
-        {
-            var builder = new StringBuilder();
-            builder.Append("{\"");
-            builder.Append(group);
-            builder.Append("\":");
-            builder.Append(body);
-            builder.Append("}");
-            body = builder.ToString();
-        }
-
         var data = JsonConvert.DeserializeObject<T>(body);
         return data;
     }
@@ -59,8 +48,7 @@ public static class WebNetworkManager
         }
     }
 
-    public static async Task<T> Get<T>(string endpoint, string group = "", Query query = null,
-        bool useAccessToken = true)
+    public static async Task<T> Get<T>(string endpoint, Query query = null, bool useAccessToken = true)
     {
         var url = MakeURL(endpoint, query);
         Debug.Log($"GET - {url}");
@@ -77,7 +65,7 @@ public static class WebNetworkManager
         var response = await Rest.GetAsync(url, headers);
 
         Debug.Log("EXIT - GET");
-        return GetJson<T>(response, group);
+        return GetJson<T>(response);
     }
 
     public static async Task<T> Post<T>(string endpoint, WWWForm form, bool useAccessToken = true)
