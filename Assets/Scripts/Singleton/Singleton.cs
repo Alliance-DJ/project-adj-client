@@ -2,16 +2,7 @@ using System;
 
 public class Singleton<T> where T : new()
 {
-    private static Lazy<T> _instance;
+    private static readonly Lazy<T> instance = new Lazy<T>(() => new T());
 
-    public static bool IsSingletonCreated => _instance != null && _instance.IsValueCreated;
-
-    public static T Instance
-    {
-        get
-        {
-            _instance ??= new Lazy<T>(() => new T());
-            return _instance.Value;
-        }
-    }
+    public static T Instance => instance.Value;
 }

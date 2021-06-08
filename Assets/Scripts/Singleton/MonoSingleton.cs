@@ -3,95 +3,71 @@ using UnityEngine;
 
 public class MonoSingleton<T> : MonoBehaviour where T : Component
 {
-    private static Lazy<T> _instance;
+    private static readonly Lazy<T> instance = new Lazy<T>(CreateInstance);
 
-    public static bool IsSingletonCreated => _instance != null && _instance.IsValueCreated;
+    public static T Instance => instance.Value;
 
-    public static T Instance
+    private static T CreateInstance()
     {
-        get
-        {
-            _instance ??= new Lazy<T>(() =>
-            {
-                T instance = null;
-                var types = FindObjectsOfType<T>();
-                if (types.Length > 0)
-                {
-                    var type = types[0];
-                    instance = type;
-
-                    if (types.Length > 1)
-                        Debug.LogError($"There is more than one {typeof(T).Name} in the scene.");
-                }
-
-                if (instance != null) return instance;
-
-                var obj = new GameObject($"{typeof(T).Name}(Singleton)");
-                instance = obj.AddComponent<T>();
-
-                return instance;
-            });
-
-            return _instance.Value;
-        }
-    }
-
-    protected virtual void Awake()
-    {
-        if (IsSingletonCreated)
-            Destroy(gameObject);
-    }
-
-    protected virtual void OnDestroy()
-    {
-        _instance = null;
+        return FindObjectOfType<T>();
     }
 }
 
 public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
 {
-    private static Lazy<T> _instance;
-
-    public static bool IsSingletonCreated => _instance != null && _instance.IsValueCreated;
+    private static T instance;
+    private static readonly object lockObj = new object();
 
     public static T Instance
     {
         get
         {
-            _instance ??= new Lazy<T>(() =>
+            if (!instance)
             {
-                T instance = null;
-                var types = FindObjectsOfType<T>();
-                if (types.Length > 0)
+                lock (lockObj)
                 {
-                    var type = types[0];
-                    instance = type;
-
-                    if (types.Length > 1)
-                        Debug.LogError($"There is more than one {typeof(T).Name} in the scene.");
+                    if (!instance)
+                    {
+                        instance = FindObjectOfType<T>();
+                        if (!instance)
+                        {
+                            var obj = new GameObject($"{typeof(T).Name}(Singleton)");
+                            instance = obj.AddComponent<T>();
+                            DontDestroyOnLoad(obj);
+                        }
+                    }
                 }
+            }
 
-                if (instance != null) return instance;
-
-                var obj = new GameObject($"{typeof(T).Name}(Singleton)");
-                instance = obj.AddComponent<T>();
-                DontDestroyOnLoad(obj);
-
-                return instance;
-            });
-
-            return _instance.Value;
+            return instance;
         }
     }
 
+    private bool duplicateObj = false;
     protected virtual void Awake()
     {
-        if (IsSingletonCreated)
+        if (!instance)
+        {
+            instance = CreateInstance();
+
+            if (instance != null)
+                DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            duplicateObj = true;
             Destroy(gameObject);
+        }
     }
 
     protected virtual void OnDestroy()
     {
-        _instance = null;
+        if (!duplicateObj)
+            instance = null;
+    }
+
+    private T CreateInstance()
+    {
+        return gameObject.GetComponent<T>();
     }
 }
