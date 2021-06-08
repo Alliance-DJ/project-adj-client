@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 public static class CameraCache
 {
-    private static Camera _cachedCamera;
+    private static Camera cachedCamera;
 
     /// <summary>
     /// Returns a cached reference to the main camera and uses Camera.main if it hasn't been cached yet.
@@ -18,14 +18,14 @@ public static class CameraCache
     {
         get
         {
-            if (_cachedCamera != null)
+            if (cachedCamera != null)
             {
-                if (_cachedCamera.gameObject.activeInHierarchy)
+                if (cachedCamera.gameObject.activeInHierarchy)
                 {
                     // If the cached camera is active, return it
                     // Otherwise, our playspace may have been disabled
                     // We'll have to search for the next available
-                    return _cachedCamera;
+                    return cachedCamera;
                 }
             }
 
@@ -37,7 +37,7 @@ public static class CameraCache
                 Debug.Log("No main camera found. Searching for cameras in the scene.");
 
                 // If no main camera was found, try to determine one.
-                var cameras = Object.FindObjectsOfType<Camera>();
+                Camera[] cameras = Object.FindObjectsOfType<Camera>();
                 if (cameras.Length == 0)
                 {
                     Debug.LogWarning("No cameras found. Creating a \"MainCamera\".");
@@ -52,9 +52,16 @@ public static class CameraCache
             }
 
             // Cache the main camera
-            _cachedCamera = mainCamera;
-
-            return _cachedCamera;
+            cachedCamera = mainCamera;
+            return cachedCamera;
         }
+    }
+
+    /// <summary>
+    /// Manually update the cached main camera 
+    /// </summary>
+    public static void UpdateCachedMainCamera(Camera camera)
+    {
+        cachedCamera = camera;
     }
 }

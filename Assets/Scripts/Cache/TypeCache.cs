@@ -11,9 +11,9 @@ using System.Reflection;
 /// </summary>
 public static class TypeCache
 {
-    private static Dictionary<Type, List<Type>> _cache;
-    private static Dictionary<Type, PropertyInfo[]> _propertiesCache;
-    private static Dictionary<Type, FieldInfo[]> _fieldsCache;
+    private static Dictionary<Type, List<Type>> cache = new Dictionary<Type, List<Type>>();
+    private static Dictionary<Type, PropertyInfo[]> propertiesCache = new Dictionary<Type, PropertyInfo[]>();
+    private static Dictionary<Type, FieldInfo[]> fieldsCache = new Dictionary<Type, FieldInfo[]>();
 
     /// <summary>
     /// Get all subclass types of base class type T
@@ -50,13 +50,12 @@ public static class TypeCache
             return null;
         }
 
-        _cache ??= new Dictionary<Type, List<Type>>();
-        if (!_cache.ContainsKey(baseClassType))
+        if (!cache.ContainsKey(baseClassType))
         {
-            _cache[baseClassType] = baseClassType.GetAllSubClassesOf();
+            cache[baseClassType] = baseClassType.GetAllSubClassesOf();
         }
 
-        return _cache[baseClassType];
+        return cache[baseClassType];
 #else
         return null;
 #endif
@@ -70,13 +69,12 @@ public static class TypeCache
             return null;
         }
 
-        _propertiesCache ??= new Dictionary<Type, PropertyInfo[]>();
-        if (!_propertiesCache.ContainsKey(baseClassType))
+        if (!propertiesCache.ContainsKey(baseClassType))
         {
-            _propertiesCache[baseClassType] = baseClassType.GetProperties();
+            propertiesCache[baseClassType] = baseClassType.GetProperties();
         }
 
-        return _propertiesCache[baseClassType];
+        return propertiesCache[baseClassType];
 #else
         return null;
 #endif
@@ -90,13 +88,12 @@ public static class TypeCache
             return null;
         }
 
-        _fieldsCache ??= new Dictionary<Type, FieldInfo[]>();
-        if (!_fieldsCache.ContainsKey(baseClassType))
+        if (!fieldsCache.ContainsKey(baseClassType))
         {
-            _fieldsCache[baseClassType] = baseClassType.GetFields();
+            fieldsCache[baseClassType] = baseClassType.GetFields();
         }
 
-        return _fieldsCache[baseClassType];
+        return fieldsCache[baseClassType];
 #else
         return null;
 #endif

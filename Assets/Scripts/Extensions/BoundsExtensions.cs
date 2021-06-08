@@ -117,8 +117,8 @@ public static class BoundsExtensions
     /// <param name="positions">Output corner positions</param>
     /// <param name="bounds">Input bounds, in local space</param>
     /// <remarks>
-    /// Use BoxColliderExtensions.{Left|Right}{Bottom|Top}{Front|Back} consts to index into the output
-    /// corners array.
+    /// <para>Use BoxColliderExtensions.{Left|Right}{Bottom|Top}{Front|Back} consts to index into the output
+    /// corners array.</para>
     /// </remarks>
     public static void GetCornerPositions(this Bounds bounds, Transform transform, ref Vector3[] positions)
     {
@@ -154,8 +154,8 @@ public static class BoundsExtensions
     /// Gets all the corner points of the bounds
     /// </summary>
     /// <remarks>
-    /// Use BoxColliderExtensions.{Left|Right}{Bottom|Top}{Front|Back} consts to index into the output
-    /// corners array.
+    /// <para>Use BoxColliderExtensions.{Left|Right}{Bottom|Top}{Front|Back} consts to index into the output
+    /// corners array.</para>
     /// </remarks>
     public static void GetCornerPositions(this Bounds bounds, ref Vector3[] positions)
     {
@@ -466,47 +466,47 @@ public static class BoundsExtensions
         switch (collider)
         {
             case SphereCollider sphereCollider:
-            {
-                var sphereBounds = new Bounds(sphereCollider.center, Vector3.one * sphereCollider.radius * 2);
-                sphereBounds.GetFacePositions(sphereCollider.transform, ref _corners);
-                InverseTransformPoints(ref _corners, relativeTo);
-                boundsPoints.AddRange(_corners);
-                break;
-            }
-            case BoxCollider boxCollider:
-            {
-                var boxBounds = new Bounds(boxCollider.center, boxCollider.size);
-                boxBounds.GetCornerPositions(boxCollider.transform, ref _corners);
-                InverseTransformPoints(ref _corners, relativeTo);
-                boundsPoints.AddRange(_corners);
-                break;
-            }
-            case MeshCollider meshCollider:
-            {
-                var meshBounds = meshCollider.sharedMesh.bounds;
-                meshBounds.GetCornerPositions(meshCollider.transform, ref _corners);
-                InverseTransformPoints(ref _corners, relativeTo);
-                boundsPoints.AddRange(_corners);
-                break;
-            }
-            case CapsuleCollider capsuleCollider:
-            {
-                var capsuleBounds = new Bounds(capsuleCollider.center, Vector3.zero);
-                var radius = capsuleCollider.radius;
-                var height = capsuleCollider.height;
-                capsuleBounds.size = capsuleCollider.direction switch
                 {
-                    CAPSULE_X_AXIS => new Vector3(height, radius * 2, radius * 2),
-                    CAPSULE_Y_AXIS => new Vector3(radius * 2, height, radius * 2),
-                    CAPSULE_Z_AXIS => new Vector3(radius * 2, radius * 2, height),
-                    _ => capsuleBounds.size
-                };
+                    var sphereBounds = new Bounds(sphereCollider.center, Vector3.one * sphereCollider.radius * 2);
+                    sphereBounds.GetFacePositions(sphereCollider.transform, ref _corners);
+                    InverseTransformPoints(ref _corners, relativeTo);
+                    boundsPoints.AddRange(_corners);
+                    break;
+                }
+            case BoxCollider boxCollider:
+                {
+                    var boxBounds = new Bounds(boxCollider.center, boxCollider.size);
+                    boxBounds.GetCornerPositions(boxCollider.transform, ref _corners);
+                    InverseTransformPoints(ref _corners, relativeTo);
+                    boundsPoints.AddRange(_corners);
+                    break;
+                }
+            case MeshCollider meshCollider:
+                {
+                    var meshBounds = meshCollider.sharedMesh.bounds;
+                    meshBounds.GetCornerPositions(meshCollider.transform, ref _corners);
+                    InverseTransformPoints(ref _corners, relativeTo);
+                    boundsPoints.AddRange(_corners);
+                    break;
+                }
+            case CapsuleCollider capsuleCollider:
+                {
+                    var capsuleBounds = new Bounds(capsuleCollider.center, Vector3.zero);
+                    var radius = capsuleCollider.radius;
+                    var height = capsuleCollider.height;
+                    capsuleBounds.size = capsuleCollider.direction switch
+                    {
+                        CAPSULE_X_AXIS => new Vector3(height, radius * 2, radius * 2),
+                        CAPSULE_Y_AXIS => new Vector3(radius * 2, height, radius * 2),
+                        CAPSULE_Z_AXIS => new Vector3(radius * 2, radius * 2, height),
+                        _ => capsuleBounds.size
+                    };
 
-                capsuleBounds.GetFacePositions(capsuleCollider.transform, ref _corners);
-                InverseTransformPoints(ref _corners, relativeTo);
-                boundsPoints.AddRange(_corners);
-                break;
-            }
+                    capsuleBounds.GetFacePositions(capsuleCollider.transform, ref _corners);
+                    InverseTransformPoints(ref _corners, relativeTo);
+                    boundsPoints.AddRange(_corners);
+                    break;
+                }
         }
     }
 
@@ -594,11 +594,11 @@ public static class BoundsExtensions
     /// Transforms 'bounds' using the specified transform matrix.
     /// </summary>
     /// <remarks>
-    /// Transforming a 'Bounds' instance means that the function will construct a new 'Bounds'
+    /// <para>Transforming a 'Bounds' instance means that the function will construct a new 'Bounds'
     /// instance which has its center translated using the translation information stored in
     /// the specified matrix and its size adjusted to account for rotation and scale. The size
     /// of the new 'Bounds' instance will be calculated in such a way that it will contain the
-    /// old 'Bounds'.
+    /// old 'Bounds'.</para>
     /// </remarks>
     /// <param name="bounds">
     /// The 'Bounds' instance which must be transformed.
