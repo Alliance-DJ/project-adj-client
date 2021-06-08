@@ -34,6 +34,8 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
                             var obj = new GameObject($"{typeof(T).Name}(Singleton)");
                             instance = obj.AddComponent<T>();
                             DontDestroyOnLoad(obj);
+
+                            Debug.LogWarning("Not Exist Singleton, Create Dont Destroy Singleton", obj);
                         }
                     }
                 }
@@ -56,6 +58,7 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
         else
         {
             duplicateObj = true;
+            Debug.LogWarning("Duplicate Dont Destroy Singleton");
             Destroy(gameObject);
         }
     }
