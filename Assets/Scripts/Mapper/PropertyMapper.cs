@@ -116,7 +116,8 @@ public abstract class PropertyMapper : MonoBehaviour
         return ret;
     }
 
-    // Editor 전용
+#if UNITY_EDITOR
+
     public Type GetDataMapperDataType()
     {
         DataMapper dm = null;
@@ -141,6 +142,8 @@ public abstract class PropertyMapper : MonoBehaviour
         propertyName = string.Empty;
         subPropertyName = string.Empty;
     }
+
+#endif
 
     public T GetDataType<T>() where T : BaseData
     {

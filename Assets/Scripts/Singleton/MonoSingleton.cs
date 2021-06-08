@@ -36,6 +36,12 @@ public class MonoSingleton<T> : MonoBehaviour where T : Component
         }
     }
 
+    protected virtual void Awake()
+    {
+        if (IsSingletonCreated)
+            Destroy(gameObject);
+    }
+
     protected virtual void OnDestroy()
     {
         _instance = null;
@@ -80,9 +86,8 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
 
     protected virtual void Awake()
     {
-        var types = FindObjectsOfType<T>();
-        if (types.Length == 1)
-            DontDestroyOnLoad(gameObject);
+        if (IsSingletonCreated)
+            Destroy(gameObject);
     }
 
     protected virtual void OnDestroy()
