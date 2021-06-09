@@ -1,7 +1,9 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
-using ConditionalAttribute = System.Diagnostics.ConditionalAttribute;
+
 using Object = UnityEngine.Object;
 
 ///
@@ -23,6 +25,9 @@ using Object = UnityEngine.Object;
 ///
 public static class Debug
 {
+    [Obsolete("Debug.logger is obsolete. Please use Debug.unityLogger instead (UnityUpgradable) -> unityLogger")]
+    public static ILogger logger => UnityEngine.Debug.logger;
+
     public static bool developerConsoleVisible
     {
         get => UnityEngine.Debug.developerConsoleVisible;
@@ -33,8 +38,23 @@ public static class Debug
 
     public static bool isDebugBuild => UnityEngine.Debug.isDebugBuild;
 
-    [Obsolete("Debug.logger is obsolete. Please use Debug.unityLogger instead (UnityUpgradable) -> unityLogger")]
-    public static ILogger logger => UnityEngine.Debug.logger;
+    #region Mark
+
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
+    public static void Mark(
+        [CallerMemberName] string memberName = "",
+        [CallerFilePath] string sourceFilePath = "",
+        [CallerLineNumber] int sourceLineNumber = 0
+    )
+    {
+        int begin = sourceFilePath.LastIndexOf(@"\");
+        int end = sourceFilePath.LastIndexOf(@".cs");
+        string className = sourceFilePath.Substring(begin + 1, end - begin - 1);
+
+        UnityEngine.Debug.Log($"[Mark] {className}.{memberName}, {sourceLineNumber}");
+    }
+
+    #endregion Mark
 
     #region Assert
 
@@ -79,14 +99,21 @@ public static class Debug
 
     #endregion Assert
 
+    #region ETC
+
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Break()
         => UnityEngine.Debug.Break();
 
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void ClearDeveloperConsole()
         => UnityEngine.Debug.ClearDeveloperConsole();
 
+    [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void DebugBreak()
         => UnityEngine.Debug.DebugBreak();
+
+    #endregion ETC
 
     #region DrawLine
 
