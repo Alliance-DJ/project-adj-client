@@ -49,7 +49,7 @@ public static class UnityObjectExtensions
     /// which require their overridden operators to be called.
     /// </summary>
     /// <returns>True if either the managed or native object is null, false otherwise.</returns>
-    public static bool IsNull<T>(this T @interface) where T : class => @interface == null || @interface.Equals(null);
+    //public static bool IsNull<T>(this T @interface) where T : class => @interface == null || @interface.Equals(null);
 
     /// <summary>
     /// Properly checks an interface for null and returns the MonoBehaviour implementing it.

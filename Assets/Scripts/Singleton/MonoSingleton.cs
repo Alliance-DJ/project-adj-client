@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class MonoSingleton<T> : MonoBehaviour where T : Component
+public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     private static readonly Lazy<T> instance = new Lazy<T>(CreateInstance);
 
@@ -13,7 +13,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : Component
     }
 }
 
-public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
+public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     private static T instance;
     private static readonly object lockObj = new object();
@@ -22,20 +22,20 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
     {
         get
         {
-            if (!instance)
+            if (!instance.IsValid())
             {
                 lock (lockObj)
                 {
-                    if (!instance)
+                    if (!instance.IsValid())
                     {
                         instance = FindObjectOfType<T>();
-                        if (!instance)
+                        if (!instance.IsValid())
                         {
                             var obj = new GameObject($"{typeof(T).Name}(Singleton)");
                             instance = obj.AddComponent<T>();
                             DontDestroyOnLoad(obj);
 
-                            Debug.LogWarning("Not Exist Singleton, Create Dont Destroy Singleton", obj);
+                            Debug.LogWarning($"Not Exist Singleton, Create Dont Destroy Singleton : {typeof(T)}", obj);
                         }
                     }
                 }
@@ -45,27 +45,30 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
         }
     }
 
-    private bool duplicateObj = false;
     protected virtual void Awake()
     {
-        if (!instance)
+        if (instance.IsValid() && instance != this)
         {
-            instance = CreateInstance();
+            Debug.LogWarning($"Duplicate Dont Destroy Singleton : {typeof(T)}");
 
-            if (instance != null)
-                DontDestroyOnLoad(gameObject);
+            var components = gameObject.GetComponents<Component>();
+            if (components.Length <= 2)
+                Destroy(gameObject);
+            else
+                Destroy(this);
         }
         else
         {
-            duplicateObj = true;
-            Debug.LogWarning("Duplicate Dont Destroy Singleton");
-            Destroy(gameObject);
+            instance = CreateInstance();
+
+            if (instance.IsValid())
+                DontDestroyOnLoad(gameObject);
         }
     }
 
     protected virtual void OnDestroy()
     {
-        if (!duplicateObj)
+        if (instance == this)
             instance = null;
     }
 
