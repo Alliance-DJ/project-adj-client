@@ -76,19 +76,19 @@ public class PropertyMapper : MonoBehaviour
                 value = field.GetValue(data);
                 break;
             case PropertyGet property:
-            {
-                value = property.GetValue(data);
-                if (value == null) break;
+                {
+                    value = property.GetValue(data);
+                    if (value == null) break;
 
-                var subType = value.GetType();
-                if (string.IsNullOrEmpty(subPropertyName) || subType != typeof(BaseData)) break;
+                    var subType = value.GetType();
+                    if (string.IsNullOrEmpty(subPropertyName) || subType != typeof(BaseData)) break;
 
-                get = GetReflectionGet(subType, subPropertyName);
-                if (get == null) break;
+                    get = GetReflectionGet(subType, subPropertyName);
+                    if (get == null) break;
 
-                value = get.GetValue(value);
-                break;
-            }
+                    value = get.GetValue(value);
+                    break;
+                }
         }
 
         SetPropertyValue(value);
@@ -129,7 +129,7 @@ public class PropertyMapper : MonoBehaviour
         }
 
         if (t != null && dm != null)
-            return string.IsNullOrEmpty(dm.inspectorDataType) ? null : DataTypes.Maps[dm.inspectorDataType];
+            return dm.DataType;
 
         Debug.LogError("No DataMapper (this): " + gameObject.name, this);
         return null;

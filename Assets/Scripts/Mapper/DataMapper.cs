@@ -1,14 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class DataMapper : MonoBehaviour
 {
-    public string inspectorDataType;
-
-    private BaseData data;
+    public Type DataType;
 
     private HashSet<PropertyMapper> propertyMappers;
+
+    public BaseData Data { get; private set; }
 
     public HashSet<PropertyMapper> GetPropertyMappers()
     {
@@ -44,23 +45,23 @@ public class DataMapper : MonoBehaviour
 
     public void Reload()
     {
-        if (data == null) return;
+        if (Data == null) return;
 
-        SetData(data);
+        SetData(Data);
     }
 
-    public void SetData<T>(T any) where T : BaseData
+    public void SetData<T>(T data) where T : BaseData
     {
-        if (any == null || string.IsNullOrEmpty(inspectorDataType)) return;
+        if (data == null || DataType == null) return;
 
-        var typeName = any.GetType().Name;
-        if (typeName != inspectorDataType)
+        var type = data.GetType();
+        if (type != DataType)
         {
-            Debug.LogError($"NOT MATCH TYPE (SetType : {typeName} |  InspectorType : {inspectorDataType})", gameObject);
+            Debug.LogError($"NOT MATCH TYPE (SetType : {type} |  InspectorType : {DataType})", gameObject);
             return;
         }
 
-        data = any;
+        Data = data;
 
         if (propertyMappers == null)
             propertyMappers = GetPropertyMappers();
@@ -73,7 +74,7 @@ public class DataMapper : MonoBehaviour
 
     public T GetData<T>() where T : BaseData
     {
-        switch (data)
+        switch (Data)
         {
             case null:
                 return null;

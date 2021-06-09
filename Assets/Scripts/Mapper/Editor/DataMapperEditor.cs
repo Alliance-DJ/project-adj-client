@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+
+using Object = UnityEngine.Object;
 
 namespace Editor
 {
@@ -11,23 +14,28 @@ namespace Editor
     {
         private const string NONE = "None";
 
+        private static readonly Dictionary<string, Type> cacheTypes = new Dictionary<string, Type>() { { NONE, null } };
+
         private string searchKey;
         private int currentIndex = -1;
 
         private DataMapper mapper;
-
-        private List<string> dataTypeNames;
 
         private void OnEnable()
         {
             mapper = target as DataMapper;
             if (mapper == null) return;
 
-            var dataTypes = TypeCache.GetSubClasses<BaseData>();
-            if (dataTypes != null)
+            var types = TypeCache.GetSubClasses<BaseData>();
+            if (types != null)
             {
-                dataTypeNames = dataTypes.Select(type => type.Name).ToList();
-                dataTypeNames.Sort();
+                for (int i = 0; i < types.Count; i++)
+                {
+                    var type = types[i];
+                    if (type == null || cacheTypes.ContainsValue(type)) continue;
+
+                    cacheTypes.Add(type.Name, type);
+                }
             }
         }
 
@@ -35,7 +43,8 @@ namespace Editor
         {
             if (mapper == null) return;
 
-            var types = new List<string>(dataTypeNames);
+            var types = new List<string>(cacheTypes.Values.Select(t => t?.Name).Where(t => t != null));
+            types.Sort();
 
             searchKey = EditorGUILayout.TextField("Search Data : ", searchKey);
 
@@ -43,31 +52,40 @@ namespace Editor
 
             var searching = !string.IsNullOrEmpty(searchKey);
             if (searching)
-                types.RemoveAll(n => !n.ToLower().Contains(searchKey.ToLower()));
+                types.RemoveAll(n => n == NONE || !n.ToLower().Contains(searchKey.ToLower()));
 
             types.Insert(0, NONE);
 
-            var currentTypeName = !string.IsNullOrEmpty(mapper.inspectorDataType) ? mapper.inspectorDataType : NONE;
+            var currentType = mapper.DataType;
+            var currentTypeName = currentType != null ? currentType.Name : NONE;
+
             EditorGUI.BeginChangeCheck();
-            currentIndex = EditorGUILayout.Popup(types.FindIndex(type => type == currentTypeName), types.ToArray());
+            var selectedIndex = types.FindIndex(type => type == currentTypeName);
+            currentIndex = EditorGUILayout.Popup(selectedIndex == -1 ? 0 : selectedIndex, types.ToArray());
+            Debug.Log(currentIndex);
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(mapper, "Change DataMapper Data");
+                Debug.Log("INSIDE");
+                Undo.RecordObject(mapper, $"Change DataMapper Data {mapper.gameObject.GetInstanceID()}");
 
-                var pMappers = mapper.GetPropertyMappers();
-                if (pMappers != null && pMappers.Count > 0)
-                {
-                    Undo.RecordObjects(pMappers.ToArray<Object>(), "Reset PropertyMapper Data");
-                    Parallel.ForEach(pMappers, (pMapper) => { pMapper.ResetPropertyMapper(); });
-                }
+                //var pMappers = mapper.GetPropertyMappers();
+                //if (pMappers != null && pMappers.Count > 0)
+                //{
+                //    Undo.RecordObjects(pMappers.ToArray<Object>(), "Reset PropertyMapper Data");
+                //    Parallel.ForEach(pMappers, (pMapper) => { pMapper.ResetPropertyMapper(); });
+                //}
 
                 if (currentIndex >= 0)
-                    mapper.inspectorDataType = types[currentIndex] != NONE ? types[currentIndex] : null;
+                {
+                    string select = types[currentIndex];
+                    if (cacheTypes.ContainsKey(select))
+                        mapper.DataType = cacheTypes[select];
+                }
             }
 
             EditorGUILayout.LabelField("Selected Data Class : ",
-                !string.IsNullOrEmpty(mapper.inspectorDataType) ? mapper.inspectorDataType : NONE);
+                mapper.DataType != null ? mapper.DataType.Name : NONE);
 
             EditorGUILayout.Space();
 
