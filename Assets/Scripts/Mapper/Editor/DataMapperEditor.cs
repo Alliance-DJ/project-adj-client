@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace Editor
 {
     [CustomEditor(typeof(DataMapper))]
     public class DataMapperEditor : UnityEditor.Editor
     {
-        private const string None = "None";
+        private const string NONE = "None";
 
         private string searchKey;
         private int currentIndex = -1;
@@ -23,12 +23,11 @@ namespace Editor
             mapper = target as DataMapper;
             if (mapper == null) return;
 
-            dataTypeNames = new List<string>();
-
             var dataTypes = TypeCache.GetSubClasses<BaseData>();
             if (dataTypes != null)
             {
-                Parallel.ForEach(dataTypes, (type) => { dataTypeNames.Add(type.Name); });
+                dataTypeNames = dataTypes.Select(type => type.Name).ToList();
+                dataTypeNames.Sort();
             }
         }
 
@@ -37,16 +36,18 @@ namespace Editor
             if (mapper == null) return;
 
             var types = new List<string>(dataTypeNames);
-            types.Sort();
 
             searchKey = EditorGUILayout.TextField("Search Data : ", searchKey);
+
+            EditorGUILayout.Space();
+
             var searching = !string.IsNullOrEmpty(searchKey);
             if (searching)
                 types.RemoveAll(n => !n.ToLower().Contains(searchKey.ToLower()));
 
-            types.Insert(0, None);
+            types.Insert(0, NONE);
 
-            var currentTypeName = !string.IsNullOrEmpty(mapper.inspectorDataType) ? mapper.inspectorDataType : None;
+            var currentTypeName = !string.IsNullOrEmpty(mapper.inspectorDataType) ? mapper.inspectorDataType : NONE;
             EditorGUI.BeginChangeCheck();
             currentIndex = EditorGUILayout.Popup(types.FindIndex(type => type == currentTypeName), types.ToArray());
 
@@ -62,11 +63,18 @@ namespace Editor
                 }
 
                 if (currentIndex >= 0)
-                    mapper.inspectorDataType = types[currentIndex] != None ? types[currentIndex] : null;
+                    mapper.inspectorDataType = types[currentIndex] != NONE ? types[currentIndex] : null;
             }
 
             EditorGUILayout.LabelField("Selected Data Class : ",
-                !string.IsNullOrEmpty(mapper.inspectorDataType) ? mapper.inspectorDataType : None);
+                !string.IsNullOrEmpty(mapper.inspectorDataType) ? mapper.inspectorDataType : NONE);
+
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Data Refresh"))
+            {
+                mapper.DataRefresh();
+            }
         }
     }
 }

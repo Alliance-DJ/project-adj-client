@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class PropertyMapper : MonoBehaviour
+public class PropertyMapper : MonoBehaviour
 {
     public string defaultValue;
     public string format;

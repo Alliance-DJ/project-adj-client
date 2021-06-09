@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public abstract class BaseData
-{
-}
+public abstract class BaseData { }
 
 public static class DataTypes
 {

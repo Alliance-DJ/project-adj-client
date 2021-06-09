@@ -51,21 +51,19 @@ public class DataMapper : MonoBehaviour
 
     public void SetData<T>(T any) where T : BaseData
     {
-        if (any == null) return;
+        if (any == null || string.IsNullOrEmpty(inspectorDataType)) return;
 
-        if (inspectorDataType == null || any.GetType().Name != inspectorDataType)
+        var typeName = any.GetType().Name;
+        if (typeName != inspectorDataType)
         {
-            Debug.LogError("NOT MATCH TYPE");
+            Debug.LogError($"NOT MATCH TYPE (SetType : {typeName} |  InspectorType : {inspectorDataType})", gameObject);
             return;
         }
 
         data = any;
 
         if (propertyMappers == null)
-        {
-            var pMappers = GetPropertyMappers();
-            propertyMappers = new HashSet<PropertyMapper>(pMappers);
-        }
+            propertyMappers = GetPropertyMappers();
 
         foreach (var mapper in propertyMappers.Where(mapper => mapper != null))
         {
