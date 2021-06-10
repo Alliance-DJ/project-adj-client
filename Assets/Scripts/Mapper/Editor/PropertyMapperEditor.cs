@@ -73,7 +73,7 @@ namespace Editor
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(propertyMapper, "Change PropertyMapper Default Value");
+                UndoUtil.RecordObject(propertyMapper, "Change PropertyMapper Default Value");
                 propertyMapper.defaultValue = defaultValue;
             }
 
@@ -86,7 +86,7 @@ namespace Editor
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(propertyMapper, "Change PropertyMapper Format");
+                UndoUtil.RecordObject(propertyMapper, "Change PropertyMapper Format");
                 propertyMapper.format = format;
             }
 
@@ -109,7 +109,7 @@ namespace Editor
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(propertyMapper, "Change PropertyMapper PropertyData");
+                UndoUtil.RecordObject(propertyMapper, "Change PropertyMapper PropertyData");
                 propertyMapper.subPropertyName = string.Empty;
                 if (currentIndex >= 0)
                 {
@@ -174,7 +174,7 @@ namespace Editor
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(propertyMapper, "Change PropertyMapper SubPropertyData");
+                UndoUtil.RecordObject(propertyMapper, "Change PropertyMapper SubPropertyData");
                 if (currentSubIndex >= 0)
                 {
                     currentType = tempNames[currentSubIndex] != NONE ? tempNames[currentSubIndex] : string.Empty;
