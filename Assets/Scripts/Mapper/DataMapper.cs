@@ -1,40 +1,56 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using TypeReferences;
 using UnityEngine;
 
 public class DataMapper : MonoBehaviour
 {
-    public Type DataType;
+    [SerializeField, Inherits(typeof(BaseData), SearchbarMinItemsCount = 0)]
+    private TypeReference dataType;
+    public TypeReference DataType => dataType;
 
     private HashSet<PropertyMapper> propertyMappers;
 
     public BaseData Data { get; private set; }
+
+    private void Awake()
+    {
+        propertyMappers = GetPropertyMappers();
+    }
 
     public HashSet<PropertyMapper> GetPropertyMappers()
     {
         var mappers = new HashSet<PropertyMapper>();
 
         var pMappers = GetComponentsInChildren<PropertyMapper>(true);
-        foreach (var mapper in pMappers)
+        for (int i = 0; i < pMappers.Length; i++)
         {
-            if (mapper == null) continue;
+            var mapper = pMappers[i];
+            if (!mapper.IsValid()) continue;
+
+            var obj = mapper.gameObject;
+            if (obj == gameObject) continue;
 
             mappers.Add(mapper);
         }
 
         var dMappers = GetComponentsInChildren<DataMapper>(true);
-        foreach (var mapper in dMappers)
+        for (int i = 0; i < dMappers.Length; i++)
         {
-            if (mapper == null) continue;
+            var mapper = dMappers[i];
+            if (!mapper.IsValid()) continue;
 
-            var dgo = mapper.gameObject;
-            if (dgo == gameObject) continue;
+            var obj = mapper.gameObject;
+            if (obj == gameObject) continue;
 
             var subPropertyMappers = mapper.GetComponentsInChildren<PropertyMapper>(true);
-            foreach (var subMapper in subPropertyMappers)
+            for (int j = 0; j < subPropertyMappers.Length; j++)
             {
-                if (subMapper == null || dgo == subMapper.gameObject) continue;
+                var subMapper = subPropertyMappers[j];
+                if (subMapper == null) continue;
+
+                var subObj = subMapper.gameObject;
+                if (subObj == obj) continue;
 
                 mappers.Remove(subMapper);
             }
@@ -45,30 +61,37 @@ public class DataMapper : MonoBehaviour
 
     public void Reload()
     {
-        if (Data == null) return;
-
         SetData(Data);
     }
 
     public void SetData<T>(T data) where T : BaseData
     {
-        if (data == null || DataType == null) return;
-
-        var type = data.GetType();
-        if (type != DataType)
+        if (data != null)
         {
-            Debug.LogError($"NOT MATCH TYPE (SetType : {type} |  InspectorType : {DataType})", gameObject);
-            return;
+            if (dataType == null)
+            {
+                Debug.LogError($"Not Set Type", gameObject);
+                return;
+            }
+
+            var type = data.GetType();
+            if (type != dataType.Type)
+            {
+                Debug.LogError($"Not Match Type (SetType : {type} |  InspectorType : {dataType})", gameObject);
+                return;
+            }
         }
 
         Data = data;
 
-        if (propertyMappers == null)
-            propertyMappers = GetPropertyMappers();
-
-        foreach (var mapper in propertyMappers.Where(mapper => mapper != null))
+        if (propertyMappers != null)
         {
-            mapper.ExtractValue(data);
+            foreach (var mapper in propertyMappers)
+            {
+                if (!mapper.IsValid()) continue;
+
+                mapper.ExtractValue(Data);
+            }
         }
     }
 
@@ -81,7 +104,7 @@ public class DataMapper : MonoBehaviour
             case T d:
                 return d;
             default:
-                Debug.LogError("NOT MATCH TYPE");
+                Debug.LogError($"Not Match Type (DataType : {Data})", gameObject);
                 return null;
         }
     }

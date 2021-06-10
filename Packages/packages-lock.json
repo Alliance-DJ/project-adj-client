@@ -1,5 +1,21 @@
 {
   "dependencies": {
+    "com.solidalloy.type-references": {
+      "version": "https://github.com/SolidAlloy/ClassTypeReference-for-Unity.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.solidalloy.util": "1.28.0"
+      },
+      "hash": "2371ab02f1dee6dd05afcadec210af83ac8e6da3"
+    },
+    "com.solidalloy.util": {
+      "version": "https://github.com/SolidAlloy/SolidUtilities.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "4973a2e663f7014b0d99fe7aafc3f440a0e835fb"
+    },
     "com.unity.ext.nunit": {
       "version": "1.0.6",
       "depth": 1,

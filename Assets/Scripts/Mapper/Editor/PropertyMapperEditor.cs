@@ -9,30 +9,38 @@ namespace Editor
     [CustomEditor(typeof(PropertyMapper), true)]
     public class PropertyMapperEditor : UnityEditor.Editor
     {
-        private const string None = "None";
+        private const string NONE = "(None)";
 
         private string defaultValue;
         private string format;
+
         private string searchKey;
-        private string subSearchKey;
         private int currentIndex = -1;
+
+        private string subSearchKey;
         private int currentSubIndex = -1;
 
-        private PropertyMapper mapper;
+        private PropertyMapper propertyMapper;
 
         private List<string> names;
         private Dictionary<string, Type> returnTypeDic;
 
         private void OnEnable()
         {
-            mapper = target as PropertyMapper;
-            if (mapper == null) return;
+            propertyMapper = target as PropertyMapper;
+            if (propertyMapper == null) return;
 
             names = new List<string>();
             returnTypeDic = new Dictionary<string, Type>();
 
-            var type = mapper.GetDataMapperDataType();
-            if (type == null) return;
+            var type = GetDataMapperDataType();
+            if (type == null)
+            {
+                propertyMapper.propertyName = string.Empty;
+                propertyMapper.subPropertyName = string.Empty;
+                Debug.LogError($"No DataMapper (this): {propertyMapper.gameObject.name}", this);
+                return;
+            }
 
             var fields = TypeCache.GetFields(type);
             if (fields != null)
@@ -58,15 +66,15 @@ namespace Editor
 
         public override void OnInspectorGUI()
         {
-            if (mapper == null) return;
+            if (propertyMapper == null) return;
 
             EditorGUI.BeginChangeCheck();
-            defaultValue = EditorGUILayout.TextField("Default Value : ", mapper.defaultValue);
+            defaultValue = EditorGUILayout.TextField("Default Value : ", propertyMapper.defaultValue);
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(mapper, "Change PropertyMapper Default Value");
-                mapper.defaultValue = defaultValue;
+                Undo.RecordObject(propertyMapper, "Change PropertyMapper Default Value");
+                propertyMapper.defaultValue = defaultValue;
             }
 
             EditorGUILayout.Space();
@@ -74,12 +82,12 @@ namespace Editor
             EditorGUILayout.LabelField("Format");
 
             EditorGUI.BeginChangeCheck();
-            format = EditorGUILayout.TextArea(mapper.format, GUILayout.MinHeight(80f));
+            format = EditorGUILayout.TextArea(propertyMapper.format, GUILayout.MinHeight(80f));
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(mapper, "Change PropertyMapper Format");
-                mapper.format = format;
+                Undo.RecordObject(propertyMapper, "Change PropertyMapper Format");
+                propertyMapper.format = format;
             }
 
             EditorGUILayout.Space();
@@ -92,26 +100,30 @@ namespace Editor
             if (searching)
                 tempNames.RemoveAll(n => !n.ToLower().Contains(searchKey.ToLower()));
 
-            tempNames.Insert(0, None);
+            tempNames.Insert(0, NONE);
 
-            var currentTypeName = !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : None;
+            var currentType = propertyMapper.propertyName;
+            var currentTypeName = !string.IsNullOrEmpty(currentType) ? currentType : NONE;
             EditorGUI.BeginChangeCheck();
             currentIndex = EditorGUILayout.Popup(tempNames.FindIndex(t => t == currentTypeName), tempNames.ToArray());
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(mapper, "Change PropertyMapper PropertyData");
+                Undo.RecordObject(propertyMapper, "Change PropertyMapper PropertyData");
+                propertyMapper.subPropertyName = string.Empty;
                 if (currentIndex >= 0)
-                    mapper.propertyName = tempNames[currentIndex] != None ? tempNames[currentIndex] : null;
+                {
+                    currentType = tempNames[currentIndex] != NONE ? tempNames[currentIndex] : string.Empty;
+                    propertyMapper.propertyName = currentType;
+                }
             }
 
             EditorGUILayout.LabelField("Property Name : ",
-                !string.IsNullOrEmpty(mapper.propertyName) ? mapper.propertyName : None);
+                !string.IsNullOrEmpty(currentType) ? currentType : NONE);
 
-            string propertyName = mapper.propertyName;
-            if (!string.IsNullOrEmpty(propertyName) &&
-                returnTypeDic != null && returnTypeDic.TryGetValue(propertyName, out var type) &&
-                type.BaseType == typeof(BaseData))
+            if (!string.IsNullOrEmpty(currentType) &&
+                returnTypeDic != null && returnTypeDic.TryGetValue(currentType, out var type) &&
+                type.InheritsFrom(typeof(BaseData)))
             {
                 SetSubProperties(type);
             }
@@ -119,7 +131,7 @@ namespace Editor
 
         private void SetSubProperties(Type type)
         {
-            if (mapper == null || type == null) return;
+            if (propertyMapper == null || type == null) return;
 
             EditorGUILayout.Space();
 
@@ -151,22 +163,45 @@ namespace Editor
             if (searching)
                 tempNames.RemoveAll(n => !n.ToLower().Contains(subSearchKey.ToLower()));
 
-            tempNames.Insert(0, None);
+            tempNames.Insert(0, NONE);
 
-            var currentTypeName = !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : None;
+            var currentType = propertyMapper.subPropertyName;
+            var currentTypeName = !string.IsNullOrEmpty(currentType) ? currentType : NONE;
+            var selectIndex = tempNames.FindIndex(t => t == currentTypeName);
             EditorGUI.BeginChangeCheck();
             currentSubIndex =
-                EditorGUILayout.Popup(tempNames.FindIndex(t => t == currentTypeName), tempNames.ToArray());
+                EditorGUILayout.Popup(selectIndex == -1 ? 0 : selectIndex, tempNames.ToArray());
 
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(mapper, "Change PropertyMapper SubPropertyData");
+                Undo.RecordObject(propertyMapper, "Change PropertyMapper SubPropertyData");
                 if (currentSubIndex >= 0)
-                    mapper.subPropertyName = tempNames[currentSubIndex] != None ? tempNames[currentSubIndex] : null;
+                {
+                    currentType = tempNames[currentSubIndex] != NONE ? tempNames[currentSubIndex] : string.Empty;
+                    propertyMapper.subPropertyName = currentType;
+                }
             }
 
             EditorGUILayout.LabelField("Sub Property Name : ",
-                !string.IsNullOrEmpty(mapper.subPropertyName) ? mapper.subPropertyName : None);
+                !string.IsNullOrEmpty(currentType) ? propertyMapper.subPropertyName : NONE);
+        }
+
+        public Type GetDataMapperDataType()
+        {
+            if (propertyMapper == null) return null;
+
+            DataMapper dm = null;
+            var t = propertyMapper.transform;
+            while (t.IsValid() && !dm.IsValid())
+            {
+                t = t.parent;
+                if (t.IsValid())
+                    dm = t.GetComponent<DataMapper>();
+            }
+
+            if (!dm.IsValid()) return null;
+
+            return dm.DataType;
         }
     }
 }

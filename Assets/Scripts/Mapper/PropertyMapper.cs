@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,91 +7,47 @@ public class PropertyMapper : MonoBehaviour
     public string format;
     public string propertyName, subPropertyName;
 
-    private static Dictionary<Type, Dictionary<string, IReflectionGet>> _cached;
-
-    private interface IReflectionGet
+    private object ReflectionValue(object obj, string pName)
     {
-        public object GetValue(object o);
-    }
+        if (string.IsNullOrEmpty(pName) || obj == null) return null;
 
-    private class FieldGet : IReflectionGet
-    {
-        private readonly FieldInfo fieldInfo;
-
-        public FieldGet(FieldInfo field) => fieldInfo = field;
-
-        public object GetValue(object o) => fieldInfo.GetValue(o);
-    }
-
-    private class PropertyGet : IReflectionGet
-    {
-        private readonly PropertyInfo propertyInfo;
-
-        public PropertyGet(PropertyInfo property) => propertyInfo = property;
-
-        public object GetValue(object o) => propertyInfo.GetValue(o);
-    }
-
-    private static IReflectionGet GetReflectionGet(Type type, string pName)
-    {
-        _cached ??= new Dictionary<Type, Dictionary<string, IReflectionGet>>();
-        if (_cached.TryGetValueDicDic(type, pName, out var r))
-        {
-            return r;
-        }
-
+        var type = obj.GetType();
         var field = type.GetField(pName);
         if (field != null)
         {
-            r = new FieldGet(field);
-            _cached.AddDicDic(type, pName, r);
-            return r;
+            return field.GetValue(obj);
         }
 
         var property = type.GetProperty(pName);
         if (property != null)
         {
-            r = new PropertyGet(property);
-            _cached.AddDicDic(type, pName, r);
-            return r;
+            return property.GetValue(obj);
         }
 
-        _cached.AddDicDic(type, pName, null);
+        Debug.LogError($"Not Valid Property or Sub Property (Type : {type} | Name : {pName})", gameObject);
         return null;
     }
 
-    public void ExtractValue(BaseData data)
+    public void ExtractValue<T>(T data) where T : BaseData
     {
-        if (data == null || string.IsNullOrEmpty(propertyName)) return;
-
         object value = null;
-        var type = data.GetType();
-        var get = GetReflectionGet(type, propertyName);
-        switch (get)
+
+        if (!string.IsNullOrEmpty(propertyName) && data.IsValid())
         {
-            case FieldGet field:
-                value = field.GetValue(data);
-                break;
-            case PropertyGet property:
-                {
-                    value = property.GetValue(data);
-                    if (value == null) break;
+            value = ReflectionValue(data, propertyName);
+        }
 
-                    var subType = value.GetType();
-                    if (string.IsNullOrEmpty(subPropertyName) || subType != typeof(BaseData)) break;
-
-                    get = GetReflectionGet(subType, subPropertyName);
-                    if (get == null) break;
-
-                    value = get.GetValue(value);
-                    break;
-                }
+        if (!string.IsNullOrEmpty(subPropertyName) && value.IsValid())
+        {
+            var subType = value.GetType();
+            if (subType.InheritsFrom(typeof(BaseData)))
+                value = ReflectionValue(value, subPropertyName);
         }
 
         SetPropertyValue(value);
     }
 
-    public string GetFormattedString(object o)
+    public string FormattingString(object o)
     {
         var ret = o.ToString();
 
@@ -116,95 +69,28 @@ public class PropertyMapper : MonoBehaviour
         return ret;
     }
 
-#if UNITY_EDITOR
-
-    public Type GetDataMapperDataType()
-    {
-        DataMapper dm = null;
-        var t = transform;
-        while (t != null && dm == null)
-        {
-            t = t.parent;
-            if (t != null) dm = t.GetComponent<DataMapper>();
-        }
-
-        if (t != null && dm != null)
-            return dm.DataType;
-
-        Debug.LogError("No DataMapper (this): " + gameObject.name, this);
-        return null;
-    }
-
-    public void ResetPropertyMapper()
-    {
-        defaultValue = string.Empty;
-        format = string.Empty;
-        propertyName = string.Empty;
-        subPropertyName = string.Empty;
-    }
-
-#endif
-
-    public T GetDataType<T>() where T : BaseData
-    {
-        DataMapper dm = null;
-        var t = transform;
-        while (t != null && dm == null)
-        {
-            t = t.parent;
-            if (t != null) dm = t.GetComponent<DataMapper>();
-        }
-
-        if (t == null)
-        {
-            Debug.LogError("No DataMapper (this): " + gameObject.name, this);
-            return null;
-        }
-
-        if (dm == null)
-        {
-            return null;
-        }
-
-        var ret = dm.GetData<T>();
-        return ret;
-    }
-
     protected virtual void SetPropertyValue(object v)
     {
-        if (v == null) return;
-
-        var components = GetComponents<MonoBehaviour>();
-        foreach (var c in components)
-        {
-            if (c == null) continue;
-
-            switch (c)
-            {
-                case DataMapper mapper:
-                    mapper.SetData(v as BaseData);
-                    return;
-                case Text txt:
-                    SetText(txt, v);
-                    continue;
-            }
-        }
-    }
-
-    private void SetText(Text label, object o)
-    {
-        if (label == null) return;
-
-        var v = o.ToString();
-        if (string.IsNullOrEmpty(v))
+        if (v == null)
         {
             v = defaultValue;
         }
-        else if (!string.IsNullOrEmpty(format))
-        {
-            v = string.Format(format, o);
-        }
 
-        label.text = v;
+        var components = GetComponents<MonoBehaviour>();
+        for (int i = 0; i < components.Length; i++)
+        {
+            var component = components[i];
+            if (component == null) continue;
+
+            switch (component)
+            {
+                case DataMapper mapper:
+                    mapper.SetData(v as BaseData);
+                    continue;
+                case Text txt:
+                    txt.text = FormattingString(v);
+                    continue;
+            }
+        }
     }
 }
