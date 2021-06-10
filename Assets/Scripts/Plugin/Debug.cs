@@ -34,7 +34,7 @@ public static class Debug
         int end = sourceFilePath.LastIndexOf(@".cs");
         string className = sourceFilePath.Substring(begin + 1, end - begin - 1);
 
-        UnityEngine.Debug.Log($"[Mark] {className}.{memberName}, {sourceLineNumber}");
+        UnityEngine.Debug.Log($"[Mark] ClassName : {className}, MemberName : {memberName}, SourceLine : {sourceLineNumber}");
     }
 
     #endregion Mark
