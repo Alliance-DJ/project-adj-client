@@ -6,23 +6,6 @@ using UnityEngine;
 
 using Object = UnityEngine.Object;
 
-///
-/// It overrides UnityEngine.Debug to mute debug messages completely on a platform-specific basis.
-///
-/// Putting this inside of 'Plugins' foloder is ok.
-///
-/// Important:
-///     Other preprocessor directives than 'UNITY_EDITOR' does not correctly work.
-///
-/// Note:
-///     [Conditional] attribute indicates to compilers that a method call or attribute should be
-///     ignored unless a specified conditional compilation symbol is defined.
-///
-/// See Also:
-///     http://msdn.microsoft.com/en-us/library/system.diagnostics.conditionalattribute.aspx
-///
-/// 2012.11. @kimsama
-///
 public static class Debug
 {
     [Obsolete("Debug.logger is obsolete. Please use Debug.unityLogger instead (UnityUpgradable) -> unityLogger")]
