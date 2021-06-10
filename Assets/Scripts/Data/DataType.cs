@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 public abstract class BaseData { }
 
 public class Test1 : BaseData
