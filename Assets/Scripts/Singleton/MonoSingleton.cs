@@ -1,19 +1,19 @@
 using System;
 using UnityEngine;
 
-public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
+public class MonoSingleton<T> : MonoBehaviour where T : Component
 {
-    private static readonly Lazy<T> instance = new Lazy<T>(CreateInstance);
+    private static readonly Lazy<T> instance = new Lazy<T>(FindInstance);
 
     public static T Instance => instance.Value;
 
-    private static T CreateInstance()
+    private static T FindInstance()
     {
         return FindObjectOfType<T>();
     }
 }
 
-public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
+public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
 {
     private static T instance;
     private static readonly object lockObj = new object();
@@ -59,7 +59,7 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
         }
         else
         {
-            instance = CreateInstance();
+            instance = FindInstance();
 
             if (instance.IsValid())
                 DontDestroyOnLoad(gameObject);
@@ -72,8 +72,8 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
             instance = null;
     }
 
-    private T CreateInstance()
+    private T FindInstance()
     {
-        return gameObject.GetComponent<T>();
+        return this as T;
     }
 }
