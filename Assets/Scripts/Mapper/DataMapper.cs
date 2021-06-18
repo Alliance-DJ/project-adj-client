@@ -58,7 +58,8 @@ public class DataMapper : MonoBehaviour
         return mappers;
     }
 
-    public void Reload()
+    [ContextMenu("Data Refresh")]
+    public void RefreshData()
     {
         SetData(Data);
     }
@@ -89,7 +90,7 @@ public class DataMapper : MonoBehaviour
             {
                 if (!mapper.IsValid()) continue;
 
-                mapper.ExtractValue(Data);
+                mapper.Init(Data);
             }
         }
     }
@@ -107,14 +108,4 @@ public class DataMapper : MonoBehaviour
                 return null;
         }
     }
-
-#if UNITY_EDITOR
-
-    [ContextMenu("Data Refresh")]
-    public void DataRefresh()
-    {
-        Reload();
-    }
-
-#endif
 }

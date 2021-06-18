@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEditor;
-using UnityEngine;
 
 namespace Editor
 {
@@ -10,9 +9,6 @@ namespace Editor
     public class PropertyMapperEditor : UnityEditor.Editor
     {
         private const string NONE = "(None)";
-
-        private string defaultValue;
-        private string format;
 
         private string searchKey;
         private int currentIndex = -1;
@@ -68,27 +64,7 @@ namespace Editor
         {
             if (propertyMapper == null) return;
 
-            EditorGUI.BeginChangeCheck();
-            defaultValue = EditorGUILayout.TextField("Default Value : ", propertyMapper.defaultValue);
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                UndoUtil.RecordObject(propertyMapper, "Change PropertyMapper Default Value");
-                propertyMapper.defaultValue = defaultValue;
-            }
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField("Format");
-
-            EditorGUI.BeginChangeCheck();
-            format = EditorGUILayout.TextArea(propertyMapper.format, GUILayout.MinHeight(80f));
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                UndoUtil.RecordObject(propertyMapper, "Change PropertyMapper Format");
-                propertyMapper.format = format;
-            }
+            DrawDefaultInspector();
 
             EditorGUILayout.Space();
 
@@ -196,7 +172,7 @@ namespace Editor
             {
                 t = t.parent;
                 if (t.IsValid())
-                    dm = t.GetComponent<DataMapper>();
+                    t.TryGetComponent(out dm);
             }
 
             if (!dm.IsValid()) return null;

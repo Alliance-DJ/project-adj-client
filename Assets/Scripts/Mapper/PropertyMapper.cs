@@ -1,96 +1,47 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PropertyMapper : MonoBehaviour
 {
-    public string defaultValue;
-    public string format;
+    [HideInInspector]
     public string propertyName, subPropertyName;
 
-    private object ReflectionValue(object obj, string pName)
+    private object value;
+    public object Value
     {
-        if (string.IsNullOrEmpty(pName) || obj == null) return null;
-
-        var type = obj.GetType();
-        var field = type.GetField(pName);
-        if (field != null)
+        get => value;
+        protected set
         {
-            return field.GetValue(obj);
-        }
+            if (Equals(value, this.value)) return;
 
-        var property = type.GetProperty(pName);
-        if (property != null)
-        {
-            return property.GetValue(obj);
+            this.value = value;
+            OnValueChanged();
         }
-
-        Debug.LogError($"Not Valid Property or Sub Property (Type : {type} | Name : {pName})", gameObject);
-        return null;
     }
 
-    public void ExtractValue<T>(T data) where T : BaseData
+    private object GetValue(string propertyName, object data)
     {
-        object value = null;
+        if (string.IsNullOrEmpty(propertyName) || !data.IsValid()) return null;
 
-        if (!string.IsNullOrEmpty(propertyName) && data.IsValid())
-        {
-            value = ReflectionValue(data, propertyName);
-        }
+        var type = data.GetType();
+        if (!type.InheritsFrom(typeof(BaseData))) return null;
 
-        if (!string.IsNullOrEmpty(subPropertyName) && value.IsValid())
-        {
-            var subType = value.GetType();
-            if (subType.InheritsFrom(typeof(BaseData)))
-                value = ReflectionValue(value, subPropertyName);
-        }
+        var info = type.GetNodeTypeInfo(propertyName);
+        if (!info.IsValid()) return null;
 
-        SetPropertyValue(value);
+        return info.GetValue(data);
     }
 
-    public string FormattingString(object o)
+    public void Init(object data)
     {
-        var ret = o.ToString();
+        object value = GetValue(propertyName, data);
 
-        if (string.IsNullOrEmpty(ret))
+        if (!string.IsNullOrEmpty(subPropertyName))
         {
-            ret = defaultValue;
+            value = GetValue(subPropertyName, value);
         }
 
-        if (string.IsNullOrEmpty(ret))
-        {
-            return string.Empty;
-        }
-
-        if (!string.IsNullOrEmpty(format))
-        {
-            ret = string.Format(format, ret);
-        }
-
-        return ret;
+        Value = value;
     }
 
-    protected virtual void SetPropertyValue(object v)
-    {
-        if (v == null)
-        {
-            v = defaultValue;
-        }
-
-        var components = GetComponents<MonoBehaviour>();
-        for (int i = 0; i < components.Length; i++)
-        {
-            var component = components[i];
-            if (component == null) continue;
-
-            switch (component)
-            {
-                case DataMapper mapper:
-                    mapper.SetData(v as BaseData);
-                    continue;
-                case Text txt:
-                    txt.text = FormattingString(v);
-                    continue;
-            }
-        }
-    }
+    protected virtual void OnValueChanged() { }
 }
