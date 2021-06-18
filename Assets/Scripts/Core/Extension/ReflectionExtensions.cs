@@ -31,6 +31,42 @@ public static class ReflectionExtensions
 
         return null;
     }
+
+    public static bool TryConvertValue<T>(object rawValue, out T convertedValue)
+    {
+        if (TryConvertValue(rawValue, typeof(T), out object convertedValueObject))
+        {
+            convertedValue = (T)convertedValueObject;
+            return true;
+        }
+        convertedValue = default;
+        return false;
+    }
+
+    public static bool TryConvertValue(object rawValue, Type type, out object convertedValue)
+    {
+        try
+        {
+            if (type.IsEnum)
+            {
+                if (!Enum.IsDefined(type, rawValue))
+                {
+                    convertedValue = null;
+                    return false;
+                }
+
+                convertedValue = rawValue is string stringValue ? Enum.Parse(type, stringValue) : Enum.ToObject(type, rawValue);
+                return true;
+            }
+            convertedValue = Convert.ChangeType(rawValue, type);
+            return true;
+        }
+        catch (Exception)
+        {
+            convertedValue = null;
+            return false;
+        }
+    }
 }
 
 public abstract class NodeTypeInfo

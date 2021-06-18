@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public abstract class BaseData { }
 
 public class Test1 : BaseData
@@ -16,6 +18,7 @@ public class Test1 : BaseData
 public class Test2 : BaseData
 {
     public string text;
+    public Color color;
 }
 
 public class Test3 : Test2

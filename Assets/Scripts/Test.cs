@@ -10,7 +10,8 @@ public class Test : MonoBehaviour
     {
         Test1 text1 = new Test1(1, new Test3()
         {
-            text = "COPY TEST2"
+            text = "COPY TEST2",
+            color = Color.white
         });
         Test2 text2 = new Test2()
         {
@@ -22,6 +23,7 @@ public class Test : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         text1.test.text = "TEST TEST 33";
+        text1.test.color = Color.red;
         DataMapper.RefreshData();
     }
 }
