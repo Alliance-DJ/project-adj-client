@@ -6,7 +6,7 @@ public class Test : MonoBehaviour
 {
     public DataMapper DataMapper;
 
-    private void Start()
+    private IEnumerator Start()
     {
         Test1 text1 = new Test1(1, new Test3()
         {
@@ -18,5 +18,10 @@ public class Test : MonoBehaviour
         };
 
         DataMapper.SetData(text1);
+
+        yield return new WaitForSeconds(2f);
+
+        text1.test.text = "TEST TEST 33";
+        DataMapper.RefreshData();
     }
 }
