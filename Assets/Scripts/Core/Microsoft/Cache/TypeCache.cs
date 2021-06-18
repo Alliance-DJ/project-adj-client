@@ -11,9 +11,9 @@ using System.Reflection;
 /// </summary>
 public static class TypeCache
 {
-    private static Dictionary<Type, List<Type>> cache = new Dictionary<Type, List<Type>>();
-    private static Dictionary<Type, PropertyInfo[]> propertiesCache = new Dictionary<Type, PropertyInfo[]>();
-    private static Dictionary<Type, FieldInfo[]> fieldsCache = new Dictionary<Type, FieldInfo[]>();
+    private static readonly Dictionary<Type, List<Type>> cache = new Dictionary<Type, List<Type>>();
+    private static readonly Dictionary<Type, PropertyInfo[]> propertiesCache = new Dictionary<Type, PropertyInfo[]>();
+    private static readonly Dictionary<Type, FieldInfo[]> fieldsCache = new Dictionary<Type, FieldInfo[]>();
 
     /// <summary>
     /// Get all subclass types of base class type T

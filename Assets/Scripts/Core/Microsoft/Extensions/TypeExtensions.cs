@@ -28,10 +28,9 @@ public static class TypeExtensions
         {
             Parallel.ForEach(assembly.GetLoadableTypes(), (type) =>
             {
-                if (type != null && type.IsClass && !type.IsAbstract && type.IsSubclassOf(rootType))
-                {
-                    results.Add(type);
-                }
+                if (type == null || !type.IsClass || type.IsAbstract || !type.IsSubclassOf(rootType)) return;
+
+                results.Add(type);
             });
         });
 
@@ -64,5 +63,14 @@ public static class TypeExtensions
         return false;
     }
 
+    public static FieldInfo GetPublicField(this Type type, string name)
+    {
+        return type.GetField(name, BindingFlags.Instance | BindingFlags.Public);
+    }
+
+    public static PropertyInfo GetPublicProperty(this Type type, string name, BindingFlags additionalFlags = BindingFlags.Default)
+    {
+        return type.GetProperty(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | additionalFlags);
+    }
 #endif
 }
