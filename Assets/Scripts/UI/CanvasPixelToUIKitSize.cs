@@ -20,7 +20,6 @@ public class CanvasPixelToUIKitSize : MonoBehaviour
 #if UNITY_ANDROID
         canvasScaler.scaleFactor = Screen.dpi * 0.00625f; // Screen.dpi / 160f;
 #elif UNITY_IOS
-        // TODO : Add iOS Native ScaleFactor (code : https://youtu.be/_jW_D2vF9J8?t=7286)
         canvasScaler.scaleFactor = ApplePlugin.GetNativeScaleFactor();
 #endif
     }
