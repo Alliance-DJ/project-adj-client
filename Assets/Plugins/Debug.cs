@@ -235,4 +235,14 @@ public static class Debug
         => UnityEngine.Debug.LogWarningFormat(context, format, args);
 
     #endregion LogWarning
+
+    #region Private Method
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+    private static void Init()
+    {
+        unityLogger.logEnabled = isDebugBuild;
+    }
+
+    #endregion Private Method
 }
