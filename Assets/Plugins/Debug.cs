@@ -21,6 +21,12 @@ public static class Debug
 
     public static bool isDebugBuild => UnityEngine.Debug.isDebugBuild;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+    private static void Init()
+    {
+        unityLogger.logEnabled = isDebugBuild;
+    }
+
     #region Mark
 
     [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
@@ -235,14 +241,4 @@ public static class Debug
         => UnityEngine.Debug.LogWarningFormat(context, format, args);
 
     #endregion LogWarning
-
-    #region Private Method
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
-    private static void Init()
-    {
-        unityLogger.logEnabled = isDebugBuild;
-    }
-
-    #endregion Private Method
 }
