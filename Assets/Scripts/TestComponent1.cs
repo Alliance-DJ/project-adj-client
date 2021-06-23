@@ -2,28 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test : MonoBehaviour
+public class TestComponent1 : MonoBehaviour
 {
     public DataMapper DataMapper;
 
     private IEnumerator Start()
     {
-        Test1 text1 = new Test1(1, new Test3()
+        Test1 test1 = new Test1(1, new Test3()
         {
             text = "COPY TEST2",
             color = Color.blue
         });
-        Test2 text2 = new Test2()
-        {
-            text = "TEST2"
-        };
 
-        DataMapper.SetData(text1);
+        DataMapper.SetData(test1);
 
         yield return new WaitForSeconds(2f);
 
-        text1.test.text = "TEST TEST 33";
-        text1.test.color = Color.red;
+        test1.test.text = "TEST TEST 33";
+        test1.test.color = Color.red;
+
         DataMapper.RefreshData();
     }
 }
