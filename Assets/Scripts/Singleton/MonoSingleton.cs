@@ -35,7 +35,7 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
                             instance = obj.AddComponent<T>();
                             DontDestroyOnLoad(obj);
 
-                            Debug.LogWarning($"Not Exist Singleton, Create Dont Destroy Singleton : {typeof(T)}", obj);
+                            Debug.LogWarning($"<color=orange>Not Exist Singleton, Create Dont Destroy Singleton : {typeof(T)}</color>", obj);
                         }
                     }
                 }
@@ -49,7 +49,7 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
     {
         if (instance.IsValid() && instance != this)
         {
-            Debug.LogWarning($"Duplicate Dont Destroy Singleton : {typeof(T)}");
+            Debug.LogWarning($"<color=orange>Duplicate Dont Destroy Singleton : {typeof(T)}</color>");
 
             var components = gameObject.GetComponents<Component>();
             if (components.Length <= 2)
@@ -69,7 +69,10 @@ public class DontDestroyMonoSingleton<T> : MonoBehaviour where T : Component
     protected virtual void OnDestroy()
     {
         if (instance == this)
+        {
+            Debug.LogWarning($"<color=red>Destroy Dont Destroy Singleton : {typeof(T)}</color>");
             instance = null;
+        }
     }
 
     private T FindInstance()
