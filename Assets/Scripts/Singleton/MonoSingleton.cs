@@ -3,9 +3,16 @@ using UnityEngine;
 
 public class MonoSingleton<T> : MonoBehaviour where T : Component
 {
-    private static readonly Lazy<T> instance = new Lazy<T>(FindInstance);
+    private static Lazy<T> instance = new Lazy<T>(FindInstance);
 
     public static T Instance => instance.Value;
+
+    protected void OnDestroy()
+    {
+        if (!instance.IsValueCreated) return;
+
+        instance = new Lazy<T>(FindInstance);
+    }
 
     private static T FindInstance()
     {
